@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+
+@layer base {
+    html {
+        font-family: 'Montserrat', system-ui, sans-serif;
+    }
+    body {
+        @apply bg-gray-50 text-gray-900;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: 'Fraunces', serif;
+    }
+    /* Hide scrollbar for Chrome, Safari and Opera */
+     ::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    html {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+    body {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+}
+
+
+/* Custom utilities for specific needs */
+
+@layer utilities {
+    .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+    }
+    /* Font utility classes */
+    .font-montserrat {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .font-fraunces {
+        font-family: 'Fraunces', serif;
+    }
+    .font-raleway {
+        font-family: 'Raleway', sans-serif;
+    }
+}
+
+
+/* Animasi slider auto-scroll horizontal looping */
+
+.slider-auto-scroll {
+    animation: slider-scroll 24s linear infinite;
+}
+
+@keyframes slider-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
