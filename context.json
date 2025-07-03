@@ -1,0 +1,287 @@
+{
+  "framework": "React",
+  "uiLibrary": "Chakra UI",
+  "stateManagement": "Zustand",
+  "design": {
+    "style": "Modern Pilates Studio Design",
+    "theme": "Clean, Professional, Wellness-focused",
+    "colors": {
+      "primary": "#7b8fcb",
+      "secondary": "#3a3a3c"
+    },
+    "color-accent": {
+      "accent": "#7b8fcb",
+      "accent-2": "#3a3a3c",
+      "accent-3": "#22c55e"
+    },
+    "typography": {
+      "primary": "Montserrat",
+      "secondary": "Fraunces",
+      "body": "Raleway",
+      "display": "Inter"
+    },
+    "spacing": {
+      "unit": 4,
+      "scale": [
+        "0.25rem",
+        "0.5rem", 
+        "0.75rem",
+        "1rem",
+        "1.25rem",
+        "1.5rem",
+        "2rem",
+        "2.5rem",
+        "3rem",
+        "4rem"
+      ]
+    },
+    "cornerRadius": {
+      "rules": {
+        "default": 12,
+        "large": 24,
+        "full": 9999
+      },
+      "rules-for-components": {
+        "default": [
+          "cards",
+          "modal",
+          "form",
+          "table"
+        ],
+        "large": [
+          "sections",
+          "containers"
+        ],
+        "full": [
+          "input",
+          "button"
+        ]
+      }
+    }
+  },
+  "example-structure": {
+    "features": {
+      "auth": {
+        "components": [
+          "LoginForm.jsx",
+          "ProtectedRoute.jsx",
+          "RoleGuard.jsx"
+        ],
+        "api": [
+          "useAuth.js",
+          "authService.js",
+          "AuthContext.jsx"
+        ],
+        "pages": [
+          "Login.jsx"
+        ]
+      },
+      "user": {
+        "pages": [
+          "Home.jsx",
+          "About.jsx",
+          "Contact.jsx",
+          "FAQ.jsx",
+          "Blog.jsx"
+        ]
+      },
+      "admin": {
+        "pages": [
+          "Dashboard.jsx",
+          "master.jsx",
+          "User.jsx"
+        ]
+      },
+      "public": {
+        "pages": [
+          "Home.jsx",
+          "About.jsx",
+          "Contact.jsx",
+          "FAQ.jsx",
+          "Blog.jsx"
+        ]
+      }
+    },
+    "shared": {
+      "components": {
+        "ui": [
+          "Button.jsx",
+          "Input.jsx",
+          "Card.jsx", 
+          "Modal.jsx",
+          "Loading.jsx",
+          "Divider.jsx",
+          "ImageSlider.jsx",
+          "ScrollingTestimonials.jsx"
+        ],
+        "layout": [
+          "PublicLayout.jsx",
+          "AdminLayout.jsx",
+          "UserLayout.jsx"
+        ],
+        "common": [
+          "ErrorBoundary.jsx",
+          "NotFound.jsx"
+        ]
+      },
+      "services": {
+        "api.js": {
+          "file": "api.js",
+          "functions": [
+            "get",
+            "post",
+            "patch",
+            "delete"
+          ]
+        },
+        "authService.js": {
+          "file": "authService.js", 
+          "functions": [
+            "login",
+            "logout",
+            "refreshToken",
+            "getCurrentUser"
+          ]
+        },
+        "userService.js": {
+          "file": "userService.js",
+          "functions": [
+            "getUsers",
+            "updateUser",
+            "deleteUser"
+          ]
+        }
+      },
+      "hooks": {
+        "useAuth.js": "Authentication hook",
+        "useApi.js": "API call hook",
+        "useLocalStorage.js": "Local storage hook"
+      },
+      "utils": {
+        "constants.js": "App constants and enums",
+        "auth.js": "Auth utilities",
+        "storage.js": "Storage utilities", 
+        "validators.js": "Form validation utilities"
+      },
+      "data": {
+        "testimonialData.js": "Static testimonial data"
+      }
+    },
+    "routes": {
+      "AppRoutes.jsx": "Main router with all routes",
+      "PrivateRoutes.jsx": "Protected routes component",
+      "PublicRoutes.jsx": "Public routes component"
+    }
+  },
+  "importAlias": {
+    "@components": "./src/components",
+    "@services": "./src/services", 
+    "@hooks": "./src/hooks",
+    "@utils": "./src/utils",
+    "@styles": "./src/styles",
+    "@pages": "./src/pages",
+    "@context": "./src/context",
+    "@assets": "./src/assets"
+  },
+  "codingStandards": {
+    "variableNaming": {
+      "camelCase": true
+    },
+    "designPrinciples": {
+      "modularDesign": true,
+      "KISS": true,
+      "DRY": true,
+      "YAGNI": true
+    },
+    "UI/UX": {
+      "responsiveDesign": {
+        "useResponsiveDesign": true,
+        "breakpoints": {
+          "sm": "640px",
+          "md": "768px", 
+          "lg": "1024px",
+          "xl": "1280px"
+        }
+      },
+      "accessibility": {
+        "useSemanticHTML": true,
+        "useAltText": true,
+        "useAriaLabels": true
+      },
+      "designSystem": {
+        "consistentSpacing": true,
+        "consistentColors": true,
+        "consistentTypography": true
+      }
+    },
+    "codeRules": {
+      "comments": {
+        "useComments": false,
+        "useCommentsForFunctions": false
+      },
+      "documentation": {
+        "useDocumentation": false,
+        "noCreateFileMDforAPI": true
+      },
+      "validation": {
+        "useValidation": [
+          "POST",
+          "PATCH",
+          "PUT"
+        ]
+      },
+      "index": {
+        "useIndex": false
+      },
+      "modularization": {
+        "separateBusinessLogic": true,
+        "useReusableComponents": true,
+        "separateLayoutComponents": true
+      },
+      "avoidDeepNesting": {
+        "avoidDeepNesting": true,
+        "maxNestingLevel": 3
+      },
+      "apiDataPlacement": {
+        "rule": "Ensure that API calls and data are placed in the correct module. For example, if the module is related to classes, it should handle class-related API requests. If a home page needs class data, it should import from the classes module."
+      },
+      "fileNaming": {
+        "components": "PascalCase",
+        "pages": "PascalCase", 
+        "utilities": "camelCase",
+        "constants": "UPPER_SNAKE_CASE"
+      }
+    }
+  },
+  "projectSpecific": {
+    "businessDomain": "Pilates Studio Management",
+    "userRoles": [
+      "admin",
+      "user"
+    ],
+    "mainFeatures": [
+      "User Authentication",
+      "Class Management", 
+      "Trainer Profiles",
+      "User Dashboard",
+      "Admin Dashboard",
+      "Public Website",
+      "Testimonials",
+      "Contact Forms"
+    ],
+    "keyComponents": {
+      "publicFacing": [
+        "Hero Section",
+        "Class Showcase",
+        "Trainer Profiles", 
+        "Testimonials",
+        "Image Galleries"
+      ],
+      "dashboard": [
+        "User Profile",
+        "Class Booking",
+        "Admin Panel"
+      ]
+    }
+  }
+}
