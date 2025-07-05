@@ -1,78 +1,49 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { PublicLayout } from "../../../components/layout";
+import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
+import HeroSection from "../../../components/ui/HeroSection";
+import Button from "../../../components/ui/Button/Button";
 
 const Blog = () => {
   const [category, setCategory] = useState("all");
 
-  // Sample blog data
+  // Sample blog data with simplified fields
   const blogPosts = [
     {
       id: 1,
       title: "The Benefits of Regular Pilates Practice",
-      excerpt:
-        "Discover how consistent Pilates sessions can transform your body and mind over time.",
-      category: "wellness",
-      author: "Sarah Johnson",
-      date: "June 15, 2023",
-      readTime: "5 min read",
-      image: "placeholder-1.jpg",
+      description: "Discover how consistent Pilates sessions can transform your body and mind over time. Learn about the physical and mental benefits of incorporating Pilates into your daily routine.",
+      image: "/src/assets/images/banners/banner1.png",
     },
     {
       id: 2,
       title: "Pilates vs. Yoga: Understanding the Key Differences",
-      excerpt:
-        "While both focus on mind-body connection, these practices have distinct approaches and benefits.",
-      category: "techniques",
-      author: "Michael Chen",
-      date: "May 28, 2023",
-      readTime: "7 min read",
-      image: "placeholder-2.jpg",
+      description: "While both focus on mind-body connection, these practices have distinct approaches and benefits. Explore the unique characteristics of each discipline.",
+      image: "/src/assets/images/banners/banner2.png",
     },
     {
       id: 3,
       title: "How Pilates Can Improve Your Posture in Just 30 Days",
-      excerpt:
-        "Poor posture affects more than just appearance—it impacts your overall health. Here's how Pilates can help.",
-      category: "wellness",
-      author: "Aisha Patel",
-      date: "May 12, 2023",
-      readTime: "6 min read",
-      image: "placeholder-3.jpg",
+      description: "Poor posture affects more than just appearance—it impacts your overall health. Here's how Pilates can help you achieve better posture and alignment.",
+      image: "/src/assets/images/banners/banner1.png",
     },
     {
       id: 4,
       title: "5 Essential Pilates Exercises for Beginners",
-      excerpt:
-        "New to Pilates? Start with these foundational movements to build strength and stability.",
-      category: "techniques",
-      author: "David Rodriguez",
-      date: "April 30, 2023",
-      readTime: "4 min read",
-      image: "placeholder-4.jpg",
+      description: "New to Pilates? Start with these foundational movements to build strength and stability. Perfect for those just beginning their Pilates journey.",
+      image: "/src/assets/images/banners/banner2.png",
     },
     {
       id: 5,
-      title:
-        "The History of Pilates: From Rehabilitation to Mainstream Fitness",
-      excerpt:
-        "Learn how Joseph Pilates developed this method and how it evolved over the decades.",
-      category: "history",
-      author: "Sarah Johnson",
-      date: "April 15, 2023",
-      readTime: "8 min read",
-      image: "placeholder-5.jpg",
+      title: "The History of Pilates: From Rehabilitation to Mainstream Fitness",
+      description: "Learn how Joseph Pilates developed this method and how it evolved over the decades to become a popular fitness practice worldwide.",
+      image: "/src/assets/images/banners/banner1.png",
     },
     {
       id: 6,
       title: "Pilates for Pregnancy: Safe Exercises for Each Trimester",
-      excerpt:
-        "Staying active during pregnancy is important, and Pilates offers safe, effective options.",
-      category: "wellness",
-      author: "Aisha Patel",
-      date: "March 22, 2023",
-      readTime: "7 min read",
-      image: "placeholder-6.jpg",
+      description: "Staying active during pregnancy is important, and Pilates offers safe, effective options for expectant mothers at every stage.",
+      image: "/src/assets/images/banners/banner2.png",
     },
   ];
 
@@ -83,197 +54,58 @@ const Blog = () => {
 
   return (
     <PublicLayout>
-      <div className="py-12">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl font-fraunces font-bold mb-2 text-secondary">
-            Pilates Blog
-          </h1>
-          <p className="text-lg text-gray-600 mb-8 font-montserrat">
-            Insights, tips, and stories from the world of Pilates
-          </p>
-
-          {/* Featured Post */}
-          <div className="bg-gray-50 rounded-lg overflow-hidden mb-12">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="bg-gray-200 h-64 md:h-auto flex items-center justify-center">
-                [Featured Post Image]
-              </div>
-              <div className="p-8">
-                <div className="flex items-center mb-4">
-                  <span className="bg-primary text-white text-xs px-3 py-1 rounded-full font-montserrat">
-                    FEATURED
-                  </span>
-                  <span className="mx-2 text-gray-400">•</span>
-                  <span className="text-gray-500 text-sm font-montserrat">
-                    June 20, 2023
-                  </span>
-                </div>
-                <h2 className="text-3xl font-fraunces font-bold mb-4 text-secondary">
-                  The Complete Guide to Pilates Equipment
-                </h2>
-                <p className="text-gray-700 font-montserrat mb-6">
-                  From reformers to Cadillacs, explore the various apparatus
-                  used in Pilates studios and how each one can enhance your
-                  practice. Whether you're a beginner or advanced practitioner,
-                  understanding these tools can take your workout to the next
-                  level.
-                </p>
-                <Link
-                  to="/blog/complete-guide-to-pilates-equipment"
-                  className="inline-flex items-center text-primary font-montserrat font-medium hover:underline"
-                >
-                  Read Full Article
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 ml-2"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Category Filter */}
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => setCategory("all")}
-                className={`px-4 py-2 rounded-full font-montserrat text-sm ${
-                  category === "all"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                All Posts
-              </button>
-              <button
-                onClick={() => setCategory("wellness")}
-                className={`px-4 py-2 rounded-full font-montserrat text-sm ${
-                  category === "wellness"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                Wellness
-              </button>
-              <button
-                onClick={() => setCategory("techniques")}
-                className={`px-4 py-2 rounded-full font-montserrat text-sm ${
-                  category === "techniques"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                Techniques
-              </button>
-              <button
-                onClick={() => setCategory("history")}
-                className={`px-4 py-2 rounded-full font-montserrat text-sm ${
-                  category === "history"
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                History
-              </button>
-            </div>
-          </div>
-
+      <HeroSection
+        title1="Our"
+        title2="Blog"
+        image="/src/assets/images/banners/banner1.png"
+      />
+      <section className="py-8 sm:py-12 bg-white">
+      <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
           {/* Blog Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post) => (
               <div
                 key={post.id}
-                className="bg-white rounded-lg overflow-hidden shadow-md transition-transform hover:shadow-lg hover:-translate-y-1"
+                className="transition-transform hover:-translate-y-1"
               >
-                <div className="bg-gray-200 h-48 flex items-center justify-center">
-                  [Blog Image]
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center mb-3">
-                    <span className="text-primary text-xs px-3 py-1 bg-primary bg-opacity-10 rounded-full font-montserrat capitalize">
-                      {post.category}
-                    </span>
-                    <span className="ml-2 text-gray-500 text-sm font-montserrat">
-                      {post.readTime}
-                    </span>
+                <div className="mb-4">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-56 object-cover rounded-3xl"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }}
+                  />
+                  <div className="hidden w-full h-56 bg-gray-200 rounded-3xl flex items-center justify-center text-gray-500 font-montserrat">
+                    [Blog Image]
                   </div>
-                  <h3 className="text-xl font-fraunces font-bold mb-2 text-secondary">
+                </div>
+                <div>
+                  <h3 className="text-xl font-raleway font-bold mb-3 text-tertiary">
                     {post.title}
                   </h3>
-                  <p className="text-gray-600 font-montserrat mb-4 line-clamp-3">
-                    {post.excerpt}
+                  <p className="text-tertiary font-raleway mb-4 line-clamp-2">
+                    {post.description}
                   </p>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-300 rounded-full mr-2"></div>
-                      <span className="text-sm font-montserrat text-gray-700">
-                        {post.author}
-                      </span>
-                    </div>
-                    <span className="text-xs text-gray-500 font-montserrat">
-                      {post.date}
-                    </span>
-                  </div>
-                </div>
-                <div className="px-6 pb-6">
-                  <Link
-                    to={`/blog/${post.id}`}
-                    className="text-primary font-montserrat font-medium hover:underline text-sm flex items-center"
-                  >
-                    Read More
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 ml-1"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                  <div className="pt-2">
+                    <Button
+                      to={`/blog/${post.id}`}
+                      variant="primary"
+                      size="medium"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </Link>
+                      Read More
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Newsletter */}
-          <div className="mt-16 bg-gray-50 p-8 rounded-lg">
-            <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-2xl font-fraunces font-semibold mb-3 text-secondary">
-                Subscribe to Our Newsletter
-              </h2>
-              <p className="text-gray-700 font-montserrat mb-6">
-                Get the latest Pilates tips, class updates, and wellness
-                insights delivered to your inbox.
-              </p>
-              <form className="flex flex-col md:flex-row gap-3">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="flex-grow p-3 border border-gray-300 rounded-full font-montserrat focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <button
-                  type="submit"
-                  className="bg-primary hover:bg-opacity-80 text-white rounded-full px-6 py-3 transition-colors font-montserrat font-medium"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
+          
         </div>
-      </div>
+      </section>
     </PublicLayout>
   );
 };

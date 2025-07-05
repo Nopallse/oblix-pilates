@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Button = ({ 
   children, 
@@ -7,21 +8,24 @@ const Button = ({
   disabled = false,
   loading = false,
   className = '',
+  to = null,
+  href = null,
   ...props 
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2'
+  const baseClasses = 'inline-flex items-center justify-center font-montserrat font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap'
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 disabled:bg-blue-300',
-    secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 disabled:bg-gray-50',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300',
-    outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500 disabled:bg-gray-50'
+    primary: 'bg-primary text-white hover:bg-opacity-90 focus:ring-primary disabled:bg-opacity-50',
+    secondary: 'bg-secondary text-white hover:bg-opacity-90 focus:ring-secondary disabled:bg-opacity-50',
+    outline: 'border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-white focus:ring-primary disabled:opacity-50',
+    'outline-white': 'border border-primary text-white hover:bg-primary hover:text-white focus:ring-primary disabled:opacity-50',
+    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300'
   }
   
   const sizeClasses = {
-    small: 'px-3 py-1.5 text-sm',
-    medium: 'px-4 py-2 text-sm',
-    large: 'px-6 py-3 text-base'
+    small: 'px-4 py-1 text-xs sm:text-sm min-w-[100px]',
+    medium: 'px-8 py-2 text-sm sm:text-base min-w-[120px]',
+    large: 'px-12 py-2 text-base sm:text-2xl min-w-[140px]'
   }
 
   const classes = [
@@ -33,20 +37,49 @@ const Button = ({
     className
   ].filter(Boolean).join(' ')
 
+  const content = loading ? (
+    <div className="flex items-center">
+      <div className="animate-spin -ml-1 mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
+      Loading...
+    </div>
+  ) : (
+    children
+  )
+
+  // If it's a Link (React Router)
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className={classes}
+        {...props}
+      >
+        {content}
+      </Link>
+    )
+  }
+
+  // If it's an external link
+  if (href) {
+    return (
+      <a
+        href={href}
+        className={classes}
+        {...props}
+      >
+        {content}
+      </a>
+    )
+  }
+
+  // Regular button
   return (
     <button
       className={classes}
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? (
-        <div className="flex items-center">
-          <div className="animate-spin -ml-1 mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-          Loading...
-        </div>
-      ) : (
-        children
-      )}
+      {content}
     </button>
   )
 }

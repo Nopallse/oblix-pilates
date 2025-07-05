@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { PublicLayout } from "../../components/layout";
+import PublicLayout from "../../components/layout/PublicLayout/PublicLayout";
 
 const Trainer = () => {
   const trainers = [

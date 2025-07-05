@@ -72,3 +72,53 @@
         transform: translateX(-50%);
     }
 }
+
+
+/* Responsive testimonial slider animations */
+
+@keyframes slider-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+/* Mobile-friendly testimonial slider */
+
+.testimonial-slider {
+    animation: testimonial-scroll 20s linear infinite;
+}
+
+@keyframes testimonial-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+/* Pause animation on hover */
+
+.testimonial-slider:hover {
+    animation-play-state: paused;
+}
+
+
+/* Mobile-specific adjustments */
+
+@media (max-width: 640px) {
+    .testimonial-slider {
+        animation-duration: 15s;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonial-slider {
+        animation-duration: 12s;
+    }
+}

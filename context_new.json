@@ -1,0 +1,142 @@
+{
+  "framework": "React",
+  "uiLibrary": "Tailwind CSS",
+  "stateManagement": "Context API + useReducer (AuthContext)",
+  "bundler": "Vite",
+  "design": {
+    "style": "Modern Pilates Studio Design",
+    "theme": "Clean, minimal, wellness-focused",
+    "colors": {
+      "primary": "#7b8fcb",
+      "secondary": "#3a3a3c", 
+      "tertiary": "#525251"
+    },
+    "color-accent": {
+      "accent": "#7b8fcb",
+      "accent-2": "#3a3a3c",
+      "accent-3": "#525251"
+    },
+    "typography": {
+      "primary": "Montserrat",
+      "secondary": "Fraunces (serif)",
+      "alternative": "Raleway, Inter"
+    },
+    "spacing": {
+      "unit": 4,
+      "scale": ["1", "2", "3", "4", "5", "6", "8", "10", "12", "16", "20", "24", "32", "40", "48", "56", "64"]
+    },
+    "cornerRadius": {
+      "rules": {
+        "default": "rounded-lg (8px)",
+        "full": "rounded-full (9999px)"
+      },
+      "rules-for-components": {
+        "default": ["cards", "modal", "form", "table"],
+        "full": ["input", "button"]
+      }
+    }
+  },
+  "project-structure": {
+    "features": {
+      "auth": {
+        "components": ["LoginForm.jsx", "ProtectedRoute.jsx", "RoleGuard.jsx"],
+        "context": ["AuthContext.jsx"],
+        "services": ["authService.js"],
+        "hooks": ["useAuth.js"],
+        "pages": ["Login.jsx"]
+      },
+      "public": {
+        "pages": ["Home.jsx", "About.jsx", "Classes.jsx", "Trainer.jsx", "FAQ.jsx", "Contact.jsx", "Blog.jsx"],
+        "layout": ["PublicLayout.jsx", "PublicHeader.jsx", "PublicFooter.jsx"]
+      },
+      "private": {
+        "pages": ["Dashboard.jsx", "Profile.jsx", "User.jsx", "Members.jsx", "Admin.jsx"],
+        "layouts": ["AdminLayout.jsx", "UserLayout.jsx"]
+      }
+    },
+    "shared": {
+      "components": {
+        "ui": ["Button.jsx", "Card.jsx", "TrainerCard.jsx", "ClassCard.jsx", "Input.jsx", "Modal.jsx", "Loading.jsx", "ImageSlider.jsx", "Divider.jsx", "ScrollingTestimonials.jsx"],
+        "layout": ["Container.jsx", "Header.jsx", "Footer.jsx", "Sidebar.jsx"]
+      },
+      "services": ["api.js", "authService.js", "userService.js"],
+      "hooks": ["useAuth.js", "useApi.js", "useLocalStorage.js"],
+      "utils": ["auth.js", "constants.js", "storage.js", "validators.js"],
+      "data": ["testimonialData.js", "scheduleData.js"]
+    },
+    "routes": {
+      "AppRoutes.jsx": "Main router with protected routes",
+      "PrivateRoutes.jsx": "Private route wrapper with layout selection",
+      "PublicRoutes.jsx": "Public route wrapper with auth redirects"
+    }
+  },
+  "importAlias": {
+    "note": "No import aliases configured - using relative imports",
+    "recommendation": "Consider adding path aliases in vite.config.js for cleaner imports"
+  },
+  "codingStandards": {
+    "variableNaming": {
+      "camelCase": true,
+      "components": "PascalCase",
+      "files": "PascalCase for components, camelCase for utilities"
+    },
+    "designPrinciples": {
+      "modularDesign": true,
+      "KISS": true,
+      "DRY": true,
+      "YAGNI": true
+    },
+    "UI/UX": {
+      "componentStructure": "Modular, reusable components",
+      "layoutSystem": "Responsive design with Tailwind CSS",
+      "accessibility": "Follow WCAG guidelines",
+      "responsiveDesign": {
+        "useResponsiveDesign": true,
+        "breakpoints": "Tailwind default (sm, md, lg, xl, 2xl)"
+      }
+    },
+    "codeRules": {
+      "comments": {
+        "useComments": false,
+        "useCommentsForFunctions": false
+      },
+      "documentation": {
+        "useDocumentation": false,
+        "noCreateFileMDforAPI": true
+      },
+      "validation": {
+        "useValidation": ["POST", "PATCH", "PUT"]
+      },
+      "index": {
+        "useIndex": false,
+        "rule": "Use direct file imports instead of index.js files"
+      },
+      "modularization": {
+        "separateBusinessLogic": true,
+        "useReusableComponents": true,
+        "dataFilePattern": "Create separate data files for static content (scheduleData.js, testimonialData.js)"
+      },
+      "avoidDeepNesting": {
+        "avoidDeepNesting": true,
+        "maxDepth": "3 levels recommended"
+      },
+      "apiDataPlacement": {
+        "rule": "Ensure that API calls and data are placed in the correct module. For example, if the module is related to classes, it should handle class-related API requests. If a home page needs class data, it should import from the classes module."
+      },
+      "routingLogic": {
+        "publicRoutes": "Allow access to public pages regardless of auth status, except login page for authenticated users",
+        "privateRoutes": "Require authentication, use appropriate layout based on user role (AdminLayout for admin, UserLayout for regular users)",
+        "layoutSelection": "Automatic layout selection based on user role in PrivateRoutes component"
+      }
+    }
+  },
+  "dependencies": {
+    "core": ["react", "react-dom", "react-router-dom"],
+    "ui": ["tailwindcss", "@tailwindcss/vite", "tailwind-merge"],
+    "state": ["zustand"],
+    "http": ["axios"],
+    "auth": ["jwt-decode"],
+    "build": ["vite", "@vitejs/plugin-react"],
+    "dev": ["eslint", "autoprefixer", "postcss"]
+  }
+}

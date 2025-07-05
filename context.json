@@ -1,191 +1,84 @@
 {
   "framework": "React",
-  "uiLibrary": "Chakra UI",
-  "stateManagement": "Zustand",
+  "uiLibrary": "Tailwind CSS",
+  "stateManagement": "Context API + useReducer (AuthContext)",
+  "bundler": "Vite",
   "design": {
     "style": "Modern Pilates Studio Design",
-    "theme": "Clean, Professional, Wellness-focused",
+    "theme": "Clean, minimal, wellness-focused",
     "colors": {
       "primary": "#7b8fcb",
-      "secondary": "#3a3a3c"
+      "secondary": "#3a3a3c", 
+      "tertiary": "#525251"
     },
     "color-accent": {
       "accent": "#7b8fcb",
       "accent-2": "#3a3a3c",
-      "accent-3": "#22c55e"
+      "accent-3": "#525251"
     },
     "typography": {
       "primary": "Montserrat",
-      "secondary": "Fraunces",
-      "body": "Raleway",
-      "display": "Inter"
+      "secondary": "Fraunces (serif)",
+      "alternative": "Raleway, Inter"
     },
     "spacing": {
       "unit": 4,
-      "scale": [
-        "0.25rem",
-        "0.5rem", 
-        "0.75rem",
-        "1rem",
-        "1.25rem",
-        "1.5rem",
-        "2rem",
-        "2.5rem",
-        "3rem",
-        "4rem"
-      ]
+      "scale": ["1", "2", "3", "4", "5", "6", "8", "10", "12", "16", "20", "24", "32", "40", "48", "56", "64"]
     },
     "cornerRadius": {
       "rules": {
-        "default": 12,
-        "large": 24,
-        "full": 9999
+        "default": "rounded-lg (8px)",
+        "full": "rounded-full (9999px)"
       },
       "rules-for-components": {
-        "default": [
-          "cards",
-          "modal",
-          "form",
-          "table"
-        ],
-        "large": [
-          "sections",
-          "containers"
-        ],
-        "full": [
-          "input",
-          "button"
-        ]
+        "default": ["cards", "modal", "form", "table"],
+        "full": ["input", "button"]
       }
     }
   },
-  "example-structure": {
+  "project-structure": {
     "features": {
       "auth": {
-        "components": [
-          "LoginForm.jsx",
-          "ProtectedRoute.jsx",
-          "RoleGuard.jsx"
-        ],
-        "api": [
-          "useAuth.js",
-          "authService.js",
-          "AuthContext.jsx"
-        ],
-        "pages": [
-          "Login.jsx"
-        ]
-      },
-      "user": {
-        "pages": [
-          "Home.jsx",
-          "About.jsx",
-          "Contact.jsx",
-          "FAQ.jsx",
-          "Blog.jsx"
-        ]
-      },
-      "admin": {
-        "pages": [
-          "Dashboard.jsx",
-          "master.jsx",
-          "User.jsx"
-        ]
+        "components": ["LoginForm.jsx", "ProtectedRoute.jsx", "RoleGuard.jsx"],
+        "context": ["AuthContext.jsx"],
+        "services": ["authService.js"],
+        "hooks": ["useAuth.js"],
+        "pages": ["Login.jsx"]
       },
       "public": {
-        "pages": [
-          "Home.jsx",
-          "About.jsx",
-          "Contact.jsx",
-          "FAQ.jsx",
-          "Blog.jsx"
-        ]
+        "pages": ["Home.jsx", "About.jsx", "Classes.jsx", "Trainer.jsx", "FAQ.jsx", "Contact.jsx", "Blog.jsx"],
+        "layout": ["PublicLayout.jsx", "PublicHeader.jsx", "PublicFooter.jsx"]
+      },
+      "private": {
+        "pages": ["Dashboard.jsx", "Profile.jsx", "User.jsx", "Members.jsx", "Admin.jsx"],
+        "layouts": ["AdminLayout.jsx", "UserLayout.jsx"]
       }
     },
     "shared": {
       "components": {
-        "ui": [
-          "Button.jsx",
-          "Input.jsx",
-          "Card.jsx", 
-          "Modal.jsx",
-          "Loading.jsx",
-          "Divider.jsx",
-          "ImageSlider.jsx",
-          "ScrollingTestimonials.jsx"
-        ],
-        "layout": [
-          "PublicLayout.jsx",
-          "AdminLayout.jsx",
-          "UserLayout.jsx"
-        ],
-        "common": [
-          "ErrorBoundary.jsx",
-          "NotFound.jsx"
-        ]
+        "ui": ["Button.jsx", "Card.jsx", "TrainerCard.jsx", "ClassCard.jsx", "Input.jsx", "Modal.jsx", "Loading.jsx", "ImageSlider.jsx", "Divider.jsx", "ScrollingTestimonials.jsx"],
+        "layout": ["Container.jsx", "Header.jsx", "Footer.jsx", "Sidebar.jsx"]
       },
-      "services": {
-        "api.js": {
-          "file": "api.js",
-          "functions": [
-            "get",
-            "post",
-            "patch",
-            "delete"
-          ]
-        },
-        "authService.js": {
-          "file": "authService.js", 
-          "functions": [
-            "login",
-            "logout",
-            "refreshToken",
-            "getCurrentUser"
-          ]
-        },
-        "userService.js": {
-          "file": "userService.js",
-          "functions": [
-            "getUsers",
-            "updateUser",
-            "deleteUser"
-          ]
-        }
-      },
-      "hooks": {
-        "useAuth.js": "Authentication hook",
-        "useApi.js": "API call hook",
-        "useLocalStorage.js": "Local storage hook"
-      },
-      "utils": {
-        "constants.js": "App constants and enums",
-        "auth.js": "Auth utilities",
-        "storage.js": "Storage utilities", 
-        "validators.js": "Form validation utilities"
-      },
-      "data": {
-        "testimonialData.js": "Static testimonial data"
-      }
+      "services": ["api.js", "authService.js", "userService.js"],
+      "hooks": ["useAuth.js", "useApi.js", "useLocalStorage.js"],
+      "utils": ["auth.js", "constants.js", "storage.js", "validators.js"],
+      "data": ["testimonialData.js", "scheduleData.js"]
     },
     "routes": {
-      "AppRoutes.jsx": "Main router with all routes",
-      "PrivateRoutes.jsx": "Protected routes component",
-      "PublicRoutes.jsx": "Public routes component"
+      "AppRoutes.jsx": "Main router with protected routes",
+      "PrivateRoutes.jsx": "Private route wrapper with layout selection",
+      "PublicRoutes.jsx": "Public route wrapper with auth redirects"
     }
   },
   "importAlias": {
-    "@components": "./src/components",
-    "@services": "./src/services", 
-    "@hooks": "./src/hooks",
-    "@utils": "./src/utils",
-    "@styles": "./src/styles",
-    "@pages": "./src/pages",
-    "@context": "./src/context",
-    "@assets": "./src/assets"
+    "note": "No import aliases configured - using relative imports",
+    "recommendation": "Consider adding path aliases in vite.config.js for cleaner imports"
   },
   "codingStandards": {
     "variableNaming": {
-      "camelCase": true
+      "camelCase": true,
+      "components": "PascalCase",
+      "files": "PascalCase for components, camelCase for utilities"
     },
     "designPrinciples": {
       "modularDesign": true,
@@ -194,24 +87,12 @@
       "YAGNI": true
     },
     "UI/UX": {
+      "componentStructure": "Modular, reusable components",
+      "layoutSystem": "Responsive design with Tailwind CSS",
+      "accessibility": "Follow WCAG guidelines",
       "responsiveDesign": {
         "useResponsiveDesign": true,
-        "breakpoints": {
-          "sm": "640px",
-          "md": "768px", 
-          "lg": "1024px",
-          "xl": "1280px"
-        }
-      },
-      "accessibility": {
-        "useSemanticHTML": true,
-        "useAltText": true,
-        "useAriaLabels": true
-      },
-      "designSystem": {
-        "consistentSpacing": true,
-        "consistentColors": true,
-        "consistentTypography": true
+        "breakpoints": "Tailwind default (sm, md, lg, xl, 2xl)"
       }
     },
     "codeRules": {
@@ -224,64 +105,29 @@
         "noCreateFileMDforAPI": true
       },
       "validation": {
-        "useValidation": [
-          "POST",
-          "PATCH",
-          "PUT"
-        ]
+        "useValidation": ["POST", "PATCH", "PUT"]
       },
       "index": {
-        "useIndex": false
+        "useIndex": false,
+        "rule": "Use direct file imports instead of index.js files"
       },
       "modularization": {
         "separateBusinessLogic": true,
         "useReusableComponents": true,
-        "separateLayoutComponents": true
+        "dataFilePattern": "Create separate data files for static content (scheduleData.js, testimonialData.js)"
       },
       "avoidDeepNesting": {
         "avoidDeepNesting": true,
-        "maxNestingLevel": 3
+        "maxDepth": "3 levels recommended"
       },
       "apiDataPlacement": {
         "rule": "Ensure that API calls and data are placed in the correct module. For example, if the module is related to classes, it should handle class-related API requests. If a home page needs class data, it should import from the classes module."
       },
-      "fileNaming": {
-        "components": "PascalCase",
-        "pages": "PascalCase", 
-        "utilities": "camelCase",
-        "constants": "UPPER_SNAKE_CASE"
+      "routingLogic": {
+        "publicRoutes": "Allow access to public pages regardless of auth status, except login page for authenticated users",
+        "privateRoutes": "Require authentication, use appropriate layout based on user role (AdminLayout for admin, UserLayout for regular users)",
+        "layoutSelection": "Automatic layout selection based on user role in PrivateRoutes component"
       }
-    }
-  },
-  "projectSpecific": {
-    "businessDomain": "Pilates Studio Management",
-    "userRoles": [
-      "admin",
-      "user"
-    ],
-    "mainFeatures": [
-      "User Authentication",
-      "Class Management", 
-      "Trainer Profiles",
-      "User Dashboard",
-      "Admin Dashboard",
-      "Public Website",
-      "Testimonials",
-      "Contact Forms"
-    ],
-    "keyComponents": {
-      "publicFacing": [
-        "Hero Section",
-        "Class Showcase",
-        "Trainer Profiles", 
-        "Testimonials",
-        "Image Galleries"
-      ],
-      "dashboard": [
-        "User Profile",
-        "Class Booking",
-        "Admin Panel"
-      ]
     }
   }
 }

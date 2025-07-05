@@ -1,7 +1,9 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
-import { AdminLayout, UserLayout } from '../components/layout'
+import { useAuth } from '../hooks/useAuth.js'
+import AdminLayout from '../components/layout/AdminLayout/AdminLayout'
+import UserLayout from '../components/layout/UserLayout/UserLayout'
+
 
 const PrivateRoute = ({ children, requireAdmin = false }) => {
   const { isAuthenticated, isLoading, isAdmin, user } = useAuth()
@@ -11,7 +13,7 @@ const PrivateRoute = ({ children, requireAdmin = false }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/" replace />
   }
 
   if (requireAdmin && !isAdmin()) {

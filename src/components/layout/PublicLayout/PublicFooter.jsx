@@ -4,129 +4,126 @@ import { Link } from "react-router-dom";
 const PublicFooter = () => {
   return (
     <footer className="bg-secondary text-white">
-      <div className="container mx-auto px-4 sm:px-6 py-10 md:py-16">
-        {/* Main footer content with flexible layout */}
-        <div className="flex flex-col lg:flex-row gap-8 md:gap-10 lg:gap-12">
-          {/* Logo section */}
-          <div className="flex items-center justify-center lg:justify-start lg:flex-shrink-0 w-full lg:w-auto">
+      <div className="container max-w-6xl mx-auto px-4 py-6 md:py-8">
+        {/* Main footer content with improved mobile layout */}
+        <div className="flex flex-col space-y-8 lg:space-y-0 lg:flex-row lg:gap-12">
+          {/* Logo section - centered on mobile, left-aligned on desktop */}
+          <div className="flex justify-center lg:justify-start lg:flex-shrink-0">
             <Link to="/" className="block">
               <img
                 src="/src/assets/logos/logo_primer.png"
                 alt="Oblix Pilates"
-                className="h-24 sm:h-28 md:h-32 w-auto mx-auto lg:mx-0"
+                className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto"
               />
             </Link>
           </div>
 
-          {/* Content sections with flexible widths */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-4 lg:gap-8 xl:gap-16 w-full">
-            {/* Our Contact - takes up 6 columns (half width) on medium screens */}
-            <div className="flex flex-col space-y-4 md:col-span-6">
-              <h3 className="text-xl font-fraunces font-semibold mb-2 text-center md:text-left">
+          {/* Content sections with improved mobile grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 w-full">
+            {/* Our Contact - full width on mobile, 6 columns on desktop */}
+            <div className="flex flex-col space-y-4 sm:col-span-2 lg:col-span-6">
+              <h3 className="text-lg sm:text-xl font-fraunces font-semibold mb-3 text-center sm:text-left">
                 Our Contact
               </h3>
-              {/* Address */}
-              <div className="flex items-start gap-2">
-                <svg
-                  width="20"
-                  height="28"
-                  viewBox="0 0 20 28"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="flex-shrink-0 mt-1"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M10.0023 13.1705C8.49923 13.1705 7.28179 11.953 7.28179 10.45C7.28179 8.94687 8.49923 7.72943 10.0023 7.72943C11.5054 7.72943 12.7229 8.94687 12.7229 10.45C12.7229 11.953 11.5054 13.1705 10.0023 13.1705ZM10.0023 0.629883C4.74354 0.629883 0.480469 4.89295 0.480469 10.1517C0.480469 15.4105 10.0023 27.8352 10.0023 27.8352C10.0023 27.8352 19.5242 15.4105 19.5242 10.1517C19.5242 4.89295 15.2611 0.629883 10.0023 0.629883Z"
-                    fill="white"
-                  />
-                </svg>
-                <div className="text-white font-montserrat text-sm md:text-base">
-                  <p>Jl. Muara karang raya 293, Terraza 301,</p>
-                  <p>Lantai 2, Jakarta, Indonesia 14450</p>
+              {/* Contact content wrapper - centered container with left-aligned content */}
+              <div className="flex justify-center">
+                <div className="flex flex-col space-y-4 text-start">
+                  {/* Address */}
+                  <div className="flex items-start gap-3">
+                    <svg
+                      width="18"
+                      height="24"
+                      viewBox="0 0 20 28"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="flex-shrink-0 mt-1"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M10.0023 13.1705C8.49923 13.1705 7.28179 11.953 7.28179 10.45C7.28179 8.94687 8.49923 7.72943 10.0023 7.72943C11.5054 7.72943 12.7229 8.94687 12.7229 10.45C12.7229 11.953 11.5054 13.1705 10.0023 13.1705ZM10.0023 0.629883C4.74354 0.629883 0.480469 4.89295 0.480469 10.1517C0.480469 15.4105 10.0023 27.8352 10.0023 27.8352C10.0023 27.8352 19.5242 15.4105 19.5242 10.1517C19.5242 4.89295 15.2611 0.629883 10.0023 0.629883Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <div className="text-white font-montserrat text-sm sm:text-base text-start">
+                      <p>Jl. Muara karang raya 293, Terraza 301,</p>
+                      <p>Lantai 2, Jakarta, Indonesia 14450</p>
+                    </div>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="flex items-center gap-3 text-white font-montserrat">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M22.6311 20.3341C21.9406 22.4322 19.2356 23.4786 17.3029 23.3041C14.6635 23.0655 11.7914 21.6656 9.61127 20.1237C6.40665 17.857 3.40484 14.3509 1.65565 10.6303C0.41943 8.00127 0.142067 4.76892 1.98073 2.37254C2.66073 1.48676 3.39589 1.01369 4.50088 0.958512C6.03385 0.883951 6.24859 1.76094 6.77498 3.12689C7.16717 4.14837 7.69058 5.19035 7.98286 6.24911C8.53014 8.22497 6.61691 8.30755 6.37534 9.92254C6.22472 10.941 7.45945 12.3069 8.01716 13.0331C9.11022 14.4557 10.424 15.6828 11.9062 16.6163C12.7547 17.1516 14.1252 18.1163 15.0974 17.5839C16.5946 16.7638 16.453 14.2393 18.5466 15.0937C19.6307 15.5351 20.6805 16.1721 21.7154 16.7298C23.3155 17.5903 23.241 18.482 22.6311 20.3341C23.0874 18.9502 22.1747 21.7179 22.6311 20.3341Z"
+                        fill="white"
+                      />
+                    </svg>
+
+                    <span className="text-sm sm:text-base">085883335533</span>
+                  </div>
                 </div>
-              </div>
-
-              {/* Phone */}
-              <div className="flex items-center gap-2 text-white font-montserrat">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M22.6311 20.3341C21.9406 22.4322 19.2356 23.4786 17.3029 23.3041C14.6635 23.0655 11.7914 21.6656 9.61127 20.1237C6.40665 17.857 3.40484 14.3509 1.65565 10.6303C0.41943 8.00127 0.142067 4.76892 1.98073 2.37254C2.66073 1.48676 3.39589 1.01369 4.50088 0.958512C6.03385 0.883951 6.24859 1.76094 6.77498 3.12689C7.16717 4.14837 7.69058 5.19035 7.98286 6.24911C8.53014 8.22497 6.61691 8.30755 6.37534 9.92254C6.22472 10.941 7.45945 12.3069 8.01716 13.0331C9.11022 14.4557 10.424 15.6828 11.9062 16.6163C12.7547 17.1516 14.1252 18.1163 15.0974 17.5839C16.5946 16.7638 16.453 14.2393 18.5466 15.0937C19.6307 15.5351 20.6805 16.1721 21.7154 16.7298C23.3155 17.5903 23.241 18.482 22.6311 20.3341C23.0874 18.9502 22.1747 21.7179 22.6311 20.3341Z"
-                    fill="white"
-                  />
-                </svg>
-
-                <span className="text-sm md:text-base">085883335533</span>
               </div>
             </div>
 
-            {/* Our Pages */}
-            <div className="md:col-span-3">
-              <h3 className="text-xl font-fraunces font-semibold mb-4 text-center md:text-left">
+            {/* Our Pages - improved mobile layout */}
+            <div className="sm:col-span-1 lg:col-span-3">
+              <h3 className="text-lg sm:text-xl font-fraunces font-semibold mb-4 text-center sm:text-left">
                 Our Pages
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-1 gap-x-4 gap-y-2">
-                <div className="text-center md:text-left">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-1 sm:gap-y-2">
+                <div className="text-center sm:text-left">
                   <Link
                     to="/"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
                   >
                     Home
                   </Link>
                 </div>
-                <div className="text-center md:text-left">
+                <div className="text-center sm:text-left">
                   <Link
                     to="/about"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
                   >
                     About
                   </Link>
                 </div>
-                <div className="text-center md:text-left">
+                <div className="text-center sm:text-left">
                   <Link
                     to="/classes"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
                   >
                     Classes
                   </Link>
                 </div>
-                <div className="text-center md:text-left">
+                <div className="text-center sm:text-left">
                   <Link
                     to="/trainer"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
                   >
                     Trainer
                   </Link>
                 </div>
-                <div className="text-center md:text-left">
-                  <Link
-                    to="/faq"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
-                  >
-                    FAQ
-                  </Link>
-                </div>
-                <div className="text-center md:text-left">
+                <div className="text-center sm:text-left">
                   <Link
                     to="/contact"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
                   >
                     Contact
                   </Link>
                 </div>
-                <div className="text-center md:text-left">
+                <div className="text-center sm:text-left">
                   <Link
                     to="/blog"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm md:text-base"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
                   >
                     Blog
                   </Link>
@@ -134,21 +131,21 @@ const PublicFooter = () => {
               </div>
             </div>
 
-            {/* Social Media */}
-            <div className="md:col-span-3">
-              <h3 className="text-xl font-fraunces font-semibold mb-4 text-center md:text-left">
+            {/* Social Media - improved mobile layout */}
+            <div className="sm:col-span-1 lg:col-span-3">
+              <h3 className="text-lg sm:text-xl font-fraunces font-semibold mb-4 text-center sm:text-left">
                 Social Media
               </h3>
-              <div className="flex justify-center md:justify-start space-x-4">
+              <div className="flex justify-center sm:justify-start space-x-4">
                 <a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Follow us on Instagram"
-                  className="bg-white rounded-full p-2 hover:opacity-80 transition-opacity"
+                  className="bg-white rounded-full p-2.5 hover:opacity-80 transition-opacity"
                 >
                   <svg
-                    className="h-6 w-6 text-secondary"
+                    className="h-5 w-5 sm:h-6 sm:w-6 text-secondary"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -160,10 +157,10 @@ const PublicFooter = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Follow us on TikTok"
-                  className="bg-white rounded-full p-2 hover:opacity-80 transition-opacity"
+                  className="bg-white rounded-full p-2.5 hover:opacity-80 transition-opacity"
                 >
                   <svg
-                    className="h-6 w-6 text-secondary"
+                    className="h-5 w-5 sm:h-6 sm:w-6 text-secondary"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -177,9 +174,9 @@ const PublicFooter = () => {
       </div>
 
       {/* Copyright bar */}
-      <div className="bg-[#7B8FCB] bg-opacity-40 py-3 md:py-4">
+      <div className="bg-[#7B8FCB] bg-opacity-40 py-3 sm:py-4">
         <div className="container mx-auto px-4 sm:px-6 text-center">
-          <p className="text-white font-montserrat text-sm md:text-base">
+          <p className="text-white font-montserrat text-xs sm:text-sm md:text-base">
             &copy;2025 Oblix Pilates | Powered by Metro Software
           </p>
         </div>

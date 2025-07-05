@@ -6,18 +6,12 @@ const ScrollingTestimonials = ({ testimonials }) => {
   
   return (
     <div className="w-full relative overflow-hidden group">
-
-      <div className="flex gap-8 sm:gap-12 items-stretch py-4 animate-slider-scroll group-hover:pause">
+      <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12 items-stretch py-4 testimonial-slider">
         {duplicatedTestimonials.map((testimonial, index) => (
           <div 
             key={index} 
-            className="w-[280px] sm:w-[320px] md:w-[450px] flex-shrink-0"
-            style={{ 
-              // Adjust animation speed with animation-duration in the style
-               animation: "slider-scroll 5s linear infinite"
-            }}
+            className="w-[260px] sm:w-[280px] md:w-[320px] lg:w-[400px] xl:w-[450px] flex-shrink-0"
           >
-            {/* Wrapper ini juga perlu h-full agar bisa meneruskan tinggi */}
             <div className="transform hover:scale-105 transition-transform duration-300 h-full">
               <TestimonialCard {...testimonial} />
             </div>
