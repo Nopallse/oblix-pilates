@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import HeroSection from "../../../components/ui/HeroSection";
 import Button from "../../../components/ui/Button/Button";
+import { banner1, banner2 } from "../../../utils/assets";
 
 const Blog = () => {
   const [category, setCategory] = useState("all");
@@ -13,37 +14,37 @@ const Blog = () => {
       id: 1,
       title: "The Benefits of Regular Pilates Practice",
       description: "Discover how consistent Pilates sessions can transform your body and mind over time. Learn about the physical and mental benefits of incorporating Pilates into your daily routine.",
-      image: "/src/assets/images/banners/banner1.png",
+      image: banner1,
     },
     {
       id: 2,
       title: "Pilates vs. Yoga: Understanding the Key Differences",
       description: "While both focus on mind-body connection, these practices have distinct approaches and benefits. Explore the unique characteristics of each discipline.",
-      image: "/src/assets/images/banners/banner2.png",
+      image: banner2,
     },
     {
       id: 3,
       title: "How Pilates Can Improve Your Posture in Just 30 Days",
       description: "Poor posture affects more than just appearance—it impacts your overall health. Here's how Pilates can help you achieve better posture and alignment.",
-      image: "/src/assets/images/banners/banner1.png",
+      image: banner1,
     },
     {
       id: 4,
       title: "5 Essential Pilates Exercises for Beginners",
       description: "New to Pilates? Start with these foundational movements to build strength and stability. Perfect for those just beginning their Pilates journey.",
-      image: "/src/assets/images/banners/banner2.png",
+      image: banner2,
     },
     {
       id: 5,
       title: "The History of Pilates: From Rehabilitation to Mainstream Fitness",
       description: "Learn how Joseph Pilates developed this method and how it evolved over the decades to become a popular fitness practice worldwide.",
-      image: "/src/assets/images/banners/banner1.png",
+      image: banner1,
     },
     {
       id: 6,
       title: "Pilates for Pregnancy: Safe Exercises for Each Trimester",
       description: "Staying active during pregnancy is important, and Pilates offers safe, effective options for expectant mothers at every stage.",
-      image: "/src/assets/images/banners/banner2.png",
+      image: banner2,
     },
   ];
 
@@ -57,7 +58,7 @@ const Blog = () => {
       <HeroSection
         title1="Our"
         title2="Blog"
-        image="/src/assets/images/banners/banner1.png"
+        image={banner1}
       />
       <section className="py-8 sm:py-12 bg-white">
       <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">

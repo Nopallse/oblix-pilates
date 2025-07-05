@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import HeroSection from "../../../components/ui/HeroSection";
-import LocationIcon from "../../../assets/svg/icons/location.svg";
-import PhoneIcon from "../../../assets/svg/icons/phone.svg";
-import InstagramIcon from "../../../assets/svg/icons/instagram.svg";
-import TikTokIcon from "../../../assets/svg/icons/tiktok.svg";
+import { locationIcon, phoneIcon, instagramIcon, tiktokIcon, banner1 } from "../../../utils/assets";
 import Divider from "../../../components/ui/Divider/Divider";
 const Contact = () => {
   const [openItems, setOpenItems] = useState({});
@@ -74,7 +71,7 @@ const Contact = () => {
       <HeroSection
         title1="Our"
         title2="Contact"
-        image="/src/assets/images/banners/banner1.png"
+        image={banner1}
       />
 
       {/* Contact Content Section */}
@@ -103,7 +100,7 @@ const Contact = () => {
                   Location
                 </h3>
                 <div className="flex items-start space-x-4">
-                  <img src={LocationIcon} alt="Location" className="w-4 h-5 mt-1" />
+                  <img src={locationIcon} alt="Location" className="w-4 h-5 mt-1" />
                   <div className="flex-1">
                     <p className="text-tertiary text-sm leading-relaxed">
                       Jl. Muara karang raya 293, Terraza 301, Lantai 2, Jakarta, Indonesia 14450
@@ -120,7 +117,7 @@ const Contact = () => {
                 <div className="space-y-4">
                   {/* Phone */}
                   <div className="flex items-center space-x-4">
-                    <img src={PhoneIcon} alt="Phone" className="w-4 h-4" />
+                    <img src={phoneIcon} alt="Phone" className="w-4 h-4" />
                     <div>
                       <p className="text-tertiary text-sm ">085883335533</p>
                     </div>
@@ -128,7 +125,7 @@ const Contact = () => {
 
                   {/* Instagram */}
                   <div className="flex items-center space-x-4">
-                    <img src={InstagramIcon} alt="Instagram" className="w-4 h-4" />
+                    <img src={instagramIcon} alt="Instagram" className="w-4 h-4" />
                     <div>
                       <p className="text-tertiary text-sm">@oblixpilates</p>
                     </div>
@@ -136,7 +133,7 @@ const Contact = () => {
 
                   {/* TikTok */}
                   <div className="flex items-center space-x-4">
-                    <img src={TikTokIcon} alt="TikTok" className="w-4 h-4" />
+                    <img src={tiktokIcon} alt="TikTok" className="w-4 h-4" />
                     <div>
                       <p className="text-tertiary text-sm ">@oblixpilates</p>
                     </div>

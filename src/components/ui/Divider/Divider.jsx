@@ -1,5 +1,5 @@
 import React from "react";
-import flowerIcon from "../../../assets/svg/flower.svg";
+import { flowerIcon } from "../../../utils/assets";
 
 const Divider = () => {
   return (

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import TrainerCard from "../../../components/ui/Card/TrainerCard.jsx";
+import { trainer1, trainer2, trainer3 } from "../../../utils/assets";
 
 const Trainer = () => {
 
@@ -21,44 +22,44 @@ const Trainer = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {/* Trainer Cards */}
             <TrainerCard
-              image="/src/assets/images/trainers/trainer1.png"
+              image={trainer1}
               name="Coach Name"
               description="Deskripsi Coach"
               bio="Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session."
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer2.png"
+              image={trainer2}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer3.png"
+              image={trainer3}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer3.png"
+              image={trainer3}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer1.png"
+              image={trainer1}
               name="Coach Name"
               description="Deskripsi Coach"
               bio="Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session."
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer2.png"
+              image={trainer2}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer3.png"
+              image={trainer3}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer3.png"
+              image={trainer3}
               name="Coach Name"
               description="Deskripsi Coach"
             />

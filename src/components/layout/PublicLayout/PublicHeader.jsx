@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Button from "../../ui/Button/Button";
+import { logoSekunder } from "../../../utils/assets";
 
 const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -80,7 +81,7 @@ const PublicHeader = () => {
           <div className="flex items-center">
             <Link to="/">
               <img
-                src="/src/assets/logos/logo_sekunder.png"
+                src={logoSekunder}
                 alt="Oblix Pilates"
                 className="h-6 sm:h-6"
               />
@@ -203,7 +204,7 @@ const PublicHeader = () => {
           <div className="flex items-center justify-center p-6 border-b border-gray-600">
             <Link to="/" onClick={() => setIsMenuOpen(false)}>
               <img
-                src="/src/assets/logos/logo_sekunder.png"
+                src={logoSekunder}
                 alt="Oblix Pilates"
                 className="h-8"
               />

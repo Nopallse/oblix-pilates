@@ -9,6 +9,7 @@ import ScrollingTestimonials from "../../../components/ui/ScrollingTestimonials/
 import Button from "../../../components/ui/Button/Button.jsx";
 import { testimonialData } from "../../../data/testimonialData";
 import { scheduleData } from "../../../data/scheduleData";
+import { banner1, banner2, item2, item3, classes1, classes2, classes3, classesScheduleBanner, trainer1, trainer2, trainer3 } from "../../../utils/assets";
 
 const Home = () => {
   return (
@@ -50,15 +51,15 @@ const Home = () => {
           <ImageSlider
             images={[
               {
-                src: "/src/assets/images/banners/banner1.png",
+                src: banner1,
                 alt: "Oblix Pilates",
               },
               {
-                src: "/src/assets/images/banners/banner2.png",
+                src: banner2,
                 alt: "Oblix Pilates",
               },
               {
-                src: "/src/assets/images/banners/banner1.png",
+                src: banner1,
                 alt: "Oblix Pilates",
               },
             ]}
@@ -104,68 +105,68 @@ const Home = () => {
               {/* Gambar 1: Persegi (sedikit lebih tinggi) */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item3.png"
+                src={item3}
                 alt="Pilates 1"
               />
               {/* Gambar 2: Persegi panjang vertikal (tidak terlalu panjang) */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item2.png"
+                src={item2}
                 alt="Pilates 2"
               />
               {/* Gambar 3: Persegi (sedikit lebih tinggi) */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item3.png"
+                src={item3}
                 alt="Pilates 3"
               />
               {/* Gambar 4: Persegi panjang vertikal (tidak terlalu panjang) */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item2.png"
+                src={item2}
                 alt="Pilates 4"
               />
               {/* Gambar 5: Persegi (sedikit lebih tinggi) */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item3.png"
+                src={item3}
                 alt="Pilates 5"
               />
               {/* Gambar 6: Persegi panjang vertikal (tidak terlalu panjang) */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item2.png"
+                src={item2}
                 alt="Pilates 6"
               />
               {/* Duplikasi untuk looping mulus */}
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item3.png"
+                src={item3}
                 alt="Pilates 1"
               />
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item2.png"
+                src={item2}
                 alt="Pilates 2"
               />
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item3.png"
+                src={item3}
                 alt="Pilates 3"
               />
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item2.png"
+                src={item2}
                 alt="Pilates 4"
               />
               <img
                 className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item3.png"
+                src={item3}
                 alt="Pilates 5"
               />
               <img
                 className="w-48 rounded-lg flex-shrink-0"
-                src="/src/assets/images/item2.png"
+                src={item2}
                 alt="Pilates 6"
               />
             </div>
@@ -189,19 +190,19 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {/* Private Class */}
             <ClassCard
-              image="/src/assets/images/classes/classes1.png"
+              image={classes1}
               title="Private"
             />
 
             {/* Semi Private Class */}
             <ClassCard
-              image="/src/assets/images/classes/classes2.png"
+              image={classes2}
               title="Semi Private"
             />
 
             {/* Group Class */}
             <ClassCard
-              image="/src/assets/images/classes/classes3.png"
+              image={classes3}
               title="Group"
               className="md:col-span-2 lg:col-span-1"
             />
@@ -239,23 +240,23 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {/* Trainer Cards */}
             <TrainerCard
-              image="/src/assets/images/trainers/trainer1.png"
+              image={trainer1}
               name="Coach Name"
               description="Deskripsi Coach"
               bio="Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session."
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer2.png"
+              image={trainer2}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer3.png"
+              image={trainer3}
               name="Coach Name"
               description="Deskripsi Coach"
             />
             <TrainerCard
-              image="/src/assets/images/trainers/trainer3.png"
+              image={trainer3}
               name="Coach Name"
               description="Deskripsi Coach"
             />
@@ -349,7 +350,7 @@ const Home = () => {
           <div className="w-full relative py-8 sm:py-12"></div>
           <div className="w-full h-48  sm:h-64 md:h-72 relative rounded-2xl sm:rounded-3xl overflow-hidden">
             <img
-              src="/src/assets/images/classes-schedule/classes-schedule-banner.png"
+              src={classesScheduleBanner}
               alt="Schedule Banner"
               className="absolute inset-0 w-full h-full object-cover"
             />

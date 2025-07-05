@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import Divider from "../../../components/ui/Divider/Divider.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
+import { about1, about2, classesScheduleBanner, flowerIcon } from "../../../utils/assets";
 const About = () => {
   return (
     <PublicLayout>
@@ -30,7 +31,7 @@ const About = () => {
             {/* Card Gambar 1 - Landscape */}
             <div className="flex-1 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md">
               <img
-                src="/src/assets/images/about/about1.png"
+                src={about1}
                 alt="Pilates class in session with an instructor"
                 className="w-full h-full object-cover"
               />
@@ -38,7 +39,7 @@ const About = () => {
             {/* Card Gambar 2 - Square */}
             <div className="w-full md:w-80 lg:w-96 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md">
               <img
-                src="/src/assets/images/about/about2.png"
+                src={about2}
                 alt="Woman using a Pilates ring for exercise"
                 className="w-full h-full object-cover"
               />
@@ -54,7 +55,7 @@ const About = () => {
             {/* Card Image */}
             <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md">
               <img
-                src="/src/assets/images/about/about1.png"
+                src={about1}
                 alt="Oblix Pilates studio"
                 className="w-full h-full object-cover"
               />
@@ -74,7 +75,7 @@ const About = () => {
                 <div className="flex gap-4 items-center">
                   <div className="flex-shrink-0 w-12 h-12 mt-1">
                     <img
-                      src="/src/assets/svg/flower.svg"
+                      src={flowerIcon}
                       alt="Flower icon"
                       className="w-full h-full"
                     />
@@ -94,7 +95,7 @@ const About = () => {
                 <div className="flex gap-4 items-center">
                   <div className="flex-shrink-0 w-12 h-12 mt-1">
                     <img
-                      src="/src/assets/svg/flower.svg"
+                      src={flowerIcon}
                       alt="Flower icon"
                       className="w-full h-full"
                     />
@@ -114,7 +115,7 @@ const About = () => {
                 <div className="flex gap-4 items-center">
                   <div className="flex-shrink-0 w-12 h-12 mt-1">
                     <img
-                      src="/src/assets/svg/flower.svg"
+                      src={flowerIcon}
                       alt="Flower icon"
                       className="w-full h-full"
                     />
@@ -146,7 +147,7 @@ const About = () => {
 
           <div className="w-full h-32 sm:h-48 md:h-64 lg:h-72 relative rounded-2xl sm:rounded-3xl overflow-hidden">
             <img
-              src="/src/assets/images/classes-schedule/classes-schedule-banner.png"
+              src={classesScheduleBanner}
               alt="Schedule Banner"
               className="absolute inset-0 w-full h-full object-cover"
             />

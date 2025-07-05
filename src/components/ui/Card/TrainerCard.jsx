@@ -2,7 +2,7 @@
 const TrainerCard = ({ image, name, description, bio }) => {
   return (
     <div
-      className="relative group w-full rounded-3xl overflow-hidden"
+      className="relative group w-full rounded-[35px] md:rounded-3xl overflow-hidden"
       style={{ aspectRatio: "2/3" }}
     >
       <img
@@ -12,35 +12,35 @@ const TrainerCard = ({ image, name, description, bio }) => {
       />
       {/* Bottom shadow overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-      <div className="absolute bottom-6 left-0 right-0 px-4 text-white text-center z-10 transition-opacity duration-300 group-hover:opacity-0">
-        <h3 className="text-xl font-semibold font-['Raleway']">{name}</h3>
-        <p className="text-sm font-normal font-['Raleway'] mt-2 text-white/50">
+      <div className="absolute bottom-6 left-0 right-0 px-6 md:px-4 text-white text-center z-10 transition-opacity duration-300 group-hover:opacity-0">
+        <h3 className="text-3xl md:text-xl font-semibold font-['Raleway']">{name}</h3>
+        <p className="text-lg md:text-sm font-normal font-['Raleway'] mt-2 text-white/50">
           {description}
         </p>
       </div>
       
       {/* Hover overlay */}
-      <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-90 transition duration-300 flex flex-col justify-between text-white p-8">
+      <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-90 transition duration-300 flex flex-col justify-between text-white p-8 md:p-8">
         <div>
-          <h3 className="text-xl font-semibold font-['Raleway']">{name}</h3>
-          <p className="text-sm font-normal font-['Raleway'] text-white/50">
+          <h3 className="text-3xl md:text-xl font-semibold font-['Raleway']">{name}</h3>
+          <p className="text-lg md:text-sm font-normal font-['Raleway'] text-white/50">
             {description}
           </p>
-          <p className="text-sm font-normal font-['Raleway'] mt-8">
+          <p className="text-lg md:text-sm font-normal font-['Raleway'] mt-8 md:mt-8">
             {bio || "Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session."}
           </p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-6 md:gap-4">
           <a
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow us on Instagram"
-            className="bg-primary rounded-full p-2 hover:opacity-80 transition-opacity border border-white"
+            className="bg-primary rounded-full p-4 md:p-2 hover:opacity-80 transition-opacity border border-white"
           >
             <svg
-              className="h-6 w-6 text-secondary"
+              className="h-8 w-8 md:h-6 md:w-6 text-secondary"
               fill="white"
               viewBox="0 0 24 24"
             >
@@ -53,10 +53,10 @@ const TrainerCard = ({ image, name, description, bio }) => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow us on TikTok"
-            className="bg-primary rounded-full p-2 hover:opacity-80 transition-opacity border border-white"
+            className="bg-primary rounded-full p-4 md:p-2 hover:opacity-80 transition-opacity border border-white"
           >
             <svg
-              className="h-6 w-6 text-secondary"
+              className="h-8 w-8 md:h-6 md:w-6 text-secondary"
               fill="white"
               viewBox="0 0 24 24"
             >
