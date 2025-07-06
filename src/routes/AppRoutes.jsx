@@ -17,6 +17,7 @@ import Members from "../pages/Members/Members";
 import Home from "../pages/public/Home/Home";
 import About from "../pages/public/About/About";
 import Classes from "../pages/public/Classes/Classes";
+import ClassDetail from "../pages/public/ClassDetail/ClassDetail";
 import Trainer from "../pages/public/Trainer/Trainer";
 import Contact from "../pages/public/Contact/Contact";
 import Blog from "../pages/public/Blog/Blog";
@@ -65,6 +66,14 @@ const AppRoutes = () => {
           element={
             <PublicRoute>
           <Classes />
+            </PublicRoute>
+          } 
+        />
+        <Route 
+          path="/classes/:classType" 
+          element={
+            <PublicRoute>
+          <ClassDetail />
             </PublicRoute>
           } 
         />

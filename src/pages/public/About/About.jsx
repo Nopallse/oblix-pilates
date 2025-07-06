@@ -145,7 +145,7 @@ const About = () => {
 
 
 
-          <div className="w-full h-32 sm:h-48 md:h-64 lg:h-72 relative rounded-2xl sm:rounded-3xl overflow-hidden">
+          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden">
             <img
               src={classesScheduleBanner}
               alt="Schedule Banner"
@@ -153,7 +153,7 @@ const About = () => {
             />
             <div className="absolute left-6 sm:left-20 md:left-28 top-1/2 transform -translate-y-1/2 z-10">
               <svg
-                className="w-20 h-20 sm:w-48 sm:h-48 md:w-56 md:h-56 opacity-80"
+                className="w-16 h-16 sm:w-48 sm:h-48 md:w-56 md:h-56 opacity-80"
                 viewBox="0 0 366 372"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -178,24 +178,45 @@ const About = () => {
               </svg>
             </div>
 
-            <div className="absolute left-28 sm:left-52 md:left-64 top-1/2 transform -translate-y-1/2 z-10">
-              <div className="text-white">
-                <span className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-medium font-raleway leading-tight block">
-                  Book your
-                </span>
-                <span className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-normal font-fraunces leading-tight">
-                  Session Now
-                </span>
+            <div className="absolute left-1/2 md:left-96 transform -translate-x-1/2 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="text-white flex flex-col items-center gap-4 sm:gap-6">
+                <div className="text-center md:text-start">
+                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium font-raleway leading-tight block">
+                    Book your
+                  </span>
+                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal font-fraunces leading-tight">
+                    Session Now
+                  </span>
+                </div>
+                <div className="sm:hidden">
+                  <a
+                    href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                      "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button as="span" variant="primary" size="medium">
+                      WhatsApp
+                    </Button>
+                  </a>
+                </div>
               </div>
             </div>
 
             <div className="absolute right-6 sm:right-20 md:right-28 top-1/2 transform -translate-y-1/2 z-10">
-              <Button to="/booking" variant="primary" size="small" className="sm:hidden">
-                Click Here
-              </Button>
-              <Button to="/booking" variant="primary" size="large" className="hidden sm:inline-flex">
-                Click Here
-              </Button>
+              <a
+                href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                  "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex"
+              >
+                <Button as="span" variant="primary" size="large">
+                  Click Here
+                </Button>
+              </a>
             </div>
           </div>
         </div>

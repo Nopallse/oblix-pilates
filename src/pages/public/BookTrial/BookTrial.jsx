@@ -171,14 +171,20 @@ const BookTrial = () => {
 
         {/* Button Section */}
         <div className="text-center mt-8">
-          <Button 
-            variant="primary" 
-            size="medium"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
+          <a
+            href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+              "Halo Oblix Pilates! Saya ingin booking Trial Class. Boleh dibantu info jadwal dan ketersediaannya? Terima kasih!"
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {isSubmitting ? "Submitting..." : "Book a Trial"}
-          </Button>
+            <Button 
+              variant="primary" 
+              size="medium"
+            >
+              Book a Trial
+            </Button>
+          </a>
         </div>
         
       </section>

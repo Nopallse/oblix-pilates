@@ -1,127 +1,128 @@
-export const scheduleData = [
-  {
-    day: "Monday",
-    classes: [
-      {
-        id: 1,
-        time: "07:10 AM - 09:10 AM",
-        className: "Group Class",
-        coach: "Coach Lauren"
-      },
-      {
-        id: 2,
-        time: "09:10 AM - 14:10 PM",
-        className: "Group Class",
-        coach: "Coach Desmond / Uwang"
-      }
-    ]
-  },
-  {
-    day: "Tuesday",
-    classes: [
-      {
-        id: 3,
-        time: "07:10 AM - 09:10 AM",
-        className: "Group Class",
-        coach: "Coach Jode"
-      },
-      {
-        id: 4,
-        time: "10:10 PM - 13:10 PM",
-        className: "Group Class",
-        coach: "Coach Winny"
-      },
-      {
-        id: 5,
-        time: "14:10 PM - 20:10 PM",
-        className: "Group Class",
-        coach: "Coach Lauren / Gabby"
-      }
-    ]
-  },
-  {
-    day: "Wednesday",
-    classes: [
-      {
-        id: 6,
-        time: "07:10 AM - 11:10 AM",
-        className: "Group Class",
-        coach: "Coach Moty"
-      },
-      {
-        id: 7,
-        time: "13:10 AM - 20.10 PM",
-        className: "Group Class",
-        coach: "Coach Moredy"
-      }
-    ]
-  },
-  {
-    day: "Thursday",
-    classes: [
-      {
-        id: 8,
-        time: "07:10 AM - 11:10 AM",
-        className: "Group Class",
-        coach: "Coach Moredy"
-      },
-      {
-        id: 9,
-        time: "12:10 AM - 20.10 PM",
-        className: "Group Class",
-        coach: "Coach Caroline"
-      }
-    ]
-  },
-  {
-    day: "Friday",
-    classes: [
-      {
-        id: 10,
-        time: "07:10 AM - 12:10 AM ",
-        className: "Group Class",
-        coach: "Coach Silvia"
-      },
-      {
-        id: 11,
-        time: "08:10 PM - 16:10 PM ",
-        className: "Group Class",
-        coach: "Coach Desmond / Uwang"
-      },
-      {
-        id: 12,
-        time: "13:10 PM - 20:10 PM",
-        className: "Group Class",
-        coach: "Coach Lauren"
-      }
-    ]
-  },
-  {
-    day: "Saturday",
-    classes: [
-      {
-        id: 13,
-        time: "07:10 AM - 11:10 AM",
-        className: "Group Class",
-        coach: "Coach Moty"
-      },
-      {
-        id: 14,
-        time: "17:10 AM - 20.10 PM",
-        className: "Group Class",
-        coach: "Coach Jode"
-      }
-    ]
-  },
-  {
-    day: "Sunday",
-    classes: [
-      {
-        id: 10,
-        time: "07:10 AM - 13:10 AM",
-        className: "Group Class",
-        coach: "Coach Caroline"
-      }
-    ]
-  }
+export const scheduleData = [{
+        day: "Monday",
+        classes: [
+            { id: 1, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 2, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach Lauren" },
+            { id: 3, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach Wang" },
+            { id: 4, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach" },
+            { id: 5, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach" },
+            { id: 6, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach" },
+            { id: 7, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Wang" },
+            { id: 8, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Wang" },
+            { id: 9, time: "15:10-16:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 10, time: "16:10-17:00", className: "Chair - Flow", coach: "Coach Lauren" },
+            { id: 11, time: "17:10-18:00", className: "Tower - Flow", coach: "Coach Lauren" },
+            { id: 12, time: "18:10-19:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 13, time: "19:10-20:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 14, time: "20:10-21:00", className: "Tower - Basic", coach: "Coach Lauren" },
+        ]
+    },
+    {
+        day: "Tuesday",
+        classes: [
+            { id: 15, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach" },
+            { id: 16, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach" },
+            { id: 17, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach" },
+            { id: 18, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach Winny" },
+            { id: 19, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach Winny" },
+            { id: 20, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach Winny" },
+            { id: 21, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 22, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Lauren" },
+            { id: 23, time: "15:10-16:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 24, time: "16:10-17:00", className: "Chair - Flow", coach: "Coach Lauren" },
+            { id: 25, time: "17:10-18:00", className: "Tower - Flow", coach: "Coach Lauren" },
+            { id: 26, time: "18:10-19:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 27, time: "19:10-20:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 28, time: "20:10-21:00", className: "Tower - Basic", coach: "Coach Lauren" },
+        ]
+    },
+    {
+        day: "Wednesday",
+        classes: [
+            { id: 29, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach Motty" },
+            { id: 30, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach Motty" },
+            { id: 31, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach Motty" },
+            { id: 32, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach Motty" },
+            { id: 33, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach Motty" },
+            { id: 34, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach Motty" },
+            { id: 35, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Moredy" },
+            { id: 36, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Moredy" },
+            { id: 37, time: "15:10-16:00", className: "Tower - Chair", coach: "Coach Moredy" },
+            { id: 38, time: "16:10-17:00", className: "Chair - Flow", coach: "Coach Moredy" },
+            { id: 39, time: "17:10-18:00", className: "Tower - Flow", coach: "Coach Moredy" },
+            { id: 40, time: "18:10-19:00", className: "Tower - Chair", coach: "Coach Moredy" },
+            { id: 41, time: "19:10-20:00", className: "Chair - Basic", coach: "Coach Moredy" },
+            { id: 42, time: "20:10-21:00", className: "Tower - Basic", coach: "Coach Moredy" },
+        ]
+    },
+    {
+        day: "Thursday",
+        classes: [
+            { id: 43, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach Moredy" },
+            { id: 44, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach Moredy" },
+            { id: 45, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach Moredy" },
+            { id: 46, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach Moredy" },
+            { id: 47, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach Moredy" },
+            { id: 48, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 49, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 50, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Lauren" },
+            { id: 51, time: "15:10-16:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 52, time: "16:10-17:00", className: "Chair - Flow", coach: "Coach Lauren" },
+            { id: 53, time: "17:10-18:00", className: "Tower - Flow", coach: "Coach Lauren" },
+            { id: 54, time: "18:10-19:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 55, time: "19:10-20:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 56, time: "20:10-21:00", className: "Tower - Basic", coach: "Coach Lauren" },
+        ]
+    },
+    {
+        day: "Friday",
+        classes: [
+            { id: 57, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach Silvia" },
+            { id: 58, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach Silvia" },
+            { id: 59, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach Silvia" },
+            { id: 60, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach Silvia" },
+            { id: 61, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach Silvia" },
+            { id: 62, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach Silvia" },
+            { id: 63, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Lauren/Wang" },
+            { id: 64, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Lauren/Wang" },
+            { id: 65, time: "15:10-16:00", className: "Tower - Chair", coach: "Coach Lauren/Wang" },
+            { id: 66, time: "16:10-17:00", className: "Chair - Flow", coach: "Coach Lauren" },
+            { id: 67, time: "17:10-18:00", className: "Tower - Flow", coach: "Coach Lauren" },
+            { id: 68, time: "18:10-19:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 69, time: "19:10-20:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 70, time: "20:10-21:00", className: "Tower - Basic", coach: "Coach Lauren" },
+        ]
+    },
+    {
+        day: "Saturday",
+        classes: [
+            { id: 71, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach Motty" },
+            { id: 72, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach Motty" },
+            { id: 73, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach Motty" },
+            { id: 74, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach Motty" },
+            { id: 75, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach Motty" },
+            { id: 76, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 77, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 78, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Lauren" },
+            { id: 79, time: "15:10-16:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 80, time: "16:10-17:00", className: "Chair - Flow", coach: "Coach lauren" },
+            { id: 81, time: "17:10-18:00", className: "Tower - Flow", coach: "Coach Lauren" },
+            { id: 82, time: "18:10-19:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 83, time: "19:10-20:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 84, time: "20:10-21:00", className: "Tower - Basic", coach: "Coach Lauren" },
+        ]
+    },
+    {
+        day: "Sunday",
+        classes: [
+            { id: 85, time: "07:10-08:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 86, time: "08:10-09:00", className: "Tower - Basic", coach: "Coach Lauren" },
+            { id: 87, time: "09:10-10:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 88, time: "10:10-11:00", className: "Chair - Flow", coach: "Coach Lauren" },
+            { id: 89, time: "11:10-12:00", className: "Tower - Flow", coach: "Coach Lauren" },
+            { id: 90, time: "12:10-13:00", className: "Tower - Chair", coach: "Coach Lauren" },
+            { id: 91, time: "13:10-14:00", className: "Chair - Basic", coach: "Coach Lauren" },
+            { id: 92, time: "14:10-15:00", className: "Tower - Basic", coach: "Coach Lauren" },
+        ]
+    },
 ];

@@ -5,11 +5,11 @@ import { logoPrimer } from "../../../utils/assets";
 const PublicFooter = () => {
   return (
     <footer className="bg-secondary text-white">
-      <div className="container max-w-6xl mx-auto px-4 py-6 md:py-8">
+      <div className="container max-w-6xl mx-auto px-4 py-6 md:py-24">
         {/* Main footer content with improved mobile layout */}
         <div className="flex flex-col space-y-8 lg:space-y-0 lg:flex-row lg:gap-12">
           {/* Logo section - centered on mobile, left-aligned on desktop */}
-          <div className="flex justify-center lg:justify-start lg:flex-shrink-0">
+          <div className="flex my-auto justify-center lg:justify-start lg:flex-shrink-0">
             <Link to="/" className="block">
               <img
                 src={logoPrimer}
@@ -23,11 +23,11 @@ const PublicFooter = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 w-full">
             {/* Our Contact - full width on mobile, 6 columns on desktop */}
             <div className="flex flex-col space-y-4 sm:col-span-2 lg:col-span-6">
-              <h3 className="text-lg sm:text-xl font-fraunces font-semibold mb-3 text-center sm:text-left">
+              <h3 className="text-base sm:text-lg font-fraunces font-semibold mb-3 text-center sm:text-left">
                 Our Contact
               </h3>
               {/* Contact content wrapper - centered container with left-aligned content */}
-              <div className="flex justify-center">
+              <div className="flex justify-center sm:justify-center lg:justify-start">
                 <div className="flex flex-col space-y-4 text-start">
                   {/* Address */}
                   <div className="flex items-start gap-3">
@@ -46,7 +46,7 @@ const PublicFooter = () => {
                         fill="white"
                       />
                     </svg>
-                    <div className="text-white font-montserrat text-sm sm:text-base text-start">
+                    <div className="text-white font-montserrat text-xs sm:text-sm text-start">
                       <p>Jl. Muara karang raya 293, Terraza 301,</p>
                       <p>Lantai 2, Jakarta, Indonesia 14450</p>
                     </div>
@@ -69,7 +69,7 @@ const PublicFooter = () => {
                       />
                     </svg>
 
-                    <span className="text-sm sm:text-base">085883335533</span>
+                    <span className="text-xs sm:text-sm">085883335533</span>
                   </div>
                 </div>
               </div>
@@ -77,14 +77,14 @@ const PublicFooter = () => {
 
             {/* Our Pages - improved mobile layout */}
             <div className="sm:col-span-1 lg:col-span-3">
-              <h3 className="text-lg sm:text-xl font-fraunces font-semibold mb-4 text-center sm:text-left">
+              <h3 className="text-base sm:text-lg font-fraunces font-semibold mb-4 text-center sm:text-left">
                 Our Pages
               </h3>
               <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-1 sm:gap-y-2">
                 <div className="text-center sm:text-left">
                   <Link
                     to="/"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-xs sm:text-sm block py-1"
                   >
                     Home
                   </Link>
@@ -92,7 +92,7 @@ const PublicFooter = () => {
                 <div className="text-center sm:text-left">
                   <Link
                     to="/about"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-xs sm:text-sm block py-1"
                   >
                     About
                   </Link>
@@ -100,7 +100,7 @@ const PublicFooter = () => {
                 <div className="text-center sm:text-left">
                   <Link
                     to="/classes"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-xs sm:text-sm block py-1"
                   >
                     Classes
                   </Link>
@@ -108,7 +108,7 @@ const PublicFooter = () => {
                 <div className="text-center sm:text-left">
                   <Link
                     to="/trainer"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-xs sm:text-sm block py-1"
                   >
                     Trainer
                   </Link>
@@ -116,7 +116,7 @@ const PublicFooter = () => {
                 <div className="text-center sm:text-left">
                   <Link
                     to="/contact"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-xs sm:text-sm block py-1"
                   >
                     Contact
                   </Link>
@@ -124,7 +124,7 @@ const PublicFooter = () => {
                 <div className="text-center sm:text-left">
                   <Link
                     to="/blog"
-                    className="text-white hover:text-primary transition-colors font-montserrat text-sm sm:text-base block py-1"
+                    className="text-white hover:text-primary transition-colors font-montserrat text-xs sm:text-sm block py-1"
                   >
                     Blog
                   </Link>
@@ -134,7 +134,7 @@ const PublicFooter = () => {
 
             {/* Social Media - improved mobile layout */}
             <div className="sm:col-span-1 lg:col-span-3">
-              <h3 className="text-lg sm:text-xl font-fraunces font-semibold mb-4 text-center sm:text-left">
+              <h3 className="text-base sm:text-lg font-fraunces font-semibold mb-4 text-center sm:text-left">
                 Social Media
               </h3>
               <div className="flex justify-center sm:justify-start space-x-4">
@@ -146,7 +146,7 @@ const PublicFooter = () => {
                   className="bg-secondary rounded-full p-2.5 hover:opacity-80 transition-opacity border border-white"
                 >
                   <svg
-                    className="h-5 w-5 sm:h-6 sm:w-6 text-secondary"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-secondary"
                     fill="white"
                     viewBox="0 0 24 24"
                   >
@@ -161,7 +161,7 @@ const PublicFooter = () => {
                   className="bg-secondary rounded-full p-2.5 hover:opacity-80 transition-opacity border border-white"
                 >
                   <svg
-                    className="h-5 w-5 sm:h-6 sm:w-6 text-secondary"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-secondary"
                     fill="white"
                     viewBox="0 0 24 24"
                   >
@@ -177,7 +177,7 @@ const PublicFooter = () => {
       {/* Copyright bar */}
       <div className="bg-[#7B8FCB] bg-opacity-40 py-3 sm:py-4">
         <div className="container mx-auto px-4 sm:px-6 text-center">
-          <p className="text-white font-montserrat text-xs sm:text-sm md:text-base">
+          <p className="text-white font-montserrat text-[10px] sm:text-xs md:text-sm">
             &copy;2025 Oblix Pilates | Powered by Metro Software
           </p>
         </div>

@@ -29,6 +29,12 @@ import locationIcon from '../assets/svg/icons/location.svg'
 import phoneIcon from '../assets/svg/icons/phone.svg'
 import tiktokIcon from '../assets/svg/icons/tiktok.svg'
 
+// Import Equipment SVG
+import barrelSvg from '../assets/svg/equipment/barrel.svg'
+import caformer2in1Svg from '../assets/svg/equipment/caformer2in1.svg'
+import spineCorrectorSvg from '../assets/svg/equipment/spine_corrector.svg'
+import wundaChairSvg from '../assets/svg/equipment/wunda_chair.svg'
+
 // Export all assets
 export const images = {
     banners: {
@@ -74,6 +80,13 @@ export const icons = {
     tiktok: tiktokIcon
 }
 
+export const equipment = {
+    barrel: barrelSvg,
+    caformer2in1: caformer2in1Svg,
+    spineCorrector: spineCorrectorSvg,
+    wundaChair: wundaChairSvg
+}
+
 // Export individual assets for backward compatibility
 export {
     banner1,
@@ -100,5 +113,9 @@ export {
     instagramIcon,
     locationIcon,
     phoneIcon,
-    tiktokIcon
+    tiktokIcon,
+    barrelSvg,
+    caformer2in1Svg,
+    spineCorrectorSvg,
+    wundaChairSvg
 }

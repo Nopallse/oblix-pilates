@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import TrainerCard from "../../../components/ui/Card/TrainerCard.jsx";
@@ -10,8 +10,277 @@ import Button from "../../../components/ui/Button/Button.jsx";
 import { testimonialData } from "../../../data/testimonialData";
 import { scheduleData } from "../../../data/scheduleData";
 import { banner1, banner2, item2, item3, classes1, classes2, classes3, classesScheduleBanner, trainer1, trainer2, trainer3 } from "../../../utils/assets";
+import TestimonialCard from "../../../components/ui/Card/TestimonialCard.jsx";
+
+// Komponen slider gambar dengan auto-scroll dan drag-to-scroll
+const DraggableAutoScrollSlider = ({ images, autoScrollSpeed = 1 }) => {
+  const sliderRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    let frameId;
+    let lastTimestamp = null;
+    const scroll = (timestamp) => {
+      if (isUserInteracting) {
+        frameId = requestAnimationFrame(scroll);
+        return;
+      }
+      if (lastTimestamp === null) lastTimestamp = timestamp;
+      const elapsed = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+      if (sliderRef.current) {
+        sliderRef.current.scrollLeft += autoScrollSpeed * (elapsed / 16); // speed factor
+        // Looping: jika sudah hampir di ujung, reset ke awal
+        if (
+          sliderRef.current.scrollLeft + sliderRef.current.offsetWidth >=
+          sliderRef.current.scrollWidth - 1
+        ) {
+          sliderRef.current.scrollLeft = 0;
+        }
+      }
+      frameId = requestAnimationFrame(scroll);
+    };
+    frameId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(frameId);
+  }, [isUserInteracting, autoScrollSpeed]);
+
+  // Drag-to-scroll handlers
+  const onMouseDown = (e) => {
+    isDragging.current = true;
+    setIsUserInteracting(true);
+    startX.current = e.pageX - sliderRef.current.offsetLeft;
+    scrollLeft.current = sliderRef.current.scrollLeft;
+  };
+  const onMouseMove = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2; // drag speed
+    sliderRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+  const onMouseUp = () => {
+    isDragging.current = false;
+    setIsUserInteracting(false);
+  };
+  const onMouseLeave = () => {
+    isDragging.current = false;
+    setIsUserInteracting(false);
+  };
+
+  // Touch events
+  const onTouchStart = (e) => {
+    isDragging.current = true;
+    setIsUserInteracting(true);
+    startX.current = e.touches[0].pageX - sliderRef.current.offsetLeft;
+    scrollLeft.current = sliderRef.current.scrollLeft;
+  };
+  const onTouchMove = (e) => {
+    if (!isDragging.current) return;
+    const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2;
+    sliderRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+  const onTouchEnd = () => {
+    isDragging.current = false;
+    setIsUserInteracting(false);
+  };
+
+  return (
+    <div
+      ref={sliderRef}
+      className="flex gap-2 sm:gap-4 items-center overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent h-full px-2 cursor-grab select-none"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      tabIndex={0}
+    >
+      {images.map((img, idx) => (
+        <img
+          key={idx}
+          className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
+          src={img.src}
+          alt={img.alt}
+          draggable={false}
+          style={{ userSelect: 'none', WebkitUserDrag: 'none', WebkitUserSelect: 'none', msUserSelect: 'none' }}
+        />
+      ))}
+      {/* Duplikasi untuk looping mulus */}
+      {images.map((img, idx) => (
+        <img
+          key={images.length + idx}
+          className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
+          src={img.src}
+          alt={img.alt}
+          draggable={false}
+          style={{ userSelect: 'none', WebkitUserDrag: 'none', WebkitUserSelect: 'none', msUserSelect: 'none' }}
+        />
+      ))}
+    </div>
+  );
+};
+
+
+// Komponen slider testimonial dengan auto-scroll dan drag-to-scroll
+const DraggableTestimonialSlider = ({ testimonials, autoScrollSpeed = 0.8 }) => {
+  const sliderRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    let frameId;
+    let lastTimestamp = null;
+    const scroll = (timestamp) => {
+      if (isUserInteracting) {
+        frameId = requestAnimationFrame(scroll);
+        return;
+      }
+      if (lastTimestamp === null) lastTimestamp = timestamp;
+      const elapsed = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+      if (sliderRef.current) {
+        sliderRef.current.scrollLeft += autoScrollSpeed * (elapsed / 16); // speed factor
+        // Looping: jika sudah hampir di ujung, reset ke awal
+        if (
+          sliderRef.current.scrollLeft + sliderRef.current.offsetWidth >=
+          sliderRef.current.scrollWidth - 1
+        ) {
+          sliderRef.current.scrollLeft = 0;
+        }
+      }
+      frameId = requestAnimationFrame(scroll);
+    };
+    frameId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(frameId);
+  }, [isUserInteracting, autoScrollSpeed]);
+
+  // Drag-to-scroll handlers
+  const onMouseDown = (e) => {
+    isDragging.current = true;
+    setIsUserInteracting(true);
+    startX.current = e.pageX - sliderRef.current.offsetLeft;
+    scrollLeft.current = sliderRef.current.scrollLeft;
+  };
+  const onMouseMove = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2; // drag speed
+    sliderRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+  const onMouseUp = () => {
+    isDragging.current = false;
+    setIsUserInteracting(false);
+  };
+  const onMouseLeave = () => {
+    isDragging.current = false;
+    setIsUserInteracting(false);
+  };
+
+  // Touch events
+  const onTouchStart = (e) => {
+    isDragging.current = true;
+    setIsUserInteracting(true);
+    startX.current = e.touches[0].pageX - sliderRef.current.offsetLeft;
+    scrollLeft.current = sliderRef.current.scrollLeft;
+  };
+  const onTouchMove = (e) => {
+    if (!isDragging.current) return;
+    const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2;
+    sliderRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+  const onTouchEnd = () => {
+    isDragging.current = false;
+    setIsUserInteracting(false);
+  };
+
+  return (
+    <div
+      ref={sliderRef}
+      className="flex gap-4 sm:gap-6 items-stretch overflow-x-auto scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent h-full px-4 cursor-grab select-none"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      tabIndex={0}
+    >
+      {testimonials.map((testimonial, idx) => (
+        <div key={idx} className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] flex-shrink-0">
+          <TestimonialCard
+            text={testimonial.text}
+            name={testimonial.name}
+            age={testimonial.age}
+            image={testimonial.image}
+            rating={testimonial.rating}
+          />
+        </div>
+      ))}
+      {/* Duplikasi untuk looping mulus */}
+      {testimonials.map((testimonial, idx) => (
+        <div key={testimonials.length + idx} className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] flex-shrink-0">
+          <TestimonialCard
+            text={testimonial.text}
+            name={testimonial.name}
+            age={testimonial.age}
+            image={testimonial.image}
+            rating={testimonial.rating}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const Home = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentTrainerSlide, setCurrentTrainerSlide] = useState(0);
+  
+  const classData = [
+    { image: classes1, title: "Private" },
+    { image: classes2, title: "Semi Private" },
+    { image: classes3, title: "Group" }
+  ];
+
+  const trainerData = [
+    { image: trainer1, name: "Coach Name", description: "Deskripsi Coach", bio: "Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session." },
+    { image: trainer2, name: "Coach Name", description: "Deskripsi Coach" },
+    { image: trainer3, name: "Coach Name", description: "Deskripsi Coach" },
+    { image: trainer3, name: "Coach Name", description: "Deskripsi Coach" }
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % classData.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + classData.length) % classData.length);
+  };
+
+  const nextTrainerSlide = () => {
+    setCurrentTrainerSlide((prev) => (prev + 1) % trainerData.length);
+  };
+
+  const prevTrainerSlide = () => {
+    setCurrentTrainerSlide((prev) => (prev - 1 + trainerData.length) % trainerData.length);
+  };
   return (
     <PublicLayout>
       {/* Hero Section */}
@@ -100,76 +369,18 @@ const Home = () => {
           <div className="w-full h-64 sm:h-72 md:h-80 lg:h-96 relative overflow-hidden rounded-lg">
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-white/25 via-transparent via-transparent to-white/25 z-10 pointer-events-none"></div>
-            {/* Image slider */}
-            <div className="absolute inset-0 flex gap-2 sm:gap-4 items-center slider-auto-scroll">
-              {/* Gambar 1: Persegi (sedikit lebih tinggi) */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item3}
-                alt="Pilates 1"
-              />
-              {/* Gambar 2: Persegi panjang vertikal (tidak terlalu panjang) */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item2}
-                alt="Pilates 2"
-              />
-              {/* Gambar 3: Persegi (sedikit lebih tinggi) */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item3}
-                alt="Pilates 3"
-              />
-              {/* Gambar 4: Persegi panjang vertikal (tidak terlalu panjang) */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item2}
-                alt="Pilates 4"
-              />
-              {/* Gambar 5: Persegi (sedikit lebih tinggi) */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item3}
-                alt="Pilates 5"
-              />
-              {/* Gambar 6: Persegi panjang vertikal (tidak terlalu panjang) */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item2}
-                alt="Pilates 6"
-              />
-              {/* Duplikasi untuk looping mulus */}
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item3}
-                alt="Pilates 1"
-              />
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item2}
-                alt="Pilates 2"
-              />
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item3}
-                alt="Pilates 3"
-              />
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item2}
-                alt="Pilates 4"
-              />
-              <img
-                className="w-32 sm:w-40 md:w-48 rounded-lg flex-shrink-0"
-                src={item3}
-                alt="Pilates 5"
-              />
-              <img
-                className="w-48 rounded-lg flex-shrink-0"
-                src={item2}
-                alt="Pilates 6"
-              />
-            </div>
+            {/* Image slider - draggable and auto-scroll */}
+            <DraggableAutoScrollSlider
+              images={[
+                { src: item3, alt: "Pilates 1" },
+                { src: item2, alt: "Pilates 2" },
+                { src: item3, alt: "Pilates 3" },
+                { src: item2, alt: "Pilates 4" },
+                { src: item3, alt: "Pilates 5" },
+                { src: item2, alt: "Pilates 6" },
+              ]}
+              autoScrollSpeed={1.2}
+            />
           </div>
         </div>
       </section>
@@ -187,7 +398,63 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          <div className="block md:hidden">
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-300 ease-in-out"
+                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                >
+                  {classData.map((classItem, index) => (
+                    <div key={index} className="w-full flex-shrink-0 px-2">
+                      <ClassCard
+                        image={classItem.image}
+                        title={classItem.title}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Navigation Buttons */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200"
+                aria-label="Previous slide"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button
+                onClick={nextSlide}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200"
+                aria-label="Next slide"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              
+              {/* Dots Indicator */}
+              <div className="flex justify-center mt-4 space-x-2">
+                {classData.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      index === currentSlide ? 'bg-primary' : 'bg-gray-300'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {/* Private Class */}
             <ClassCard
               image={classes1}
@@ -237,7 +504,66 @@ const Home = () => {
       {/* Trainers Section */}
       <section className="py-6 sm:py-8 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {/* Mobile Slider */}
+          <div className="block lg:hidden">
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-300 ease-in-out"
+                  style={{ transform: `translateX(-${currentTrainerSlide * 100}%)` }}
+                >
+                  {trainerData.map((trainer, index) => (
+                    <div key={index} className="w-full flex-shrink-0 px-2">
+                      <TrainerCard
+                        image={trainer.image}
+                        name={trainer.name}
+                        description={trainer.description}
+                        bio={trainer.bio}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Navigation Buttons */}
+              <button
+                onClick={prevTrainerSlide}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200"
+                aria-label="Previous trainer slide"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button
+                onClick={nextTrainerSlide}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200"
+                aria-label="Next trainer slide"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              
+              {/* Dots Indicator */}
+              <div className="flex justify-center mt-4 space-x-2">
+                {trainerData.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTrainerSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      index === currentTrainerSlide ? 'bg-primary' : 'bg-gray-300'
+                    }`}
+                    aria-label={`Go to trainer slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {/* Trainer Cards */}
             <TrainerCard
               image={trainer1}
@@ -282,7 +608,10 @@ const Home = () => {
 
             {/* Testimonial */}
             <div className="w-full mt-2 sm:mt-4 md:mt-6 lg:mt-8">
-              <ScrollingTestimonials testimonials={testimonialData} />
+              <DraggableTestimonialSlider
+                testimonials={testimonialData}
+                autoScrollSpeed={0.8}
+              />
             </div>
           </div>
         </div>
@@ -348,15 +677,15 @@ const Home = () => {
           </div>
 
           <div className="w-full relative py-8 sm:py-12"></div>
-          <div className="w-full h-48  sm:h-64 md:h-72 relative rounded-2xl sm:rounded-3xl overflow-hidden">
+          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden">
             <img
               src={classesScheduleBanner}
               alt="Schedule Banner"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute left-12 sm:left-20 md:left-28 top-1/2 transform -translate-y-1/2 z-10">
+            <div className="absolute left-6 sm:left-20 md:left-28 top-1/2 transform -translate-y-1/2 z-10">
               <svg
-                className="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 opacity-80"
+                className="w-16 h-16 sm:w-48 sm:h-48 md:w-56 md:h-56 opacity-80"
                 viewBox="0 0 366 372"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -381,21 +710,45 @@ const Home = () => {
               </svg>
             </div>
 
-            <div className="absolute left-40 sm:left-52 md:left-64 top-1/2 transform -translate-y-1/2 z-10">
-              <div className="text-white">
-                <span className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium font-raleway leading-tight block">
-                  Book your
-                </span>
-                <span className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal font-fraunces leading-tight">
-                  Session Now
-                </span>
+            <div className="absolute left-1/2 md:left-96 transform -translate-x-1/2 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="text-white flex flex-col items-center gap-4 sm:gap-6">
+                <div className="text-center md:text-start">
+                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium font-raleway leading-tight block">
+                    Book your
+                  </span>
+                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal font-fraunces leading-tight">
+                    Session Now
+                  </span>
+                </div>
+                <div className="sm:hidden">
+                  <a
+                    href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                      "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button as="span" variant="primary" size="medium">
+                      WhatsApp
+                    </Button>
+                  </a>
+                </div>
               </div>
             </div>
 
-            <div className="absolute right-12 sm:right-20 md:right-28 top-1/2 transform -translate-y-1/2 z-10">
-              <Button to="/booking" variant="primary" size="large">
-                Click Here
-              </Button>
+            <div className="absolute right-6 sm:right-20 md:right-28 top-1/2 transform -translate-y-1/2 z-10">
+              <a
+                href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                  "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex"
+              >
+                <Button as="span" variant="primary" size="large">
+                  Click Here
+                </Button>
+              </a>
             </div>
           </div>
         </div>
