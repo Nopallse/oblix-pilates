@@ -222,10 +222,10 @@ const ClassDetail = () => {
     <section className="pb-6 sm:pb-8 md:pb-12 bg-white">
       <div className="container max-w-2xl mx-auto pb-4 px-4 sm:px-6">
         <div className="text-center">
-          <div className="flex flex-wrap justify-center gap-1 sm:gap-2 text-tertiary text-xs sm:text-sm">
+          <div className="flex flex-wrap justify-center gap-1 sm:gap-2 font-raleway text-tertiary text-xs sm:text-sm">
             <span className="text-tertiary text-xs sm:text-sm font-semibold">Other Props: </span>
             {classData.otherProps?.map((prop, index) => (
-              <span key={index} className="text-tertiary text-xs sm:text-sm">
+              <span key={index} className="font-normal text-tertiary text-xs sm:text-sm font-medium ">
                 {prop}{index < classData.otherProps.length - 1 ? ", " : ""}
               </span>
             ))}
