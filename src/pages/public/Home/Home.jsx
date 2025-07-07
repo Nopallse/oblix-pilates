@@ -19,7 +19,11 @@ const DraggableAutoScrollSlider = ({ images, autoScrollSpeed = 1 }) => {
   const startX = useRef(0);
   const scrollLeft = useRef(0);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const [hoveredTrainerIndex, setHoveredTrainerIndex] = useState(null);
 
+  const handleTrainerCardClick = (index) => {
+    setHoveredTrainerIndex((prev) => (prev === index ? null : index));
+  };
   // Auto-scroll effect
   useEffect(() => {
     if (!sliderRef.current) return;
