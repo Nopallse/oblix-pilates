@@ -21,6 +21,7 @@ import ClassDetail from "../pages/public/ClassDetail/ClassDetail";
 import Trainer from "../pages/public/Trainer/Trainer";
 import Contact from "../pages/public/Contact/Contact";
 import Blog from "../pages/public/Blog/Blog";
+import BlogDetail from "../pages/BlogDetail.jsx";
 import BookTrial from "../pages/public/BookTrial/BookTrial";
 
 
@@ -100,6 +101,14 @@ const AppRoutes = () => {
           <Blog />
             </PublicRoute>
           } 
+        />
+        <Route
+          path="/blog/:id"
+          element={
+            <PublicRoute>
+              <BlogDetail />
+            </PublicRoute>
+          }
         />
         <Route 
           path="/book-trial" 

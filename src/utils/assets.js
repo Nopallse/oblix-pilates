@@ -34,6 +34,7 @@ import barrelSvg from '../assets/svg/equipment/barrel.svg'
 import caformer2in1Svg from '../assets/svg/equipment/caformer2in1.svg'
 import spineCorrectorSvg from '../assets/svg/equipment/spine_corrector.svg'
 import wundaChairSvg from '../assets/svg/equipment/wunda_chair.svg'
+import reformerSvg from '../assets/svg/equipment/reformer.svg'
 
 // Export all assets
 export const images = {
@@ -84,7 +85,8 @@ export const equipment = {
     barrel: barrelSvg,
     caformer2in1: caformer2in1Svg,
     spineCorrector: spineCorrectorSvg,
-    wundaChair: wundaChairSvg
+    wundaChair: wundaChairSvg,
+    reformer: reformerSvg,
 }
 
 // Export individual assets for backward compatibility
@@ -117,5 +119,6 @@ export {
     barrelSvg,
     caformer2in1Svg,
     spineCorrectorSvg,
-    wundaChairSvg
+    wundaChairSvg,
+    reformerSvg
 }

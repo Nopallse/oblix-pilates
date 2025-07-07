@@ -302,44 +302,51 @@ const Home = () => {
             {/* Divider Desktop */}
             <div className="hidden md:block w-32 h-[2px] bg-gray-600"></div>
 
-            {/* Kanan */}
-            <div className="flex flex-col text-center md:text-right items-center md:items-start">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-normal text-tertiary font-raleway">
-                Oblix for Better You
-              </h2>
-              <div className="mt-2 text-white">
-                <Button to="/classes" variant="primary" size="medium">
-                  Join Now!
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+                  <div className="flex flex-col text-center md:text-right items-center md:items-start">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-normal text-tertiary font-raleway">
+                    Oblix for Better You
+                    </h2>
+                    <div className="mt-2 text-white">
+                    <a
+                      href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                      "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button as="span" variant="primary" size="medium">
+                      Join Now!
+                      </Button>
+                    </a>
+                    </div>
+                  </div>
+                  </div>
+                </div>
 
-        <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <ImageSlider
-            images={[
-              {
-                src: banner1,
-                alt: "Oblix Pilates",
-              },
-              {
-                src: banner2,
-                alt: "Oblix Pilates",
-              },
-              {
-                src: banner1,
-                alt: "Oblix Pilates",
-              },
-            ]}
-            autoSlideInterval={5000}
-          />
-        </div>
-      </section>
+                <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
+                  <ImageSlider
+                  images={[
+                    {
+                    src: banner1,
+                    alt: "Oblix Pilates",
+                    },
+                    {
+                    src: banner2,
+                    alt: "Oblix Pilates",
+                    },
+                    {
+                    src: banner1,
+                    alt: "Oblix Pilates",
+                    },
+                  ]}
+                  autoSlideInterval={5000}
+                  />
+                </div>
+                </section>
 
-      <Divider />
+                <Divider />
 
-      {/* About Section */}
+                {/* About Section */}
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
           <div className="mx-auto mb-8 w-fit text-center">
@@ -368,24 +375,27 @@ const Home = () => {
         <div className="container w-full mx-auto py-4 md:py-6 flex justify-between items-center">
           <div className="w-full h-64 sm:h-72 md:h-80 lg:h-96 relative overflow-hidden rounded-lg">
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/25 via-transparent via-transparent to-white/25 z-10 pointer-events-none"></div>
-            {/* Image slider - draggable and auto-scroll */}
-            <DraggableAutoScrollSlider
-              images={[
-                { src: item3, alt: "Pilates 1" },
-                { src: item2, alt: "Pilates 2" },
-                { src: item3, alt: "Pilates 3" },
-                { src: item2, alt: "Pilates 4" },
-                { src: item3, alt: "Pilates 5" },
-                { src: item2, alt: "Pilates 6" },
-              ]}
-              autoScrollSpeed={1.2}
+                  <div
+                    className="absolute inset-0 z-10 pointer-events-none"
+                    style={{
+                    background: "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 12.5%, rgba(255,255,255,0) 87.5%, rgba(255,255,255,1) 100%)"
+                    }}
+                  ></div>
+                  {/* Image slider - draggable and auto-scroll */}
+                  <DraggableAutoScrollSlider
+                    images={[
+                    { src: item3, alt: "Pilates 1" },
+                    { src: item2, alt: "Pilates 2" },
+                    { src: item3, alt: "Pilates 3" },
+                    { src: item2, alt: "Pilates 4" },
+                    { src: item3, alt: "Pilates 5" },
+                    { src: item2, alt: "Pilates 6" },
+                    ]}
+                    autoScrollSpeed={1.2}
             />
           </div>
         </div>
       </section>
-
-      {/* Divider Section */}
       <Divider />
 
       {/* Our Classes Section */}

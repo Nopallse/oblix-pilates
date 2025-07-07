@@ -3,50 +3,14 @@ import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import HeroSection from "../../../components/ui/HeroSection";
 import Button from "../../../components/ui/Button/Button";
+
+import { blogPosts } from "../../../data/blogData";
 import { banner1, banner2 } from "../../../utils/assets";
 
 const Blog = () => {
   const [category, setCategory] = useState("all");
 
-  // Sample blog data with simplified fields
-  const blogPosts = [
-    {
-      id: 1,
-      title: "The Benefits of Regular Pilates Practice",
-      description: "Discover how consistent Pilates sessions can transform your body and mind over time. Learn about the physical and mental benefits of incorporating Pilates into your daily routine.",
-      image: banner1,
-    },
-    {
-      id: 2,
-      title: "Pilates vs. Yoga: Understanding the Key Differences",
-      description: "While both focus on mind-body connection, these practices have distinct approaches and benefits. Explore the unique characteristics of each discipline.",
-      image: banner2,
-    },
-    {
-      id: 3,
-      title: "How Pilates Can Improve Your Posture in Just 30 Days",
-      description: "Poor posture affects more than just appearance—it impacts your overall health. Here's how Pilates can help you achieve better posture and alignment.",
-      image: banner1,
-    },
-    {
-      id: 4,
-      title: "5 Essential Pilates Exercises for Beginners",
-      description: "New to Pilates? Start with these foundational movements to build strength and stability. Perfect for those just beginning their Pilates journey.",
-      image: banner2,
-    },
-    {
-      id: 5,
-      title: "The History of Pilates: From Rehabilitation to Mainstream Fitness",
-      description: "Learn how Joseph Pilates developed this method and how it evolved over the decades to become a popular fitness practice worldwide.",
-      image: banner1,
-    },
-    {
-      id: 6,
-      title: "Pilates for Pregnancy: Safe Exercises for Each Trimester",
-      description: "Staying active during pregnancy is important, and Pilates offers safe, effective options for expectant mothers at every stage.",
-      image: banner2,
-    },
-  ];
+  // Data blog diambil dari file data/blogData.js
 
   const filteredPosts =
     category === "all"

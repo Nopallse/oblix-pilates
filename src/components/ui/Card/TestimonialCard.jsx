@@ -4,20 +4,26 @@ const StarIcon = () => (
   </svg>
 );
 
+
+function getInitials(name = "") {
+  const words = name.trim().split(" ");
+  if (words.length === 1) return words[0][0]?.toUpperCase() || "";
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+}
+
 const TestimonialCard = ({ text, name, age, image, rating = 5 }) => {
   return (
     <div className="w-full h-full bg-neutral-50 rounded-2xl sm:rounded-[3rem] shadow-lg p-4 sm:p-6 md:p-8 flex flex-col justify-between">
-      
       <p className="text-neutral-600 text-sm sm:text-base md:text-lg font-raleway leading-relaxed tracking-tight text-justify flex-grow">
         "{text}"
       </p>
-
       <div className="flex items-center mt-3 sm:mt-4">
-        <img 
-          src={image} 
-          alt={name} 
-          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-primary object-cover flex-shrink-0" 
-        />
+        <div
+          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl flex-shrink-0 select-none"
+          aria-label={name}
+        >
+          {getInitials(name)}
+        </div>
         <div className="ml-3 sm:ml-4 flex flex-col">
           <h3 className="text-black text-sm sm:text-base md:text-lg lg:text-xl font-inter font-medium leading-tight">
             {name}{age ? `, ${age}` : ''}
