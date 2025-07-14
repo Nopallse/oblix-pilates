@@ -1,12 +1,12 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth.js'
+import { Navigate, Outlet } from 'react-router-dom'
+import { useAuthStore } from '../shared/store/authStore'
 import AdminLayout from '../components/layout/AdminLayout/AdminLayout'
 import UserLayout from '../components/layout/UserLayout/UserLayout'
 
 
 const PrivateRoute = ({ children, requireAdmin = false }) => {
-  const { isAuthenticated, isLoading, isAdmin, user } = useAuth()
+  const { isAuthenticated, isLoading, isAdmin, user } = useAuthStore()
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -25,7 +25,7 @@ const PrivateRoute = ({ children, requireAdmin = false }) => {
 
   return (
     <Layout>
-      {children}
+      <Outlet />
     </Layout>
   )
 }

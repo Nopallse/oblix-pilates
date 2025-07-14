@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import HeroSection from "../../../components/ui/HeroSection/HeroSection";
 import Button from "../../../components/ui/Button/Button";
-import { classes1, classes2, classes3, equipment } from "../../../utils/assets";
+import { classes1, classes2, classes3, equipment } from "../../../shared/utils/assets";
 import Divider from "../../../components/ui/Divider/Divider";
 
 const ClassDetail = () => {

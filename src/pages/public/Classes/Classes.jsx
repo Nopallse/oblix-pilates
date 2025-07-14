@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import ClassCard from "../../../components/ui/Card/ClassCard.jsx";
-import { classes1, classes2, classes3 } from "../../../utils/assets";
+import { classes1, classes2, classes3 } from "../../../shared/utils/assets.js";
 
 const Classes = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -24,7 +24,7 @@ const Classes = () => {
     <PublicLayout>
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <div className="relative mx-auto mb-8 w-fit text-center">
+          <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-secondary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
               <span className="font-raleway">Our</span>
               <span className="font-fraunces italic">Classes</span>
@@ -32,7 +32,7 @@ const Classes = () => {
           </div>
 
           {/* Mobile Slider */}
-          <div className="block md:hidden">
+          <div className="block md:hidden" data-aos="fade-up" data-aos-delay="200">
             <div className="relative">
               <div className="overflow-hidden">
                 <div 
@@ -90,23 +90,29 @@ const Classes = () => {
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {/* Private Class */}
-            <ClassCard
-              image={classes1}
-              title="Private"
-            />
+            <div data-aos="fade-up" data-aos-delay="200">
+              <ClassCard
+                image={classes1}
+                title="Private"
+              />
+            </div>
 
             {/* Semi Private Class */}
-            <ClassCard
-              image={classes2}
-              title="Semi Private"
-            />
+            <div data-aos="fade-up" data-aos-delay="300">
+              <ClassCard
+                image={classes2}
+                title="Semi Private"
+              />
+            </div>
 
             {/* Group Class */}
-            <ClassCard
-              image={classes3}
-              title="Group"
-              className="md:col-span-2 lg:col-span-1"
-            />
+            <div data-aos="fade-up" data-aos-delay="400">
+              <ClassCard
+                image={classes3}
+                title="Group"
+                className="md:col-span-2 lg:col-span-1"
+              />
+            </div>
           </div>
         </div>
       </section>

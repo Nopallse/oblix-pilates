@@ -1,6 +1,6 @@
 // src/data/blogData.js
 
-import { banner1, banner2 } from "../utils/assets";
+import { banner1, banner2 } from "../shared/utils/assets";
 
 export const blogPosts = [
   {

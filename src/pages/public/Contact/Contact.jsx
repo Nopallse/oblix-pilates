@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import HeroSection from "../../../components/ui/HeroSection";
-import { locationIcon, phoneIcon, instagramIcon, tiktokIcon, banner1 } from "../../../utils/assets";
+import { locationIcon, phoneIcon, instagramIcon, tiktokIcon, banner1 } from "../../../shared/utils/assets";
 import Divider from "../../../components/ui/Divider/Divider";
 const Contact = () => {
   const [openItems, setOpenItems] = useState({});
@@ -79,7 +79,7 @@ const Contact = () => {
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Map Section */}
-            <div className="lg:col-span-2 bg-white rounded-3xl shadow-lg overflow-hidden">
+            <div className="lg:col-span-2 bg-white rounded-3xl shadow-lg overflow-hidden" data-aos="fade-right">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.1119258977196!2d106.77262797400556!3d-6.115631959971208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a1d92dd470c6b%3A0x7ab25a3f65b43f5a!2sOBLIX%20PILATES!5e0!3m2!1sid!2sid!4v1751674956325!5m2!1sid!2sid"
                 width="100%"
@@ -93,9 +93,9 @@ const Contact = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="space-y-8">
+            <div className="space-y-8" data-aos="fade-left" data-aos-delay="200">
               {/* Location */}
-              <div>
+              <div data-aos="fade-up" data-aos-delay="300">
                 <h3 className="text-3xl font-raleway font-medium text-tertiary mb-6">
                   Location
                 </h3>
@@ -110,7 +110,7 @@ const Contact = () => {
               </div>
 
               {/* Contact */}
-              <div>
+              <div data-aos="fade-up" data-aos-delay="400">
                 <h3 className="text-3xl font-raleway font-medium text-tertiary mb-6">
                   Contact
                 </h3>
@@ -148,13 +148,13 @@ const Contact = () => {
       <Divider />
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-        <div className="relative mx-auto mb-8 w-fit text-center">
+        <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-secondary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
               <span className="font-raleway">Frequently Asked</span>
               <span className="font-fraunces italic">Quetions</span>
             </div>
           </div>
-          <div className="max-w-4xl mx-auto space-y-4 mb-12">
+          <div className="max-w-4xl mx-auto space-y-4 mb-12" data-aos="fade-up" data-aos-delay="200">
             {faqItems.map((item) => (
               <div
                 key={item.id}

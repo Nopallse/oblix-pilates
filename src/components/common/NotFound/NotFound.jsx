@@ -1,8 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../../ui/Button'
-import { useAuth } from '../../../hooks/useAuth'
-import { ROUTES } from '../../../utils/constants'
+import { useAuth } from '../../../pages/public/auth/api'
+import { ROUTES } from '../../../shared/utils/constants'
 
 const NotFound = () => {
   const navigate = useNavigate()

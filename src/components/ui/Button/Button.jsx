@@ -19,13 +19,14 @@ const Button = ({
     secondary: 'bg-secondary text-white hover:bg-opacity-90 focus:ring-secondary disabled:bg-opacity-50',
     outline: 'border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-white focus:ring-primary disabled:opacity-50',
     'outline-white': 'border border-primary text-white hover:bg-primary hover:text-white focus:ring-primary disabled:opacity-50',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300'
+    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300',
+    submit: 'w-full bg-primary text-white font-bold py-3 px-4 rounded-xl hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
   }
   
   const sizeClasses = {
-    small: 'px-4 py-1 text-xs sm:text-sm min-w-[100px]',
-    medium: 'px-8 py-2 text-sm sm:text-base min-w-[120px]',
-    large: 'px-12 py-2 text-base sm:text-2xl min-w-[140px]'
+    small: 'px-3 py-1.5 text-xs sm:text-sm min-w-[100px]',
+    medium: 'px-4 p2-2 text-sm sm:text-base min-w-[120px]',
+    large: 'p126 py23 textbasee sm:text2xlg min-w-140pxx]'
   }
 
   const classes = [

@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import Divider from "../../../components/ui/Divider/Divider.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
-import { about1, about2, classesScheduleBanner, flowerIcon } from "../../../utils/assets";
+import { about1, about2, classesScheduleBanner, flowerIcon } from "../../../shared/utils/assets.js";
 const About = () => {
   return (
     <PublicLayout>
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <div className="mx-auto mb-8 w-fit text-center">
+          <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
               welcome <span className="font-fraunces italic">to</span>
             </h2>
@@ -20,16 +20,16 @@ const About = () => {
             </div>
           </div>
 
-          <div className="max-w-3xl mx-auto text-center px-4">
+          <div className="max-w-3xl mx-auto text-center px-4" data-aos="fade-up" data-aos-delay="200">
             <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
               From better posture to a stronger core and a calmer mind, Pilates
               at Oblix helps you move smarter and feel stronger. More than a
               workout—it's your reset, your recharge, your time.
             </p>
           </div>
-          <div className="mt-10 md:mt-16 flex flex-col md:flex-row gap-6 md:gap-10 lg:gap-14">
+          <div className="mt-10 md:mt-16 flex flex-col md:flex-row gap-6 md:gap-10 lg:gap-14" data-aos="fade-up" data-aos-delay="400">
             {/* Card Gambar 1 - Landscape */}
-            <div className="flex-1 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md">
+            <div className="flex-1 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md" data-aos="fade-right" data-aos-delay="500">
               <img
                 src={about1}
                 alt="Pilates class in session with an instructor"
@@ -37,7 +37,7 @@ const About = () => {
               />
             </div>
             {/* Card Gambar 2 - Square */}
-            <div className="w-full md:w-80 lg:w-96 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md">
+            <div className="w-full md:w-80 lg:w-96 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md" data-aos="fade-left" data-aos-delay="600">
               <img
                 src={about2}
                 alt="Woman using a Pilates ring for exercise"
@@ -53,7 +53,7 @@ const About = () => {
         <div className="container max-w-6xl mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
             {/* Card Image */}
-            <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md">
+            <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md" data-aos="fade-right">
               <img
                 src={about1}
                 alt="Oblix Pilates studio"
@@ -62,7 +62,7 @@ const About = () => {
             </div>
 
             {/* Text Content */}
-            <div className="w-full lg:w-1/2">
+            <div className="w-full lg:w-1/2" data-aos="fade-left" data-aos-delay="200">
               <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium mb-2">
                 Why Choose Oblix Pilates
               </h2>
@@ -72,7 +72,7 @@ const About = () => {
 
               <div className="space-y-6">
                 {/* Personal Growth Space */}
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-4 items-center" data-aos="fade-up" data-aos-delay="300">
                   <div className="flex-shrink-0 w-12 h-12 mt-1">
                     <img
                       src={flowerIcon}
@@ -92,7 +92,7 @@ const About = () => {
                 </div>
 
                 {/* Better Movement, Better You */}
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-4 items-center" data-aos="fade-up" data-aos-delay="400">
                   <div className="flex-shrink-0 w-12 h-12 mt-1">
                     <img
                       src={flowerIcon}
@@ -112,7 +112,7 @@ const About = () => {
                 </div>
 
                 {/* Mindful Every Step */}
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-4 items-center" data-aos="fade-up" data-aos-delay="500">
                   <div className="flex-shrink-0 w-12 h-12 mt-1">
                     <img
                       src={flowerIcon}
@@ -145,7 +145,7 @@ const About = () => {
 
 
 
-          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden">
+          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden" data-aos="fade-up" data-aos-delay="600">
             <img
               src={classesScheduleBanner}
               alt="Schedule Banner"

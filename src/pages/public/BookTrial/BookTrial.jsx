@@ -127,7 +127,7 @@ const BookTrial = () => {
       {/* Package Cards Section */}
       <section className="py-8 sm:py-12 bg-white relative">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-        <div className="mx-auto mb-8 w-fit text-center">
+        <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
             Wanna book a <span className="font-fraunces italic">Trial</span>
             </h2>
@@ -140,7 +140,7 @@ const BookTrial = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 justify-items-center">
             {packageData.map((pkg, index) => (
-              <div key={index} className="w-full md:w-64 h-96 relative">
+              <div key={index} className="w-full md:w-64 h-96 relative" data-aos="fade-up" data-aos-delay={index * 100}>
                 <div className="w-full md:w-64 h-96 left-0 top-0 absolute bg-neutral-700 rounded-[2rem] md:rounded-3xl" />
                 <div className="absolute inset-0 p-4 flex flex-col mt-10">
                   <div className="text-center">
@@ -170,7 +170,7 @@ const BookTrial = () => {
         </div>
 
         {/* Button Section */}
-        <div className="text-center mt-8">
+        <div className="text-center mt-8" data-aos="fade-up" data-aos-delay="500">
           <a
             href={`https://wa.me/6285883335533?text=${encodeURIComponent(
               "Halo Oblix Pilates! Saya ingin booking Trial Class. Boleh dibantu info jadwal dan ketersediaannya? Terima kasih!"

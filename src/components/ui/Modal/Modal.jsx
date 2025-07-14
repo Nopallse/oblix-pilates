@@ -36,7 +36,7 @@ const Modal = ({
   }
 
   const modalClasses = [
-    'bg-white rounded-lg shadow-xl transform transition-all',
+    'bg-white rounded-3xl shadow-xl transform transition-all',
     sizeClasses[size],
     'w-full mx-4',
     className
@@ -45,11 +45,12 @@ const Modal = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
       <div className={modalClasses} onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          {title && <h3 className="text-lg font-semibold text-gray-900">{title}</h3>}
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex-1"></div>
+          {title && <h3 className="text-lg font-bold flex-1 font-raleway text-center">{title}</h3>}
           {onClose && (
             <button 
-              className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none focus:outline-none"
+              className="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none focus:outline-none flex-1 flex justify-end"
               onClick={onClose}
             >
               ×

@@ -9,7 +9,7 @@ import ScrollingTestimonials from "../../../components/ui/ScrollingTestimonials/
 import Button from "../../../components/ui/Button/Button.jsx";
 import { testimonialData } from "../../../data/testimonialData";
 import { scheduleData } from "../../../data/scheduleData";
-import { banner1, banner2, item2, item3, classes1, classes2, classes3, classesScheduleBanner, trainer1, trainer2, trainer3 } from "../../../utils/assets";
+import { banner1, banner2, item2, item3, classes1, classes2, classes3, classesScheduleBanner, trainer1, trainer2, trainer3 } from "../../../shared/utils/assets.js";
 import TestimonialCard from "../../../components/ui/Card/TestimonialCard.jsx";
 
 // Komponen slider gambar dengan auto-scroll dan drag-to-scroll
@@ -292,7 +292,7 @@ const Home = () => {
         <div className="container max-w-5xl mx-auto px-4 py-4 md:py-6">
           <div className="mx-auto max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-8 px-4">
             {/* Kiri */}
-            <div className="flex flex-col text-center md:text-left items-center md:items-start">
+            <div className="flex flex-col text-center md:text-left items-center md:items-start" data-aos="fade-right" data-aos-delay="100">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-normal font-raleway text-primary">
                 Wake Up, Work Out,
               </h2>
@@ -302,11 +302,11 @@ const Home = () => {
             </div>
 
             {/* Divider Mobile */}
-            <div className="block md:hidden w-32 h-[2px] bg-gray-600 my-6"></div>
+            <div className="block md:hidden w-32 h-[2px] bg-gray-600 my-6" data-aos="fade-in" data-aos-delay="200"></div>
             {/* Divider Desktop */}
-            <div className="hidden md:block w-32 h-[2px] bg-gray-600"></div>
+            <div className="hidden md:block w-32 h-[2px] bg-gray-600" data-aos="fade-in" data-aos-delay="200"></div>
 
-                  <div className="flex flex-col text-center md:text-right items-center md:items-start">
+                  <div className="flex flex-col text-center md:text-right items-center md:items-start" data-aos="fade-left" data-aos-delay="300">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-normal text-tertiary font-raleway">
                     Oblix for Better You
                     </h2>
@@ -327,7 +327,7 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
+                <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6" data-aos="fade-up" data-aos-delay="400">
                   <ImageSlider
                   images={[
                     {
@@ -353,7 +353,7 @@ const Home = () => {
                 {/* About Section */}
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <div className="mx-auto mb-8 w-fit text-center">
+          <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
               Get to <span className="font-fraunces italic">Know</span>
             </h2>
@@ -364,7 +364,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="max-w-3xl mx-auto text-center px-4">
+          <div className="max-w-3xl mx-auto text-center px-4" data-aos="fade-up" data-aos-delay="200">
             <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
               From better posture to a stronger core and a calmer mind, Pilates
               at Oblix helps you move smarter and feel stronger. More than a
@@ -375,7 +375,7 @@ const Home = () => {
       </section>
 
       {/* Image container with horizontal scroll, pola selang-seling persegi dan persegi panjang vertikal, auto-scroll, recycle */}
-      <section className="py-6 sm:py-8 bg-white">
+      <section className="py-6 sm:py-8 bg-white" data-aos="fade-up">
         <div className="container w-full mx-auto py-4 md:py-6 flex justify-between items-center">
           <div className="w-full h-64 sm:h-72 md:h-80 lg:h-96 relative overflow-hidden rounded-lg">
             {/* Gradient overlay */}
@@ -405,14 +405,14 @@ const Home = () => {
       {/* Our Classes Section */}
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <div className="relative mx-auto mb-8 w-fit text-center">
+          <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-tertiary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
               <span className="font-raleway">Our</span>
               <span className="font-fraunces italic">Classes</span>
             </div>
           </div>
 
-          <div className="block md:hidden">
+          <div className="block md:hidden" data-aos="fade-up" data-aos-delay="200">
             <div className="relative">
               <div className="overflow-hidden">
                 <div 
@@ -470,23 +470,29 @@ const Home = () => {
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {/* Private Class */}
-            <ClassCard
-              image={classes1}
-              title="Private"
-            />
+            <div data-aos="fade-up" data-aos-delay="200">
+              <ClassCard
+                image={classes1}
+                title="Private"
+              />
+            </div>
 
             {/* Semi Private Class */}
-            <ClassCard
-              image={classes2}
-              title="Semi Private"
-            />
+            <div data-aos="fade-up" data-aos-delay="300">
+              <ClassCard
+                image={classes2}
+                title="Semi Private"
+              />
+            </div>
 
             {/* Group Class */}
-            <ClassCard
-              image={classes3}
-              title="Group"
-              className="md:col-span-2 lg:col-span-1"
-            />
+            <div data-aos="fade-up" data-aos-delay="400">
+              <ClassCard
+                image={classes3}
+                title="Group"
+                className="md:col-span-2 lg:col-span-1"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -497,14 +503,14 @@ const Home = () => {
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-8">
-            <div className="w-full lg:w-1/2 text-center lg:text-left">
+            <div className="w-full lg:w-1/2 text-center lg:text-left" data-aos="fade-right">
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2 text-tertiary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
                 <span className="font-raleway">Meet our</span>
                 <span className="font-fraunces italic">Trainers</span>
               </div>
             </div>
 
-            <div className="w-full lg:w-1/2 text-center lg:text-right">
+            <div className="w-full lg:w-1/2 text-center lg:text-right" data-aos="fade-left" data-aos-delay="200">
               <div className="text-tertiary text-sm sm:text-base font-normal font-raleway leading-relaxed max-w-md mx-auto lg:mx-0 lg:ml-auto">
                 Our certified trainers are the best at what they do—skilled,
                 supportive, and ready to help you move better and feel stronger
@@ -519,7 +525,7 @@ const Home = () => {
       <section className="py-6 sm:py-8 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
           {/* Mobile Slider */}
-          <div className="block lg:hidden">
+          <div className="block lg:hidden" data-aos="fade-up">
             <div className="relative">
               <div className="overflow-hidden">
                 <div 
@@ -579,49 +585,57 @@ const Home = () => {
           {/* Desktop Grid */}
           <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {/* Trainer Cards */}
-            <TrainerCard
-              image={trainer1}
-              name="Coach Name"
-              description="Deskripsi Coach"
-              bio="Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session."
-            />
-            <TrainerCard
-              image={trainer2}
-              name="Coach Name"
-              description="Deskripsi Coach"
-            />
-            <TrainerCard
-              image={trainer3}
-              name="Coach Name"
-              description="Deskripsi Coach"
-            />
-            <TrainerCard
-              image={trainer3}
-              name="Coach Name"
-              description="Deskripsi Coach"
-            />
+            <div data-aos="fade-up" data-aos-delay="200">
+              <TrainerCard
+                image={trainer1}
+                name="Coach Name"
+                description="Deskripsi Coach"
+                bio="Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session."
+              />
+            </div>
+            <div data-aos="fade-up" data-aos-delay="300">
+              <TrainerCard
+                image={trainer2}
+                name="Coach Name"
+                description="Deskripsi Coach"
+              />
+            </div>
+            <div data-aos="fade-up" data-aos-delay="400">
+              <TrainerCard
+                image={trainer3}
+                name="Coach Name"
+                description="Deskripsi Coach"
+              />
+            </div>
+            <div data-aos="fade-up" data-aos-delay="500">
+              <TrainerCard
+                image={trainer3}
+                name="Coach Name"
+                description="Deskripsi Coach"
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-6 sm:py-8 md:py-12 bg-white relative overflow-hidden">
+      <section className="py-6 sm:py-8 md:py-12 bg-white relative overflow-hidden" data-aos="fade-up">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
           <div className="bg-primary py-6 sm:py-8 md:py-12 lg:py-16 flex flex-col items-center justify-center text-center rounded-xl sm:rounded-2xl lg:rounded-3xl relative">
             {/* Judul */}
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-raleway mb-3 sm:mb-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-raleway mb-3 sm:mb-4" data-aos="fade-up">
               What They <span className="font-fraunces italic">Say About</span>
             </h2>
 
             {/* Brand */}
-            <div className="transform -rotate-2 mb-6 sm:mb-8 lg:mb-10">
+            <div className="transform -rotate-2 mb-6 sm:mb-8 lg:mb-10" data-aos="fade-up" data-aos-delay="200">
               <span className="bg-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-raleway text-primary px-3 sm:px-4 py-1 rounded inline-block">
                 Oblix Pilates
               </span>
             </div>
 
             {/* Testimonial */}
-            <div className="w-full mt-2 sm:mt-4 md:mt-6 lg:mt-8">
+            <div className="w-full mt-2 sm:mt-4 md:mt-6 lg:mt-8" data-aos="fade-up" data-aos-delay="400">
               <DraggableTestimonialSlider
                 testimonials={testimonialData}
                 autoScrollSpeed={0.8}
@@ -636,14 +650,14 @@ const Home = () => {
 
       <section className="py-8 sm:py-12 bg-white">
         <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-          <div className="relative mx-auto mb-8 w-fit text-center">
+          <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-tertiary text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium leading-none">
               <span className="font-raleway">Classes</span>
               <span className="font-fraunces italic">Schedule</span>
             </div>
           </div>
 
-          <div className="w-full max-w-4xl mx-auto relative space-y-10">
+          <div className="w-full max-w-4xl mx-auto relative space-y-10" data-aos="fade-up" data-aos-delay="200">
             {scheduleData.map((daySchedule, index) => (
               <div key={index} className="mb-6">
                 <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold font-raleway text-tertiary mb-4">
@@ -691,7 +705,7 @@ const Home = () => {
           </div>
 
           <div className="w-full relative py-8 sm:py-12"></div>
-          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden">
+          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden" data-aos="fade-up" data-aos-delay="400">
             <img
               src={classesScheduleBanner}
               alt="Schedule Banner"

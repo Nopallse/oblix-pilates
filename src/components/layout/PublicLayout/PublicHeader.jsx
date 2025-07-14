@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Button from "../../ui/Button/Button";
-import { logoSekunder } from "../../../utils/assets";
+import { logoSekunder } from "../../../shared/utils/assets";
 
 const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -136,7 +136,7 @@ const PublicHeader = () => {
                 Book a Trial
               </Button>
               <Button
-                to="#"
+                to="/login"
                 variant="outline-white"
                 size="small"
               >
@@ -283,7 +283,7 @@ const PublicHeader = () => {
               Book a Trial
             </Button>
             <Button
-              to="#"
+              to="/login"
               variant="outline"
               size="medium"
               onClick={() => setIsMenuOpen(false)}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { logoPrimer } from "../../../utils/assets";
+import { logoPrimer } from "../../../shared/utils/assets";
 
 const PublicFooter = () => {
   return (

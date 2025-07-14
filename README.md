@@ -1,12 +1,116 @@
-# React + Vite
+# Oblix Pilates
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React application for Oblix Pilates studio.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Responsive design
+- Modern UI/UX
+- AOS (Animate On Scroll) animations
+- React Router navigation
+- Tailwind CSS styling
 
-## Expanding the ESLint configuration
+## AOS (Animate On Scroll) Integration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This project uses AOS library for smooth scroll animations. Here's how to use it:
+
+### Basic Usage
+
+Add `data-aos` attributes to any element:
+
+```jsx
+<div data-aos="fade-up">
+  This will fade up when scrolled into view
+</div>
+```
+
+### Available Animations
+
+- `fade-up` - Fade in from bottom
+- `fade-down` - Fade in from top
+- `fade-left` - Fade in from right
+- `fade-right` - Fade in from left
+- `fade-in` - Simple fade in
+- `zoom-in` - Zoom in effect
+- `slide-up` - Slide up from bottom
+- `slide-down` - Slide down from top
+
+### Adding Delays
+
+Use `data-aos-delay` to add timing delays:
+
+```jsx
+<div data-aos="fade-up" data-aos-delay="200">
+  This will animate 200ms after the trigger
+</div>
+```
+
+### Custom Hook
+
+Use the custom `useAOS` hook for programmatic control:
+
+```jsx
+import { useAOS } from '../shared/hooks'
+
+const MyComponent = () => {
+  const { refreshAOS } = useAOS()
+  
+  // Refresh AOS when needed
+  const handleSomeAction = () => {
+    refreshAOS()
+  }
+  
+  return (
+    <div data-aos="fade-up">
+      Content
+    </div>
+  )
+}
+```
+
+### AOS Configuration
+
+AOS is configured in `src/main.jsx` with these settings:
+
+- Duration: 800ms
+- Easing: ease-in-out
+- Once: true (animations only trigger once)
+- Mirror: false (no reverse animation on scroll up)
+
+## Getting Started
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start development server:
+```bash
+npm run dev
+```
+
+3. Build for production:
+```bash
+npm run build
+```
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable components
+├── pages/              # Page components
+├── shared/             # Shared utilities and hooks
+│   └── hooks/          # Custom hooks including useAOS
+├── data/               # Static data
+└── assets/             # Images and static assets
+```
+
+## Technologies Used
+
+- React 18
+- Vite
+- Tailwind CSS
+- AOS (Animate On Scroll)
+- React Router
+- React Icons
