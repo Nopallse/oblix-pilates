@@ -90,6 +90,41 @@ export const equipment = {
     reformer: reformerSvg,
 }
 
+/**
+ * Get profile image URL
+ * @param {string} imagePath - Image path or filename
+ * @returns {string|null} Full URL or null if no image
+ */
+export const getProfileImageUrl = (imagePath) => {
+  if (!imagePath) return null
+  
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath
+  }
+  
+  // If it's just a filename, construct the full URL
+  return `${import.meta.env.VITE_API_BASE_URL || 'http://34.101.143.2:3020'}/uploads/profiles/${imagePath}`
+}
+
+/**
+ * Get general image URL for uploads
+ * @param {string} imagePath - Image path or filename
+ * @param {string} folder - Folder name (e.g., 'profiles', 'blogs', 'trainers')
+ * @returns {string|null} Full URL or null if no image
+ */
+export const getImageUrl = (imagePath, folder = 'profiles') => {
+  if (!imagePath) return null
+  
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath
+  }
+  
+  // If it's just a filename, construct the full URL
+  return `${import.meta.env.VITE_API_BASE_URL || 'http://34.101.143.2:3020'}/uploads/${folder}/${imagePath}`
+}
+
 // Export individual assets for backward compatibility
 export {
     banner1,

@@ -19,7 +19,7 @@ const TestimonialForm = ({ isOpen, onClose, testimonial = null, onSuccess, creat
   useEffect(() => {
     if (!isOpen) {
       // Reset form when modal closes
-      formik.resetForm()
+        formik.resetForm()
     }
   }, [isOpen]) // Remove formik from dependencies
 

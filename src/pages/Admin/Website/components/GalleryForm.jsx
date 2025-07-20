@@ -64,9 +64,9 @@ const GalleryForm = ({ isOpen, onClose, gallery = null, onSuccess, createGallery
         setImagePreview(getImageUrl(gallery.picture))
         console.log('Kept existing picture for edit mode')
       } else {
-        formik.setFieldValue('picture', null)
-        setImagePreview(null)
-        console.log('File cleared')
+      formik.setFieldValue('picture', null)
+      setImagePreview(null)
+      console.log('File cleared')
       }
     }
   }
@@ -91,7 +91,7 @@ const GalleryForm = ({ isOpen, onClose, gallery = null, onSuccess, createGallery
           console.log('New picture selected')
         } else if (values.picture !== gallery.picture) {
           // Picture path changed (shouldn't happen normally)
-          formData.append('picture', values.picture)
+        formData.append('picture', values.picture)
           console.log('Picture path changed')
         }
         // If picture is the same, don't append anything

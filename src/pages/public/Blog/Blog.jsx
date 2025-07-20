@@ -71,7 +71,7 @@ const Blog = () => {
         image={banner1}
       />
       <section className="py-8 sm:py-12 bg-white">
-        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
+      <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           {/* Blog Posts Grid */}
           {blogs.length === 0 ? (
             <div className="text-center py-12">
@@ -84,53 +84,53 @@ const Blog = () => {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogs.map((post, index) => (
-                <div
-                  key={post.id}
-                  className="transition-transform hover:-translate-y-1"
-                  data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                >
-                  <div className="mb-4">
-                    <img
+              <div
+                key={post.id}
+                className="transition-transform hover:-translate-y-1"
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+              >
+                <div className="mb-4">
+                  <img
                       src={getImageUrl(post.picture)}
-                      alt={post.title}
-                      className="w-full h-56 object-cover rounded-3xl"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'block';
-                      }}
-                    />
-                    <div className="hidden w-full h-56 bg-gray-200 rounded-3xl flex items-center justify-center text-gray-500 font-montserrat">
-                      [Blog Image]
-                    </div>
+                    alt={post.title}
+                    className="w-full h-56 object-cover rounded-3xl"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }}
+                  />
+                  <div className="hidden w-full h-56 bg-gray-200 rounded-3xl flex items-center justify-center text-gray-500 font-montserrat">
+                    [Blog Image]
                   </div>
-                  <div>
-                    <h3 className="text-xl font-raleway font-bold mb-3 text-tertiary">
-                      {post.title}
-                    </h3>
-                    <p className="text-tertiary font-raleway mb-4 line-clamp-2">
+                </div>
+                <div>
+                  <h3 className="text-xl font-raleway font-bold mb-3 text-tertiary">
+                    {post.title}
+                  </h3>
+                  <p className="text-tertiary font-raleway mb-4 line-clamp-2">
                       {post.content}
-                    </p>
+                  </p>
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-sm text-gray-500">
                         {new Date(post.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <div className="pt-2">
-                      <Button
-                        to={`/blog/${post.id}`}
-                        variant="primary"
-                        size="medium"
-                      >
-                        Read More
-                      </Button>
-                    </div>
+                  <div className="pt-2">
+                    <Button
+                      to={`/blog/${post.id}`}
+                      variant="primary"
+                      size="medium"
+                    >
+                      Read More
+                    </Button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
           )}
         </div>
       </section>

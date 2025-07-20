@@ -41,7 +41,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     // Log success in development
-    if (import.meta.env.DEV && response.config.url !== '/auth/profile') {
+    if (import.meta.env.DEV && response.config.url !== '/api/auth/profile') {
       console.log(`✅ ${response.config.method?.toUpperCase()} Success: ${response.config.url}`)
     }
     return response
@@ -88,7 +88,7 @@ const handleTokenRefresh = async (originalRequest) => {
     }
 
     // Request new token
-    const response = await axios.post(`${API_CONFIG.baseURL}/auth/refresh-token`, { 
+    const response = await axios.post(`${API_CONFIG.baseURL}/api/auth/refresh-token`, { 
       refreshToken 
     })
     const newAccessToken = response.data.accessToken

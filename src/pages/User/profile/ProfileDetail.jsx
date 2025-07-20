@@ -1,16 +1,24 @@
 import React from 'react';
 import Input from '../../../components/ui/Input/Input';
 import Button from '../../../components/ui/Button/Button';
+import { getProfileImageUrl } from '../../../shared/utils/assets';
 
-const ProfileDetail = ({ profile, onEdit }) => (
+const ProfileDetail = ({ profile, onEdit }) => {
+  console.log('ProfileDetail rendering with profile:', profile)
+
+  return (
   <div className="rounded-lg mb-6 flex flex-col bg-white shadow-sm p-6">
     {/* Profile Photo */}
     <div className="mb-6 flex ">
-      {profile?.profile_picture ? (
+        {profile?.picture ? (
         <img
-          src={profile.profile_picture}
+            src={getProfileImageUrl(profile.picture)}
           alt="Profile"
           className="w-28 h-28 rounded-lg object-cover border-2 border-primary shadow"
+            onError={(e) => {
+              console.log('Image failed to load:', profile.picture)
+              e.target.style.display = 'none'
+            }}
         />
       ) : (
         <div className="w-28 h-28 rounded-lg bg-primary flex items-center justify-center text-white text-4xl font-bold border-2 border-primary shadow">
@@ -50,6 +58,12 @@ const ProfileDetail = ({ profile, onEdit }) => (
         variant="soft"
         disabled
       />
+        <Input
+          label="Member Code"
+          value={profile?.member_code || ''}
+          variant="soft"
+          disabled
+        />
     </div>
     <div className="flex justify-end mt-6 w-full">
       <Button variant="secondary" onClick={onEdit}>
@@ -58,5 +72,6 @@ const ProfileDetail = ({ profile, onEdit }) => (
     </div>
   </div>
 );
+};
 
 export default ProfileDetail; 

@@ -30,15 +30,11 @@ const Profile = () => {
     resetForm
   } = useProfileForm(profileHook);
 
+  // Use new Formik-based password form hook
   const {
-    formData: passwordData,
-    showPassword,
-    updating: passwordUpdating,
-    handleChange: handlePasswordChange,
-    handleSubmit: handlePasswordSubmit,
-    togglePasswordVisibility,
-    resetForm: resetPasswordForm
-  } = usePasswordForm(profileHook);
+    formik: passwordFormik,
+    loading: passwordLoading
+  } = usePasswordForm();
   
   const [isEditing, setIsEditing] = useState(false)
   const [activeTab, setActiveTab] = useState(TAB_PROFILE)
@@ -49,21 +45,35 @@ const Profile = () => {
     confirmation: ''
   })
 
-  const { uploadProfilePicture } = profileHook;
-
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    
     try {
-      const result = await uploadProfilePicture(file);
-      // Update formData agar preview berubah
-      resetForm({
+      // Basic file validation
+      const maxSize = 5 * 1024 * 1024 // 5MB
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+
+      if (file.size > maxSize) {
+        toast.error('Ukuran file terlalu besar (maksimal 5MB)');
+        return;
+      }
+
+      if (!allowedTypes.includes(file.type)) {
+        toast.error('Format file tidak didukung');
+        return;
+      }
+
+      // Update formData dengan file yang dipilih
+      const updatedFormData = {
         ...formData,
-        profile_picture: result.profilePicture, // pastikan sesuai response backend
-      });
-      toast.success('Foto profile berhasil diupload!');
+        picture: file
+      };
+      
+      resetForm(updatedFormData);
+      toast.success('Foto profile berhasil dipilih!');
     } catch (err) {
-      toast.error('Gagal upload foto profile');
+      toast.error('Gagal memilih foto profile');
     }
   };
 
@@ -74,38 +84,28 @@ const Profile = () => {
         name: profile.full_name || '',
         username: profile.username || '',
         email: profile.email || '',
-        phoneNumber: profile.phoneNumber || '',
-        dateOfBirth: profile.dateOfBirth || '',
+        phoneNumber: profile.phone_number || '',
+        dateOfBirth: profile.dob ? profile.dob.slice(0, 10) : '', // format yyyy-mm-dd
+        picture: profile.picture || null  // ✅ Include existing picture
       })
     }
   }, [profile, resetForm])
-
 
   const handleEditProfile = async (e) => {
     e.preventDefault()
     
     try {
+      console.log('Starting profile update...')
       const result = await handleSubmit(e)
       if (result.success) {
+        console.log('Profile update successful, closing edit mode...')
         setIsEditing(false)
-        toast.success('Profile berhasil diupdate!')
+        
+        // Force reload profile data to ensure ProfileDetail shows latest data
+        await profileHook.loadProfile()
       }
     } catch (error) {
-      toast.error(error.message || 'Gagal mengupdate profile')
-    }
-  }
-
-  const handleChangePassword = async (e) => {
-    e.preventDefault()
-    
-    try {
-      const result = await handlePasswordSubmit(e)
-      if (result.success) {
-        toast.success('Password berhasil diubah!')
-        resetPasswordForm()
-      }
-    } catch (error) {
-      toast.error(error.message || 'Gagal mengubah password')
+      console.error('Profile update error:', error)
     }
   }
 
@@ -117,8 +117,9 @@ const Profile = () => {
         name: profile.full_name || '',
         username: profile.username || '',
         email: profile.email || '',
-        phoneNumber: profile.phoneNumber || '',
-        dateOfBirth: profile.dateOfBirth || '',
+        phoneNumber: profile.phone_number || '',
+        dateOfBirth: profile.dob ? profile.dob.slice(0, 10) : '', // format yyyy-mm-dd
+        picture: profile.picture || null  // ✅ Include existing picture
       })
     }
     clearError()
@@ -133,8 +134,15 @@ const Profile = () => {
       email: profile.email || '',
       phoneNumber: profile.phone_number || '',
       dateOfBirth: profile.dob ? profile.dob.slice(0, 10) : '', // format yyyy-mm-dd
+      picture: profile.picture || null  // ✅ Include existing picture
     });
     clearError();
+  };
+
+  const handleCancelPassword = () => {
+    passwordFormik.resetForm();
+    clearError();
+    setActiveTab(TAB_PROFILE);
   };
 
   // Tab navigation classes
@@ -166,7 +174,7 @@ const Profile = () => {
         </button>
         <button
           className={tabClass(TAB_PASSWORD)}
-          onClick={() => { setActiveTab(TAB_PASSWORD); setIsEditing(false); clearError(); resetPasswordForm(); }}
+          onClick={() => { setActiveTab(TAB_PASSWORD); setIsEditing(false); clearError(); passwordFormik.resetForm(); }}
         >
           Change Password
         </button>
@@ -202,17 +210,11 @@ const Profile = () => {
       )}
       {activeTab === TAB_PASSWORD && (
         <ChangePasswordForm
-          formData={passwordData}
-          onChange={handlePasswordChange}
-          onSubmit={handleChangePassword}
-          showPassword={showPassword}
-          togglePasswordVisibility={togglePasswordVisibility}
-          loading={passwordUpdating}
-          onCancel={() => { resetPasswordForm(); clearError(); setActiveTab(TAB_PROFILE); }}
+          formik={passwordFormik}
+          loading={passwordLoading}
+          onCancel={handleCancelPassword}
         />
       )}
-
-
 
     </div>
     </div>

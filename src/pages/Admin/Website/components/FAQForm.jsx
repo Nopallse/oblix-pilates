@@ -18,7 +18,7 @@ const FAQForm = ({ isOpen, onClose, faq = null, onSuccess, createFaq, updateFaq,
   useEffect(() => {
     if (!isOpen) {
       // Reset form when modal closes
-      formik.resetForm()
+        formik.resetForm()
     }
   }, [isOpen]) // Remove formik from dependencies
 

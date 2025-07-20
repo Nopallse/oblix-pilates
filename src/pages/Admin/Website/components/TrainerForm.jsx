@@ -66,9 +66,9 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
         setImagePreview(getImageUrl(trainer.picture))
         console.log('Kept existing picture for edit mode')
       } else {
-        formik.setFieldValue('picture', null)
-        setImagePreview(null)
-        console.log('File cleared')
+      formik.setFieldValue('picture', null)
+      setImagePreview(null)
+      console.log('File cleared')
       }
     }
   }
@@ -118,13 +118,13 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
         // If picture is the same, don't append anything
       } else {
         // For create mode, append all required fields
-        formData.append('title', values.title)
-        formData.append('description', values.description)
-        if (values.instagram) {
-          formData.append('instagram', values.instagram)
-        }
-        if (values.tiktok) {
-          formData.append('tiktok', values.tiktok)
+      formData.append('title', values.title)
+      formData.append('description', values.description)
+      if (values.instagram) {
+        formData.append('instagram', values.instagram)
+      }
+      if (values.tiktok) {
+        formData.append('tiktok', values.tiktok)
         }
         if (values.picture) {
           formData.append('picture', values.picture)

@@ -2,85 +2,70 @@ import { apiClient } from "@shared/services";
 
 /**
  * Profile API Functions
- * Base URL: /api/v1/profile
+ * Base URL: /api/profile
  */
 
 export const profileAPI = {
-    // GET /api/v1/profile
+    // GET /api/profile
     getProfile: async () => {
-        const response = await apiClient.get('/profile', { silent: true });
+        const response = await apiClient.get('/api/profile', { silent: true });
         return response;
     },
 
-    // PATCH /api/v1/profile
+    // PUT /api/profile
     updateProfile: async (profileData) => {
-        const response = await apiClient.patch('/profile', profileData);
-        return response;
-    },
-
-    // POST /api/v1/profile/change-password
-    changePassword: async (passwordData) => {
-        const response = await apiClient.post('/profile/change-password', passwordData);
-        return response;
-    },
-
-    // POST /api/v1/profile/upload-picture
-    uploadProfilePicture: async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
+        console.log('Updating profile with data:', profileData);
         
-        const response = await apiClient.uploadFile('/profile/upload-picture', file);
+        // Create FormData for file upload
+        const formData = new FormData();
+        
+        // Only append fields that have values
+        if (profileData.email) {
+            formData.append('email', profileData.email);
+        }
+        if (profileData.full_name) {
+            formData.append('full_name', profileData.full_name);
+        }
+        if (profileData.username) {
+            formData.append('username', profileData.username);
+        }
+        if (profileData.phone_number) {
+            formData.append('phone_number', profileData.phone_number);
+        }
+        if (profileData.dob) {
+            formData.append('dob', profileData.dob);
+        }
+        if (profileData.address) {
+            formData.append('address', profileData.address);
+        }
+        if (profileData.picture) {
+            formData.append('picture', profileData.picture);
+        }
+
+        console.log('FormData entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+            if (value instanceof File) {
+                console.log(`  File name: ${value.name}`);
+                console.log(`  File size: ${value.size}`);
+                console.log(`  File type: ${value.type}`);
+            }
+        }
+
+        const response = await apiClient.put('/api/profile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            successMessage: 'Profile updated successfully'
+        });
         return response;
     },
 
-    // // POST /api/v1/profile/delete-account
-    // deleteAccount: async (password) => {
-    //     const response = await apiClient.post('/profile/delete-account', { password });
-    //     return response;
-    // },
-
-    // // GET /api/v1/profile/activity-stats
-    // getActivityStats: async () => {
-    //     const response = await apiClient.get('/profile/activity-stats', { silent: true });
-    //     return response;
-    // },
-
-    // // GET /api/v1/bookings
-    // getUserBookings: async (params = {}) => {
-    //     const response = await apiClient.get('/bookings', { params, silent: true });
-    //     return response;
-    // },
-
-    // // GET /api/v1/classes
-    // getUserClasses: async (params = {}) => {
-    //     const response = await apiClient.get('/classes', { 
-    //         params: { ...params, user: 'me' }, 
-    //         silent: true 
-    //     });
-    //     return response;
-    // },
-
-    // // POST /api/v1/bookings/:id/cancel
-    // cancelBooking: async (bookingId) => {
-    //     const response = await apiClient.post(`/bookings/${bookingId}/cancel`);
-    //     return response;
-    // },
-
-    // // GET /api/v1/notifications
-    // getNotifications: async (params = {}) => {
-    //     const response = await apiClient.get('/notifications', { params, silent: true });
-    //     return response;
-    // },
-
-    // // POST /api/v1/notifications/:id/read
-    // markNotificationRead: async (notificationId) => {
-    //     const response = await apiClient.post(`/notifications/${notificationId}/read`, {}, { silent: true });
-    //     return response;
-    // },
-
-    // // POST /api/v1/notifications/read-all
-    // markAllNotificationsRead: async () => {
-    //     const response = await apiClient.post('/notifications/read-all', {}, { silent: true });
-    //     return response;
-    // }
+    // POST /api/profile/change-password
+    changePassword: async (passwordData) => {
+        const response = await apiClient.put('/api/profile/change-password', passwordData, {
+            successMessage: 'Password changed successfully. Please login again.'
+        });
+        return response;
+    }
 }; 

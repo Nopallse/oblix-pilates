@@ -141,33 +141,40 @@ export const profilePictureValidation = {
 
 // Utility functions untuk validation
 export const validateField = (value, rules, allValues = {}) => {
-  const errors = []
-
+  // Check required first
   if (rules.required && !value) {
-    errors.push(rules.required)
+    return rules.required
   }
 
-  if (rules.minLength && value && value.length < rules.minLength.value) {
-    errors.push(rules.minLength.message)
+  // If value is empty and not required, skip other validations
+  if (!value) {
+    return null
   }
 
-  if (rules.maxLength && value && value.length > rules.maxLength.value) {
-    errors.push(rules.maxLength.message)
+  // Check minLength
+  if (rules.minLength && value.length < rules.minLength.value) {
+    return rules.minLength.message
   }
 
-  if (rules.pattern && value && !rules.pattern.value.test(value)) {
-    errors.push(rules.pattern.message)
+  // Check maxLength
+  if (rules.maxLength && value.length > rules.maxLength.value) {
+    return rules.maxLength.message
+  }
+
+  // Check pattern
+  if (rules.pattern && !rules.pattern.value.test(value)) {
+    return rules.pattern.message
   }
 
   // Handle custom validation function
-  if (rules.validate && value) {
+  if (rules.validate) {
     const validationResult = rules.validate(value, allValues)
     if (validationResult !== true) {
-      errors.push(validationResult)
+      return validationResult
     }
   }
 
-  return errors
+  return null
 }
 
 export const validateForm = (data, schema) => {
@@ -175,8 +182,8 @@ export const validateForm = (data, schema) => {
 
   Object.keys(schema).forEach(field => {
     const fieldErrors = validateField(data[field], schema[field], data)
-    if (fieldErrors.length > 0) {
-      errors[field] = fieldErrors[0] // Take first error
+    if (fieldErrors) { // Only add if there's an error
+      errors[field] = fieldErrors
     }
   })
 
