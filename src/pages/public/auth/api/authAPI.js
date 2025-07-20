@@ -1,188 +1,59 @@
-import axios from 'axios'
-import apiClient from '../../../../shared/services/apiClient'
-import { API_ENDPOINTS, STORAGE_KEYS } from '../../../../shared/utils/constants'
-import { storage } from '../../../../shared/utils/storage'
-import { getUserFromToken } from '../../../../shared/utils/auth'
+import { apiClient } from "@shared/services";
 
-// Create auth-specific API client with token handling
-const authApiClient = axios.create({
-  baseURL: apiClient.defaults.baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 10000,
-})
-
-// Request interceptor untuk menambahkan token
-authApiClient.interceptors.request.use(
-  (config) => {
-    const token = storage.get(STORAGE_KEYS.ACCESS_TOKEN)
-    
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// Response interceptor untuk handle token refresh
-authApiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-
-      try {
-        const refreshToken = storage.get(STORAGE_KEYS.REFRESH_TOKEN)
-        
-        if (refreshToken) {
-          const response = await apiClient.post(API_ENDPOINTS.REFRESH_TOKEN, { refreshToken })
-
-          const { accessToken } = response.data.data
-          storage.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken)
-
-          // Retry original request dengan token baru
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`
-          return authApiClient(originalRequest)
-        }
-      } catch (refreshError) {
-        // Jika refresh token gagal, clear storage
-        storage.clear()
-        return Promise.reject(refreshError)
-      }
-    }
-
-    return Promise.reject(error)
-  }
-)
+/**
+ * Auth API Functions
+ * Base URL: /api/v1/auth
+ */
 
 export const authAPI = {
-  login: async (credentials) => {
-    try {
-      const response = await apiClient.post(API_ENDPOINTS.LOGIN, credentials)
-      const { data } = response.data
-      
-      // Simpan tokens dan user data
-      storage.set(STORAGE_KEYS.ACCESS_TOKEN, data.accessToken)
-      storage.set(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken)
-      storage.set(STORAGE_KEYS.USER_DATA, data.user)
-      
-      return {
-        success: true,
-        user: data.user,
-        accessToken: data.accessToken
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.message || 'Login failed'
-      }
+    register: async (userData) => {
+        const response = await apiClient.post('/api/auth/register', userData, { silent: true });
+        return response;
+    },
+
+    login: async (credentials) => {
+        console.log('AuthAPI - Login request:', credentials);
+        const response = await apiClient.post('/api/auth/login', credentials, { silent: true });
+        console.log('AuthAPI - Login response:', response);
+        return response;
+    },
+
+    // GET /api/v1/auth/profile
+    getProfile: async () => {
+        const response = await apiClient.get('/api/auth/profile', { silent: true });
+        return response;
+    },
+
+    // PATCH /api/v1/auth/profile
+    updateProfile: async (profileData) => {
+        const response = await apiClient.patch('/api/auth/profile', profileData, { silent: true });
+        return response;
+    },
+
+    // POST /api/v1/auth/logout
+    logout: async () => {
+        // Hapus data login dari localStorage/sessionStorage
+        localStorage.removeItem('auth-storage');
+        sessionStorage.removeItem('auth-storage');
+        await new Promise(res => setTimeout(res, 1000));
+        return Promise.resolve();
+    },
+
+    // POST /api/v1/auth/change-password
+    changePassword: async (passwordData) => {
+        const response = await apiClient.post('/api/auth/change-password', passwordData, { silent: true });
+        return response;
+    },
+
+    // POST /api/v1/auth/forgot-password
+    forgotPassword: async (email) => {
+        const response = await apiClient.post('/api/auth/forgot-password', { email }, { silent: true });
+        return response;
+    },
+
+    // POST /api/v1/auth/reset-password
+    resetPassword: async (resetData) => {
+        const response = await apiClient.post('/api/auth/reset-password', resetData, { silent: true });
+        return response;
     }
-  },
-
-  register: async (userData) => {
-    try {
-      const response = await apiClient.post(API_ENDPOINTS.REGISTER, userData)
-      const { data } = response.data
-      
-      // Simpan tokens dan user data
-      storage.set(STORAGE_KEYS.ACCESS_TOKEN, data.accessToken)
-      storage.set(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken)
-      storage.set(STORAGE_KEYS.USER_DATA, data.user)
-      
-      return {
-        success: true,
-        user: data.user,
-        accessToken: data.accessToken
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.message || 'Registration failed'
-      }
-    }
-  },
-
-  resetPassword: async (email) => {
-    try {
-      const response = await apiClient.post(API_ENDPOINTS.RESET_PASSWORD, { email })
-      return {
-        success: true,
-        message: 'Password reset email sent'
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.message || 'Password reset failed'
-      }
-    }
-  },
-
-  refreshToken: async () => {
-    try {
-      const refreshToken = storage.get(STORAGE_KEYS.REFRESH_TOKEN)
-      
-      if (!refreshToken) {
-        throw new Error('No refresh token available')
-      }
-
-      const response = await apiClient.post(API_ENDPOINTS.REFRESH_TOKEN, {
-        refreshToken
-      })
-
-      const { accessToken } = response.data.data
-      storage.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken)
-      
-      return {
-        success: true,
-        accessToken
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.message || 'Token refresh failed'
-      }
-    }
-  },
-
-  logout: () => {
-    storage.clear()
-    return { success: true }
-  },
-
-  getCurrentUser: () => {
-    const userData = storage.get(STORAGE_KEYS.USER_DATA)
-    const accessToken = storage.get(STORAGE_KEYS.ACCESS_TOKEN)
-    
-    if (userData) {
-      return userData
-    }
-    
-    if (accessToken) {
-      return getUserFromToken(accessToken)
-    }
-    
-    return null
-  },
-
-  isAuthenticated: () => {
-    const accessToken = storage.get(STORAGE_KEYS.ACCESS_TOKEN)
-    return !!accessToken
-  },
-
-  // Get token for external use
-  getToken: () => {
-    return storage.get(STORAGE_KEYS.ACCESS_TOKEN)
-  },
-
-  // Set token manually (for sync with store)
-  setToken: (token) => {
-    storage.set(STORAGE_KEYS.ACCESS_TOKEN, token)
-  }
-} 
+}; 

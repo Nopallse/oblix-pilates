@@ -1,13 +1,29 @@
-// General API client
+// API Client
 export { default as apiClient } from './apiClient'
 
 // Error handling utilities
 export { 
-  showErrorToast, 
   showToast, 
-  extractErrorMessage, 
-  handleResponseError 
+  handleResponseError,
+  extractErrorMessage,
+  isNetworkError,
+  isAuthError,
+  isValidationError,
+  isServerError,
+  getErrorDetails,
+  createErrorHandler,
+  withErrorHandling
 } from './apiErrorHandler'
+// Retry utilities (if needed)
+export { 
+  retryRequest,
+  retryWithConfig,
+  retryOnNetworkError,
+  retryOnServerError,
+  retryOnTimeout,
+  retryWithJitter,
+  retryWithErrorHandler,
+  createRetryableApiFunction,
+  retryConfig
+} from './apiRetry'
 
-// Retry utilities
-export { retryRequest } from './apiRetry'

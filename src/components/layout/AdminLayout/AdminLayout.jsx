@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../../../pages/public/auth/api'
+import Header from './Header'
 import Sidebar from './Sidebar'
 
 const AdminLayout = () => {
   const { user, isLoading } = useAuth()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   if (isLoading) {
     return (
@@ -17,14 +20,33 @@ const AdminLayout = () => {
     )
   }
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+  
+  const toggleSidebarCollapse = () => {
+    setSidebarCollapsed((prev) => !prev)
+  }
+
   return (
-    <div className="min-h-screen flex">
-      <Sidebar user={user} />
-      <main className="flex-1 bg-gray-50">
-        <div className="p-6">
+    <div className="min-h-screen flex flex-col">
+      <Header
+        user={user}
+        onToggleSidebar={toggleSidebar}
+        onToggleSidebarCollapse={toggleSidebarCollapse}
+        sidebarCollapsed={sidebarCollapsed}
+      />
+      <div className="flex flex-1">
+        <Sidebar
+          user={user}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          collapsed={sidebarCollapsed}
+        />
+        <main className="flex-1 p-6 bg-white">
           <Outlet context={{ user }} />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   )
 }

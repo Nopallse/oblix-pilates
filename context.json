@@ -1,7 +1,7 @@
 {
   "framework": "React",
   "uiLibrary": "Tailwind CSS",
-  "stateManagement": "Context API + useReducer (AuthContext)",
+  "stateManagement": "zustand",
   "bundler": "Vite",
   "design": {
     "style": "Modern Pilates Studio Design",

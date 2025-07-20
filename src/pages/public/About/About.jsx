@@ -8,7 +8,7 @@ const About = () => {
   return (
     <PublicLayout>
       <section className="py-8 sm:py-12 bg-white">
-        <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
+        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
               welcome <span className="font-fraunces italic">to</span>
@@ -50,7 +50,7 @@ const About = () => {
       <Divider />
 
       <section className="py-8 sm:py-12 bg-white">
-        <div className="container max-w-6xl mx-auto px-4">
+        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
             {/* Card Image */}
             <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md" data-aos="fade-right">

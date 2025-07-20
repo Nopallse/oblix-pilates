@@ -1,197 +1,395 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { useAuthStore } from '../../../../shared/store/authStore';
+import { useAuthStore } from '@shared/store/authStore';
 import { authAPI } from './authAPI';
-import { extractErrorMessage } from '../../../../shared/services/apiErrorHandler';
+import { extractErrorMessage } from '@shared/services/apiErrorHandler';
+import { getErrorType } from '@shared/services/apiErrorHandler';
 
 export const useAuth = () => {
-  const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  
-  // Get state and actions from Zustand store
-  const {
-    user,
-    token,
-    isAuthenticated,
-    isLoading,
-    login: storeLogin,
-    logout: storeLogout,
-    setLoading,
-    updateUser,
-    hasRole,
-    hasAnyRole,
-    isAdmin,
-    isUser,
-    isBorrower,
-    checkAuth,
-    clearAuth
-  } = useAuthStore();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const {
+        login: storeLogin,
+        logout: storeLogout,
+        setLoading: setAuthLoading,
+        updateUser,
+        user,
+        isAuthenticated,
+        hasRole,
+        hasAnyRole,
+        isAdmin,
+        isBorrower,
+        checkAuth
+    } = useAuthStore();
 
-  // Initialize auth state on mount
-  useEffect(() => {
-    const initializeAuth = () => {
-      try {
-        const currentUser = authAPI.getCurrentUser();
-        const currentToken = authAPI.getToken();
-        const isAuth = authAPI.isAuthenticated();
+    const navigate = useNavigate();
 
-        if (currentUser && currentToken && isAuth) {
-          // Update store with current user data
-          storeLogin(currentUser, currentToken);
+    const login = async (credentials) => {
+        setLoading(true);
+        setAuthLoading(true);
+        setError(null);
+
+        try {
+            if (!credentials.email || !credentials.password) {
+                throw new Error('Mohon lengkapi semua field');
+            }
+            
+            console.log("Login attempt with credentials:", credentials);
+            const response = await authAPI.login(credentials);
+            
+            console.log("Login response:", response);
+            
+            // Check if login was successful
+            if (response.success || response.message === 'Login successful') {
+                console.log("Login successful, response data:", response.data);
+                console.log("Response data keys:", Object.keys(response.data));
+                
+                // Handle nested data structure
+                const actualData = response.data.data || response.data;
+                console.log("Actual data:", actualData);
+                console.log("Actual data keys:", Object.keys(actualData));
+                
+                const user = actualData.user;
+                console.log("User object:", user);
+                console.log("User object keys:", user ? Object.keys(user) : 'No user object');
+
+                const { accessToken, refreshToken } = actualData;
+                
+                // Store login data
+                storeLogin(user, accessToken, refreshToken);
+
+                // Determine user role and redirect
+                const userRole = user?.role || user?.type || user?.user_type || user?.userType || 'user';
+                console.log('User role detected:', userRole);
+                console.log('User object for role detection:', user);
+                
+                // Redirect based on role
+                let redirectPath;
+                if (userRole === 'admin' || userRole === 'ADMIN') {
+                    redirectPath = '/admin';
+                } else {
+                    redirectPath = '/dashboard';
+                }
+
+                console.log('useAuth - Navigation Debug:', {
+                    userRole,
+                    redirectPath,
+                    user,
+                    actualData
+                });
+
+                navigate(redirectPath);
+                return actualData;
+            } else {
+                throw new Error(response.message || 'Login failed');
+            }
+        } catch (err) {
+            const errorMessage = extractErrorMessage(err, 'Login gagal');
+            setError(errorMessage);
+            throw err;
+        } finally {
+            setLoading(false);
+            setAuthLoading(false);
         }
-      } catch (err) {
-        setError('Failed to initialize authentication');
-        console.error('Auth initialization error:', err);
-      }
     };
 
-    initializeAuth();
-  }, [storeLogin]);
-
-  const login = async (credentials) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const result = await authAPI.login(credentials);
-
-      if (result.success) {
-        // Update Zustand store
-        storeLogin(result.user, result.accessToken);
+    const register = async (userData) => {
+        setLoading(true);
+        setAuthLoading(true);
         setError(null);
-        
-        // Show success toast
-        toast.success('Login successful!');
-        
-        return { success: true };
-      } else {
-        const errorMessage = extractErrorMessage(result.error);
-        setError(errorMessage);
-        toast.error(errorMessage);
-        return { success: false, error: errorMessage };
-      }
-    } catch (err) {
-      const errorMessage = extractErrorMessage(err, 'An unexpected error occurred');
-      setError(errorMessage);
-      toast.error(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
+        console.log(userData);
 
-  const register = async (userData) => {
-    setLoading(true);
-    setError(null);
+        try {
+            if (
+                !userData.full_name ||
+                !userData.username ||
+                !userData.email ||
+                !userData.dob ||
+                !userData.phone_number ||
+                !userData.password
+            ) {
+                throw new Error('Mohon lengkapi semua field yang wajib diisi');
+            }
 
-    try {
-      const result = await authAPI.register(userData);
+            if (userData.password.length < 8) {
+                throw new Error('Password harus minimal 8 karakter');
+            }
 
-      if (result.success) {
-        // Update Zustand store
-        storeLogin(result.user, result.accessToken);
+            const response = await authAPI.register(userData);
+
+            if (response.success) {
+                navigate('/login');
+                return response.data;
+            } else {
+                throw new Error(response.message || 'Registration failed');
+            }
+        } catch (err) {
+            const errorMessage = extractErrorMessage(err, 'Registrasi gagal');
+            setError(errorMessage);
+            throw err;
+        } finally {
+            setLoading(false);
+            setAuthLoading(false);
+        }
+    };
+
+    const logout = async () => {
+        setLoading(true);
+        setAuthLoading(true);
+        try {
+            await authAPI.logout();
+        } catch (error) {
+            console.error('Logout API error:', error);
+        }
+        storeLogout();
+        navigate('/login');
+        setLoading(false);
+        setAuthLoading(false);
+    };
+
+    const changePassword = async (passwordData) => {
+        setLoading(true);
         setError(null);
-        
-        // Show success toast
-        toast.success('Registration successful!');
-        
-        return { success: true };
-      } else {
-        const errorMessage = extractErrorMessage(result.error);
-        setError(errorMessage);
-        toast.error(errorMessage);
-        return { success: false, error: errorMessage };
-      }
-    } catch (err) {
-      const errorMessage = extractErrorMessage(err, 'An unexpected error occurred');
-      setError(errorMessage);
-      toast.error(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const logout = () => {
-    try {
-      // Call API logout
-      authAPI.logout();
-      
-      // Clear Zustand store
-      storeLogout();
-      setError(null);
-      
-      // Show success toast
-      toast.success('Logged out successfully');
-      
-      // Navigate to login page
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout error:', err);
-      // Even if API fails, clear local state
-      storeLogout();
-      navigate('/login');
-    }
-  };
+        try {
+            if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+                throw new Error('Mohon lengkapi semua field');
+            }
 
-  const clearError = () => {
-    setError(null);
-  };
+            if (passwordData.newPassword.length < 8) {
+                throw new Error('Password baru harus minimal 8 karakter');
+            }
 
-  const resetPassword = async (email) => {
-    setLoading(true);
-    setError(null);
+            if (passwordData.newPassword !== passwordData.confirmPassword) {
+                throw new Error('Konfirmasi password tidak cocok');
+            }
 
-    try {
-      const result = await authAPI.resetPassword(email);
+            const response = await authAPI.changePassword(passwordData);
+            return response.data;
+        } catch (err) {
+            const errorMessage = extractErrorMessage(err, 'Gagal mengubah password');
+            setError(errorMessage);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      if (result.success) {
+    const updateProfile = async (profileData) => {
+        setLoading(true);
         setError(null);
-        toast.success('Password reset email sent!');
-        return { success: true };
-      } else {
-        const errorMessage = extractErrorMessage(result.error);
-        setError(errorMessage);
-        toast.error(errorMessage);
-        return { success: false, error: errorMessage };
-      }
-    } catch (err) {
-      const errorMessage = extractErrorMessage(err, 'An unexpected error occurred');
-      setError(errorMessage);
-      toast.error(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  return {
-    // State from Zustand store
-    user,
-    token,
-    isAuthenticated,
-    isLoading,
-    error,
+        try {
+            if (!profileData.name || !profileData.email) {
+                throw new Error('Nama dan email wajib diisi');
+            }
 
-    // Actions
-    login,
-    register,
-    logout,
-    resetPassword,
-    clearError,
+            const response = await authAPI.updateProfile(profileData);
+            
+            // Update user in store
+            updateUser(response.data);
+            
+            return response.data;
+        } catch (err) {
+            const errorMessage = extractErrorMessage(err, 'Gagal mengupdate profile');
+            setError(errorMessage);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    // Store actions
-    updateUser,
-    setLoading,
+    const resetPassword = async (email) => {
+        setLoading(true);
+        setError(null);
 
-    // Utilities from store
-    hasRole,
-    hasAnyRole,
-    isAdmin,
-    isUser,
-    isBorrower,
-    checkAuth,
-    clearAuth
-  };
+        try {
+            if (!email) {
+                throw new Error('Email wajib diisi');
+            }
+
+            const response = await authAPI.forgotPassword(email);
+            return response.data;
+        } catch (err) {
+            const errorMessage = extractErrorMessage(err, 'Gagal mengirim email reset password');
+            setError(errorMessage);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const canAccess = (resource, action = 'read') => {
+        if (!isAuthenticated || !user) return false;
+
+        const permissions = {
+            admin: ['*'],
+            user: ['profile:read', 'profile:update', 'classes:read', 'bookings:read'],
+        };
+
+        const userRole = user?.role || user?.type || 'user';
+        const userPermissions = permissions[userRole] || [];
+        return userPermissions.includes('*') || userPermissions.includes(`${resource}:${action}`);
+    };
+
+    const redirectToDashboard = () => {
+        const userRole = user?.role || user?.type || 'user';
+        const redirectPath = (userRole === 'admin' || userRole === 'ADMIN') ? '/admin' : '/dashboard';
+        navigate(redirectPath);
+    };
+
+    return {
+        login,
+        register,
+        logout,
+        changePassword,
+        updateProfile,
+        resetPassword,
+        loading,
+        error,
+        user,
+        isAuthenticated,
+        hasRole,
+        hasAnyRole,
+        isAdmin,
+        isBorrower,
+        canAccess,
+        redirectToDashboard,
+        checkAuth
+    };
+};
+
+export const useRole = () => {
+    const { user, isAuthenticated, hasRole, hasAnyRole, isAdmin, isBorrower } = useAuthStore();
+
+    const isUser = () => hasRole('user');
+    const getUserRole = () => user?.role || user?.type || null;
+
+    return {
+        hasRole,
+        hasAnyRole,
+        isAdmin,
+        isBorrower,
+        isUser,
+        getUserRole,
+        currentRole: user?.role || user?.type
+    };
+};
+
+export const useLogin = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const { login, loading } = useAuth();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await login(formData);
+            // Reset form setelah login berhasil
+            resetForm();
+        } catch (error) {
+            // Form tidak di-reset jika ada error
+            console.error('Login error:', error);
+        }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const resetForm = () => {
+        setFormData({
+            email: '',
+            password: ''
+        });
+        setShowPassword(false);
+    };
+
+    // Reset form ketika component mount
+    useEffect(() => {
+        resetForm();
+    }, []);
+
+    return {
+        formData,
+        showPassword,
+        loading,
+        handleChange,
+        handleSubmit,
+        togglePasswordVisibility,
+        resetForm
+    };
+};
+
+export const useRegister = () => {
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: '',
+        phoneNumber: '',
+        dateOfBirth: ''
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const { register, loading } = useAuth();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await register(formData);
+            // Reset form setelah registrasi berhasil
+            resetForm();
+        } catch (error) {
+            // Form tidak di-reset jika ada error
+            console.error('Registration error:', error);
+        }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const resetForm = () => {
+        setFormData({
+            fullName: '',
+            email: '',
+            password: '',
+            phoneNumber: '',
+            dateOfBirth: ''
+        });
+        setShowPassword(false);
+    };
+
+    // Reset form ketika component mount
+    useEffect(() => {
+        resetForm();
+    }, []);
+
+    return {
+        formData,
+        showPassword,
+        loading,
+        handleChange,
+        handleSubmit,
+        togglePasswordVisibility,
+        resetForm
+    };
 }; 

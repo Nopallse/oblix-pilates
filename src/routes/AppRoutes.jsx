@@ -9,7 +9,7 @@ import PublicRoute from "./PublicRoutes.jsx";
 import Dashboard from "../pages/User/Dashboard.jsx";
 import LoginPage from "../pages/public/auth/LoginPage.jsx";
 import RegisterPage from "../pages/public/auth/RegisterPage.jsx";
-import Profile from "../pages/User/Profile.jsx";
+import Profile from "../pages/User/profile/Profile.jsx";
 import MyClasses from "../pages/User/MyClasses.jsx";
 import MyPackage from "../pages/User/MyPackage.jsx";
 import Admin from "../pages/Admin/Admin";
@@ -152,6 +152,11 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Admin Routes - Must come before user routes */}
+      <Route element={<PrivateRoute requireAdmin={true} />}>
+        <Route path="/admin/*" element={<Admin />} />
+      </Route>
+
       {/* Private Routes - User Dashboard */}
       <Route element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
@@ -160,11 +165,6 @@ const AppRoutes = () => {
         <Route path="/my-package" element={<MyPackage />} />
         <Route path="/user" element={<User />} />
         <Route path="/members" element={<Members />} />
-      </Route>
-
-      {/* Admin Routes */}
-      <Route element={<PrivateRoute requireAdmin={true} />}>
-        <Route path="/admin" element={<Admin />} />
       </Route>
 
       {/* 404 Route */}

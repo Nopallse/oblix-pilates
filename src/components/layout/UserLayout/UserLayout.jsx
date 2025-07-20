@@ -46,7 +46,6 @@ const UserLayout = () => {
           <Outlet context={{ user }} />
         </main>
       </div>
-      <Footer />
     </div>
   )
 }

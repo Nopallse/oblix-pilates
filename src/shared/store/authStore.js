@@ -6,24 +6,31 @@ export const useAuthStore = create(
         (set, get) => ({
             // State
             user: null,
-            token: null,
+            accessToken: null,
+            refreshToken: null,
             isAuthenticated: false,
             isLoading: false,
 
             // Actions
-            login: (user, token) => {
+            login: (user, accessToken, refreshToken) => {
+                console.log('Auth Store - Login Data:', { user, accessToken, refreshToken })
+                console.log('User role:', user?.role || user?.type)
+                
                 set({
                     user,
-                    token,
+                    accessToken,
+                    refreshToken,
                     isAuthenticated: true,
                     isLoading: false
                 })
             },
 
             logout: () => {
+                console.log('Auth Store - Logging out')
                 set({
                     user: null,
-                    token: null,
+                    accessToken: null,
+                    refreshToken: null,
                     isAuthenticated: false,
                     isLoading: false
                 })
@@ -45,36 +52,68 @@ export const useAuthStore = create(
             // Helper methods
             hasRole: (role) => {
                 const { user, isAuthenticated } = get()
-                return isAuthenticated && user?.type === role
+                const userRole = user?.role || user?.type
+                const hasRole = isAuthenticated && (userRole === role || userRole === role.toUpperCase())
+                console.log('hasRole check:', { userRole, requestedRole: role, hasRole })
+                return hasRole
             },
 
             hasAnyRole: (roles = []) => {
                 const { user, isAuthenticated } = get()
-                return isAuthenticated && user?.type && roles.includes(user.type)
+                const userRole = user?.role || user?.type
+                const hasAnyRole = isAuthenticated && userRole && roles.some(role => 
+                    userRole === role || userRole === role.toUpperCase()
+                )
+                console.log('hasAnyRole check:', { userRole, requestedRoles: roles, hasAnyRole })
+                return hasAnyRole
             },
 
             isAdmin: () => {
-                return get().hasRole('admin')
+                const { user, isAuthenticated } = get()
+                const userRole = user?.role || user?.type
+                const isAdmin = isAuthenticated && (userRole === 'admin' || userRole === 'ADMIN')
+                console.log('isAdmin check:', { userRole, isAdmin })
+                return isAdmin
             },
 
             isUser: () => {
-                return get().hasRole('user')
+                const { user, isAuthenticated } = get()
+                const userRole = user?.role || user?.type
+                const isUser = isAuthenticated && (userRole === 'user' || userRole === 'USER')
+                console.log('isUser check:', { userRole, isUser })
+                return isUser
             },
 
             isBorrower: () => {
-                return get().hasRole('borrower')
+                const { user, isAuthenticated } = get()
+                const userRole = user?.role || user?.type
+                const isBorrower = isAuthenticated && (userRole === 'borrower' || userRole === 'BORROWER')
+                console.log('isBorrower check:', { userRole, isBorrower })
+                return isBorrower
             },
 
             checkAuth: () => {
-                const { token, user, isAuthenticated } = get()
-                return isAuthenticated && token && user
+                const { accessToken, user, isAuthenticated } = get()
+                const isAuth = isAuthenticated && accessToken && user
+                console.log('checkAuth:', { isAuthenticated, hasToken: !!accessToken, hasUser: !!user, isAuth })
+                return isAuth
+            },
+
+            // Get current user role
+            getUserRole: () => {
+                const { user } = get()
+                const userRole = user?.role || user?.type
+                console.log('getUserRole:', userRole)
+                return userRole
             },
 
             // Clear all auth data
             clearAuth: () => {
+                console.log('Auth Store - Clearing auth data')
                 set({
                     user: null,
-                    token: null,
+                    accessToken: null,
+                    refreshToken: null,
                     isAuthenticated: false,
                     isLoading: false
                 })

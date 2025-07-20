@@ -1,228 +1,216 @@
 import toast from 'react-hot-toast';
 
 const IS_DEVELOPMENT = import.meta.env.DEV;
-const errorCache = new Map();
-const CACHE_DURATION = 3000;
-
-// Utility function untuk extract error messages dari response
-export const extractErrorMessage = (error, fallbackMessage = 'Terjadi kesalahan') => {
-    if (!error?.response?.data) {
-        return error?.message || fallbackMessage;
-    }
-
-    const { data } = error.response;
-
-    // Jika ada array errors, gabungkan semua error messages
-    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
-        return data.errors
-            .map(err => {
-                // Jika error berupa object dengan property message
-                if (typeof err === 'object' && err.message) {
-                    return err.message;
-                }
-                // Jika error berupa object dengan property msg
-                if (typeof err === 'object' && err.msg) {
-                    return err.msg;
-                }
-                // Jika error berupa string
-                if (typeof err === 'string') {
-                    return err;
-                }
-                // Jika error berupa object dengan property field dan message (validation format)
-                if (typeof err === 'object' && err.field && err.message) {
-                    return `${err.field}: ${err.message}`;
-                }
-                return String(err);
-            })
-            .filter(Boolean) // Remove empty strings
-            .join('; '); // Use semicolon to separate multiple errors
-    }
-
-    // Jika ada single message
-    if (data.message) {
-        return data.message;
-    }
-
-    // Jika ada msg property
-    if (data.msg) {
-        return data.msg;
-    }
-
-    // Jika ada error property yang berupa string
-    if (typeof data.error === 'string') {
-        return data.error;
-    }
-
-    // Fallback ke error message dari axios
-    return error.message || fallbackMessage;
-};
-
-// Utility function untuk show error toast dengan better error extraction
-export const showErrorToast = (error, fallbackMessage = 'Terjadi kesalahan') => {
-    const errorMessage = extractErrorMessage(error, fallbackMessage);
-    showToast('error', errorMessage);
-};
 
 export const showToast = (type, message) => {
-    const now = Date.now();
-    const toastKey = `${type}-${message}`;
+    if (!message) return;
 
-    if (errorCache.has(toastKey)) {
-        const lastShown = errorCache.get(toastKey);
-        if (now - lastShown < CACHE_DURATION) {
-            return;
-        }
-    }
-
-    errorCache.set(toastKey, now);
+    const toastOptions = {
+        duration: 4000,
+        position: 'top-right',
+    };
 
     switch (type) {
         case 'success':
-            toast.success(message, {
-                duration: 3000,
-                position: 'top-right',
-            });
+            toast.success(message, toastOptions);
             break;
         case 'error':
-            toast.error(message, {
-                duration: 4000,
-                position: 'top-right',
-            });
+            toast.error(message, toastOptions);
             break;
         case 'warning':
             toast(message, {
+                ...toastOptions,
                 icon: '⚠️',
-                duration: 4000,
-                position: 'top-right',
+                style: {
+                    background: '#fef3c7',
+                    color: '#92400e',
+                },
+            });
+            break;
+        case 'info':
+            toast(message, {
+                ...toastOptions,
+                icon: 'ℹ️',
+                style: {
+                    background: '#dbeafe',
+                    color: '#1e40af',
+                },
             });
             break;
         default:
-            toast(message, {
-                duration: 3000,
-                position: 'top-right',
-            });
+            toast(message, toastOptions);
     }
 };
-
-export const cleanupExpiredCache = () => {
-    const now = Date.now();
-    for (const [key, timestamp] of errorCache.entries()) {
-        if (now - timestamp > CACHE_DURATION) {
-            errorCache.delete(key);
-        }
-    }
-};
-
-setInterval(cleanupExpiredCache, CACHE_DURATION);
 
 export const handleResponseError = (error) => {
-    const endpoint = error.config?.url || 'unknown';
-    const method = error.config?.method?.toUpperCase() || 'REQUEST';
-
     if (IS_DEVELOPMENT) {
-        console.error(`❌ ${method} Error: ${endpoint}`, error.response?.data || error.message);
+        console.error('API Error:', error);
     }
 
-    if (error.response) {
-        const status = error.response.status;
-        const serverMessage = extractErrorMessage(error, error.message);
-        const showUserError = !error.config?.hideErrorToast;
-
-        switch (status) {
-            case 401:
-                if (showUserError && endpoint !== '/auth/logout') {
-                    showToast('error', serverMessage || 'Sesi Anda telah berakhir. Silakan login kembali');
-                }
-                localStorage.removeItem('auth-storage');
-                setTimeout(() => {
-                    if (window.location.pathname !== '/login') {
-                        window.location.href = '/login';
-                    }
-                }, 1000);
-                break;
-
-            case 403:
-                if (showUserError) {
-                    showToast('error', serverMessage || 'Anda tidak memiliki izin untuk melakukan aksi ini');
-                }
-                break;
-
-            case 404:
-                if (showUserError && !endpoint.includes('/check-availability')) {
-                    showToast('error', serverMessage || 'Data yang Anda cari tidak ditemukan');
-                }
-                break;
-
-            case 422:
-                if (showUserError) {
-                    // Gunakan extractErrorMessage yang sudah menangani array errors
-                    showToast('error', serverMessage || 'Data yang dikirim tidak valid');
-                }
-                break;
-
-            case 429:
-                showToast('warning', serverMessage || 'Terlalu banyak permintaan. Mohon tunggu sebentar');
-                break;
-
-            case 500:
-                if (showUserError) {
-                    showToast('error', serverMessage || 'Terjadi masalah pada server. Tim kami sedang memperbaikinya');
-                }
-                break;
-
-            case 503:
-                showToast('warning', serverMessage || 'Server sedang dalam pemeliharaan. Coba beberapa saat lagi');
-                break;
-
-            default:
-                if (showUserError && status >= 400) {
-                    const friendlyMessage = getFriendlyErrorMessage(status, serverMessage);
-                    showToast('error', friendlyMessage);
-                }
-        }
-
-        const errorObj = {
-            ...error,
-            response: {
-                ...error.response,
-                data: {
-                    status: 'error',
-                    message: serverMessage,
-                    errors: error.response.data?.errors || []
-                }
-            }
+    // Network error
+    if (!error.response) {
+        const message = 'Network error. Please check your internet connection.';
+        showToast('error', message);
+        return {
+            message,
+            status: 'network_error',
+            originalError: error,
         };
-        return errorObj;
-    } else if (error.request) {
-        if (!error.config?.hideErrorToast) {
-            showToast('error', 'Koneksi internet bermasalah. Silakan coba lagi');
-        }
-    } else {
-        if (!error.config?.hideErrorToast) {
-            showToast('error', 'Terjadi kesalahan yang tidak diketahui');
-        }
     }
 
-    return error;
+    const { response } = error;
+    const { status, data } = response;
+
+    let message = 'An unexpected error occurred.';
+
+    // Handle different HTTP status codes
+    switch (status) {
+        case 400:
+            message = data?.message || 'Bad request. Please check your input.';
+            break;
+        case 401:
+            message = data?.message || 'Unauthorized. Please login again.';
+            // Optionally redirect to login
+            // window.location.href = '/login';
+            break;
+        case 403:
+            message = data?.message || 'Forbidden. You don\'t have permission to perform this action.';
+            break;
+        case 404:
+            message = data?.message || 'Resource not found.';
+            break;
+        case 422:
+            message = data?.message || 'Validation error. Please check your input.';
+            break;
+        case 429:
+            message = data?.message || 'Too many requests. Please try again later.';
+            break;
+        case 500:
+            message = data?.message || 'Internal server error. Please try again later.';
+            break;
+        case 502:
+            message = data?.message || 'Bad gateway. Please try again later.';
+            break;
+        case 503:
+            message = data?.message || 'Service unavailable. Please try again later.';
+            break;
+        default:
+            message = data?.message || `Error ${status}: ${data?.error || 'Unknown error'}`;
+    }
+
+    showToast('error', message);
+
+    return {
+        message,
+        status,
+        data,
+        originalError: error,
+    };
 };
 
-const getFriendlyErrorMessage = (status, originalMessage) => {
-    if (originalMessage) {
-        return originalMessage;
+export const extractErrorMessage = (error, defaultMessage = 'An error occurred') => {
+    if (!error) return defaultMessage;
+
+    // If error is already processed by handleResponseError
+    if (error.message && error.status) {
+        return error.message;
     }
 
-    const friendlyMessages = {
-        400: 'Permintaan tidak valid. Periksa data yang Anda kirim',
-        405: 'Metode tidak diizinkan untuk endpoint ini',
-        408: 'Waktu permintaan habis. Coba lagi',
-        409: 'Data yang Anda kirim bertentangan dengan data yang ada',
-        413: 'File terlalu besar untuk diupload',
-        415: 'Format file tidak didukung',
-        500: 'Terjadi masalah pada server. Tim kami sedang memperbaikinya',
-        502: 'Server tidak dapat diakses sementara',
-        503: 'Server sedang dalam pemeliharaan',
-        504: 'Server membutuhkan waktu terlalu lama untuk merespons'
-    };
+    // If error has response data
+    if (error.response?.data?.message) {
+        return error.response.data.message;
+    }
 
-    return friendlyMessages[status] || 'Terjadi kesalahan yang tidak diketahui';
+    // If error has a message property
+    if (error.message) {
+        return error.message;
+    }
+
+    // If error is a string
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    return defaultMessage;
+};
+
+export const isNetworkError = (error) => {
+    return !error.response;
+};
+
+export const isAuthError = (error) => {
+    return error.response?.status === 401;
+};
+
+export const isValidationError = (error) => {
+    return error.response?.status === 422;
+};
+
+export const isServerError = (error) => {
+    const status = error.response?.status;
+    return status >= 500 && status < 600;
+};
+
+export const getErrorDetails = (error) => {
+    if (!error.response) {
+        return {
+            type: 'network',
+            message: 'Network error',
+            status: null,
+            data: null,
+        };
+    }
+
+    const { status, data } = error.response;
+
+    return {
+        type: getErrorType(status),
+        message: data?.message || 'Unknown error',
+        status,
+        data,
+    };
+};
+
+export const getErrorType = (status) => {
+    if (status >= 200 && status < 300) return 'success';
+    if (status >= 400 && status < 500) return 'client';
+    if (status >= 500) return 'server';
+    return 'unknown';
+};
+
+export const createErrorHandler = (options = {}) => {
+    const {
+        showToast: shouldShowToast = true,
+        logError: shouldLogError = true,
+        defaultMessage = 'An error occurred',
+    } = options;
+
+    return (error) => {
+        if (shouldLogError && IS_DEVELOPMENT) {
+            console.error('API Error:', error);
+        }
+
+        const processedError = handleResponseError(error);
+        
+        if (!shouldShowToast) {
+            // Remove toast from processed error
+            return {
+                ...processedError,
+                showToast: false,
+            };
+        }
+
+        return processedError;
+    };
+};
+
+export const withErrorHandling = (apiFunction) => {
+    return async (...args) => {
+        try {
+            return await apiFunction(...args);
+        } catch (error) {
+            const processedError = handleResponseError(error);
+            throw processedError;
+        }
+    };
 }; 

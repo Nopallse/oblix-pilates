@@ -1,0 +1,7 @@
+export { default } from './Website'
+export { default as Banner } from './Banner' 
+export { default as Gallery } from './Gallery'
+export { default as Trainer } from './Trainer'
+export { default as Testimonial } from './Testimonial'
+export { default as FAQ } from './FAQ'
+export { default as Blog } from './Blog' 

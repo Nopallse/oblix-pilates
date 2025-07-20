@@ -128,7 +128,7 @@ const ClassDetail = () => {
         variant="classCard"
       />
       <section className="py-6 sm:py-8 md:py-12 bg-white">
-        <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 md:py-6">
+        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           {/* Mobile Layout */}
           <div className="block lg:hidden">
             {/* Hero Image for Mobile */}
@@ -185,7 +185,7 @@ const ClassDetail = () => {
             </div>
 
             {/* Content Section */}
-            <div className="lg:col-span-2 px-6 my-auto max-w-xl">
+            <div className="lg:col-span-2 px-6 my-auto max-w-full">
               <div>
                 <h2 className="text-3xl font-raleway font-medium text-tertiary mb-4">
                   {classData.subTitle}
@@ -227,7 +227,7 @@ const ClassDetail = () => {
       </div>
 
       <section className="py-6 sm:py-8 md:py-12 bg-white">
-        <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-4 md:py-6">
+        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           <div className="flex flex-wrap justify-center gap-y-8 gap-x-8">
             {classData.equipment?.map((itemKey, index) => {
               const item = equipmentData[itemKey];

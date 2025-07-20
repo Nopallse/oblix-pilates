@@ -1,68 +1,43 @@
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { extractErrorMessage } from '../services/apiErrorHandler';
+import { useCallback } from 'react'
+import { showToast as showToastFromService } from '../services/apiErrorHandler'
 
+/**
+ * Custom hook for API toast notifications
+ * Provides consistent toast messaging across the application
+ */
 export const useApiToast = () => {
-    const [loading, setLoading] = useState(false);
+  // Success toast
+  const showSuccessToast = useCallback((message) => {
+    showToastFromService('success', message)
+  }, [])
 
-    const showToast = (type, message, duration = 3000) => {
-        switch (type) {
-            case 'success':
-                toast.success(message, { duration });
-                break;
-            case 'error':
-                toast.error(message, { duration });
-                break;
-            case 'warning':
-                toast.error(message, { duration }); // react-hot-toast doesn't have warning, use error
-                break;
-            case 'info':
-                toast.success(message, { duration }); // react-hot-toast doesn't have info, use success
-                break;
-            default:
-                toast(message, { duration });
-        }
-    };
+  // Error toast
+  const showErrorToast = useCallback((message) => {
+    showToastFromService('error', message)
+  }, [])
 
-    const showSuccessToast = (message, duration = 3000) => {
-        toast.success(message, { duration });
-    };
+  // Warning toast
+  const showWarningToast = useCallback((message) => {
+    showToastFromService('warning', message)
+  }, [])
 
-    const showErrorToast = (message, duration = 3000) => {
-        toast.error(message, { duration });
-    };
+  // Info toast
+  const showInfoToast = useCallback((message) => {
+    showToastFromService('info', message)
+  }, [])
 
-    const showLoadingToast = (message) => {
-        return toast.loading(message);
-    };
+  // Generic toast with type
+  const showToast = useCallback((type, message) => {
+    showToastFromService(type, message)
+  }, [])
 
-    const dismissToast = (toastId) => {
-        toast.dismiss(toastId);
-    };
+  return {
+    showToast,
+    showSuccessToast,
+    showErrorToast,
+    showWarningToast,
+    showInfoToast
+  }
+}
 
-    const dismissAllToasts = () => {
-        toast.dismiss();
-    };
-
-    const handleError = (error, fallbackMessage = 'Terjadi kesalahan') => {
-        const errorMessage = extractErrorMessage(error, fallbackMessage);
-        toast.error(errorMessage);
-        console.error('API Error:', error);
-    };
-
-    return {
-        showToast,
-        showSuccess: showSuccessToast,  // Add alias for showSuccess
-        showError: showErrorToast,      // Add alias for showError
-        showSuccessToast,
-        showErrorToast,
-        showLoadingToast,
-        dismissToast,
-        dismissAllToasts,
-        loading,
-        setLoading,
-        handleError
-    };
-};
-
-export default useApiToast; 
+export default useApiToast 

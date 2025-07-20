@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 const Modal = ({
   isOpen = false,
@@ -17,13 +18,27 @@ const Modal = ({
     }
 
     if (isOpen) {
+      console.log('Modal opened - setting body styles')
       document.addEventListener('keydown', handleEscape)
       document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
+      document.body.style.top = '0'
+      document.body.style.left = '0'
+      document.body.style.right = '0'
+      document.body.style.bottom = '0'
     }
 
     return () => {
+      console.log('Modal closed - resetting body styles')
       document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = 'unset'
+      document.body.style.position = 'unset'
+      document.body.style.width = 'unset'
+      document.body.style.top = 'unset'
+      document.body.style.left = 'unset'
+      document.body.style.right = 'unset'
+      document.body.style.bottom = 'unset'
     }
   }, [isOpen, onClose])
 
@@ -42,8 +57,27 @@ const Modal = ({
     className
   ].filter(Boolean).join(' ')
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
+  const modalContent = (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]" 
+      style={{
+        position: 'fixed',
+        top: '0px',
+        left: '0px',
+        right: '0px',
+        bottom: '0px',
+        width: '100vw',
+        height: '100vh',
+        minWidth: '100vw',
+        minHeight: '100vh',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        zIndex: 9999,
+        margin: 0,
+        padding: 0
+      }}
+      onClick={onClose}
+    >
       <div className={modalClasses} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex-1"></div>
@@ -64,6 +98,9 @@ const Modal = ({
       </div>
     </div>
   )
+
+  // Use portal to render modal at document body level
+  return createPortal(modalContent, document.body)
 }
 
 export default Modal

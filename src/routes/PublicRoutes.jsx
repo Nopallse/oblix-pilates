@@ -13,16 +13,17 @@ const PublicRoute = ({ children }) => {
 
   // Redirect authenticated users away from login page
   if (isAuthenticated && isLoginPage) {
-    const redirectTo = user?.type === 'admin' ? '/admin' : '/dashboard'
+    const userRole = user?.role || user?.type
+    const redirectTo = userRole === 'admin' ? '/admin' : '/dashboard'
     return <Navigate to={redirectTo} replace />
   }
 
   // Redirect authenticated admin away from all public pages
-  if (isAuthenticated && user?.type === 'admin') {
+  if (isAuthenticated && (user?.role === 'admin' || user?.type === 'admin')) {
     return <Navigate to="/admin" replace />
   }
 
-  if (isAuthenticated && user?.type === 'user') {
+  if (isAuthenticated && (user?.role === 'user' || user?.type === 'user')) {
     return <Navigate to="/dashboard" replace />
   }
 

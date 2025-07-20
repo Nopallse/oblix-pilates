@@ -14,14 +14,27 @@ const Input = ({
   error = '',
   label = '',
   className = '',
+  variant = '', // new prop
   ...props
 }) => {
+  // Style for 'soft' variant
+  const isSoft = variant === 'soft';
+  const inputClass = isSoft
+    ? `w-full text-base px-4 py-3 bg-[#fafafa] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder:text-gray-400 placeholder:text-base ${type === 'password' ? 'pr-12' : ''} ${className}`
+    : `w-full text-xs px-4 py-4 bg-white border border-[#E0E5F2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder:text-textSecondary placeholder:text-xs ${type === 'password' ? 'pr-12' : ''} ${className}`;
+  const labelClass = isSoft
+    ? 'block text-sm font-semibold text-gray-800 mb-2'
+    : 'block text-sm font-medium text-gray-700 mb-2';
+  const requiredClass = isSoft
+    ? 'text-xs text-red-500 align-super ml-0.5'
+    : 'text-red-500 ml-1';
+
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={id || name} className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor={id || name} className={labelClass}>
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className={requiredClass}>*</span>}
         </label>
       )}
       <div className="relative">
@@ -34,7 +47,7 @@ const Input = ({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
-          className={`w-full text-xs px-4 py-4 bg-white border border-[#E0E5F2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 placeholder:text-textSecondary placeholder:text-xs ${type === 'password' ? 'pr-12' : ''} ${className}`}
+          className={inputClass}
           {...props}
         />
         {type === 'password' && (
@@ -64,6 +77,4 @@ const Input = ({
   );
 };
 
-// ...existing code...
-
-export default Input
+export default Input;

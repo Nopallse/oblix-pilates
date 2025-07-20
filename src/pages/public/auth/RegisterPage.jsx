@@ -8,7 +8,7 @@ import { registerValidation, validateForm } from "./api/authValidation";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { register, isLoading, error, isAuthenticated, user, clearError } = useAuth();
+  const { register, isLoading, error, isAuthenticated, user } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -32,7 +32,6 @@ const RegisterPage = () => {
     
     // Clear previous errors
     setFieldErrors({});
-    clearError();
     
     // Validate form
     const validation = validateForm(formData, registerValidation);
@@ -47,11 +46,17 @@ const RegisterPage = () => {
       return;
     }
     
-    const result = await register(formData);
-    if (result.success) {
-      // The user state will be updated by the register function
-      // Navigation will be handled by the conditional render above
-    }
+    // Mapping field sesuai kebutuhan API
+    const apiData = {
+      full_name: formData.name,
+      username: formData.username,
+      email: formData.email,
+      dob: formData.dateOfBirth,
+      phone_number: formData.phoneNumber,
+      password: formData.password
+    };
+
+    await register(apiData);
   };
 
   const handleChange = (e) => {
@@ -63,7 +68,6 @@ const RegisterPage = () => {
       setFieldErrors({ ...fieldErrors, [name]: null });
     }
     
-    clearError();
   };
 
   const handleToggle = () => {

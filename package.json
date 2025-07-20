@@ -17,7 +17,9 @@
     "aos": "^2.3.4",
     "axios": "^1.10.0",
     "dotenv": "^16.6.0",
+    "formik": "^2.4.6",
     "framer-motion": "^12.23.3",
+    "immer": "^10.1.1",
     "jwt-decode": "^4.0.0",
     "keen-slider": "^6.8.6",
     "react": "^19.1.0",
@@ -26,7 +28,9 @@
     "react-router-dom": "^7.6.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^3.4.17",
-    "zustand": "^4.4.7"
+    "yub": "^0.11.1",
+    "yup": "^1.6.1",
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

@@ -13,7 +13,13 @@ const ScrollingTestimonials = ({ testimonials }) => {
             className="w-[260px] sm:w-[280px] md:w-[320px] lg:w-[400px] xl:w-[450px] flex-shrink-0"
           >
             <div className="transform hover:scale-105 transition-transform duration-300 h-full">
-              <TestimonialCard {...testimonial} />
+              <TestimonialCard
+                text={testimonial.content}
+                name={testimonial.name}
+                age={testimonial.age}
+                image={testimonial.image}
+                rating={testimonial.rating}
+              />
             </div>
           </div>
         ))}

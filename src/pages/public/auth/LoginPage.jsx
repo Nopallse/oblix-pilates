@@ -9,7 +9,7 @@ import { useAuth } from "./api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, isLoading, error, isAuthenticated, user, clearError } = useAuth();
+  const { login, loading: isLoading, error, isAuthenticated, user } = useAuth();  
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -25,22 +25,18 @@ const LoginPage = () => {
   }, []);
 
   if (isAuthenticated) {
-    const redirectPath = user?.type === "admin" ? "/admin" : "/dashboard";
+    const userRole = user?.role || user?.type
+    const redirectPath = userRole === "admin" ? "/admin" : "/dashboard";
     return <Navigate to={redirectPath} replace />;
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await login(credentials);
-    if (result.success) {
-      // The user state will be updated by the login function
-      // Navigation will be handled by the conditional render above
-    }
+    await login(credentials);
   };
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
-    clearError();
   };
 
   const handleToggle = () => {
