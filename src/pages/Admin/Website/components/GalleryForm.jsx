@@ -156,65 +156,66 @@ const GalleryForm = ({ isOpen, onClose, gallery = null, onSuccess, createGallery
     <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? 'Edit Gallery' : 'Add Gallery'}>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title Field */}
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Title *
           </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.title && formik.errors.title
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter gallery title"
-          />
-          {formik.touched.title && formik.errors.title && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.title}</p>
-          )}
+          <div className="flex-1">
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.title && formik.errors.title
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter gallery title"
+            />
+            {formik.touched.title && formik.errors.title && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.title}</p>
+            )}
+          </div>
         </div>
 
         {/* Picture Field */}
-        <div>
-          <label htmlFor="picture" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="picture" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Picture {!isEdit && '*'}
           </label>
-          <input
-            id="picture"
-            name="picture"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.picture && formik.errors.picture
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-          />
-          {formik.touched.picture && formik.errors.picture && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.picture}</p>
-          )}
-          
-          {/* Image Preview */}
-          {(imagePreview || gallery?.picture) && (
-            <div className="mt-3">
-              <img
-                src={imagePreview || getImageUrl(gallery?.picture)}
-                alt="Preview"
-                className="w-32 h-24 object-cover rounded-lg border border-gray-200"
-                onError={(e) => {
-                  console.log('Image failed to load:', e.target.src)
-                  // Fallback to default image if loading fails
-                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGM0Y0RjYiLz4KPHBhdGggZD0iTTI0IDEyQzI3LjMxMzcgMTIgMzAgMTQuNjg2MyAzMCAxOEMzMCAyMS4zMTM3IDI3LjMxMzcgMjQgMjQgMjRDMjAuNjg2MyAyNCAxOCAyMS4zMTM3IDE4IDE4QzE4IDE0LjY4NjMgMjAuNjg2MyAxMiAyNCAxMloiIGZpbGw9IiM5QjlCQTAiLz4KPHBhdGggZD0iTTEyIDQwQzEyIDM0LjQ3NzIgMTYuNDc3MiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo='
-                }}
-              />
-            </div>
-          )}
+          <div className="flex-1">
+            <input
+              id="picture"
+              name="picture"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.picture && formik.errors.picture
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+            />
+            {formik.touched.picture && formik.errors.picture && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.picture}</p>
+            )}
+            {/* Image Preview */}
+            {(imagePreview || gallery?.picture) && (
+              <div className="mt-3">
+                <img
+                  src={imagePreview || getImageUrl(gallery?.picture)}
+                  alt="Preview"
+                  className="w-32 h-24 object-cover rounded-lg border border-gray-200"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGM0Y0RjYiLz4KPHBhdGggZD0iTTI0IDEyQzI3LjMxMzcgMTIgMzAgMTQuNjg2MyAzMCAxOEMzMCAyMS4zMTM3IDI3LjMxMzcgMjQgMjQgMjRDMjAuNjg2MyAyNCAxOCAyMS4zMTM3IDE4IDE4QzE4IDE0LjY4NjMgMjAuNjg2MyAxMiAyNCAxMloiIGZpbGw9IiM5QjlCQTAiLz4KPHBhdGggZD0iTTEyIDQwQzEyIDM0LjQ3NzIgMTYuNDc3MiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo='
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Form Actions */}

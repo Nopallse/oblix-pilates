@@ -98,51 +98,55 @@ const FAQForm = ({ isOpen, onClose, faq = null, onSuccess, createFaq, updateFaq,
     <Modal isOpen={isOpen} onClose={handleClose} title={isEdit ? 'Edit FAQ' : 'Add FAQ'}>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title Field */}
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Title *
           </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.title && formik.errors.title
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter FAQ title"
-          />
-          {formik.touched.title && formik.errors.title && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.title}</p>
-          )}
+          <div className="flex-1">
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.title && formik.errors.title
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter FAQ title"
+            />
+            {formik.touched.title && formik.errors.title && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.title}</p>
+            )}
+          </div>
         </div>
 
         {/* Content Field */}
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Content *
           </label>
-          <textarea
-            id="content"
-            name="content"
-            rows={6}
-            value={formik.values.content}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.content && formik.errors.content
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter FAQ content"
-          />
-          {formik.touched.content && formik.errors.content && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.content}</p>
-          )}
+          <div className="flex-1">
+            <textarea
+              id="content"
+              name="content"
+              rows={6}
+              value={formik.values.content}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.content && formik.errors.content
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter FAQ content"
+            />
+            {formik.touched.content && formik.errors.content && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.content}</p>
+            )}
+          </div>
         </div>
 
         {/* Form Actions */}

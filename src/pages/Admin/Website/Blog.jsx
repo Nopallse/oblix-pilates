@@ -169,9 +169,11 @@ const Blog = () => {
   ]
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+
+      <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Blog Management</h1>
           <p className="text-gray-600">Manage your blog posts</p>
@@ -276,6 +278,7 @@ const Blog = () => {
           </div>
         </div>
       )}
+    </div>
     </div>
   )
 }

@@ -150,15 +150,15 @@ const Trainer = () => {
                             
                             return (
                               <div key={trainer.id || actualIndex} data-aos="fade-up" data-aos-delay={200 + (index * 100)}>
-                                <TrainerCard
+              <TrainerCard
                                   image={getImageUrl(trainer.picture)}
                                   name={trainer.title || 'Trainer Name'}
                                   description={trainer.description || 'Deskripsi Coach'}
                                   bio={trainer.description || 'Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session.'}
                                   instagram={trainer.instagram}
                                   tiktok={trainer.tiktok}
-                                />
-                              </div>
+              />
+            </div>
                             )
                           })}
                         </div>
@@ -166,7 +166,7 @@ const Trainer = () => {
                     )
                   })}
                 </div>
-              </div>
+            </div>
               
               {/* Navigation Buttons */}
               {getTotalSlides() > 1 && (
@@ -206,7 +206,7 @@ const Trainer = () => {
                       aria-label={`Go to slide ${index + 1}`}
                     />
                   ))}
-                </div>
+            </div>
               )}
             </div>
           )}
@@ -220,7 +220,7 @@ const Trainer = () => {
                 </svg>
                 <p className="text-lg">No trainers available</p>
                 <p className="text-sm mt-2">Check back later for our amazing trainers!</p>
-              </div>
+            </div>
             </div>
           )}
         </div>

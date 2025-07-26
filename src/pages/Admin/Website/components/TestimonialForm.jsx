@@ -121,63 +121,65 @@ const TestimonialForm = ({ isOpen, onClose, testimonial = null, onSuccess, creat
     <Modal isOpen={isOpen} onClose={handleClose} title={isEdit ? 'Edit Testimonial' : 'Add Testimonial'}>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name Field */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Name *
           </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.name && formik.errors.name
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter customer name"
-          />
-          {formik.touched.name && formik.errors.name && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.name}</p>
-          )}
+          <div className="flex-1">
+            <input
+              id="name"
+              name="name"
+              type="text"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.name && formik.errors.name
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter customer name"
+            />
+            {formik.touched.name && formik.errors.name && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.name}</p>
+            )}
+          </div>
         </div>
 
         {/* Content Field */}
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Content *
           </label>
-          <textarea
-            id="content"
-            name="content"
-            rows={4}
-            value={formik.values.content}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.content && formik.errors.content
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter testimonial content"
-          />
-          {formik.touched.content && formik.errors.content && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.content}</p>
-          )}
+          <div className="flex-1">
+            <textarea
+              id="content"
+              name="content"
+              rows={4}
+              value={formik.values.content}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.content && formik.errors.content
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter testimonial content"
+            />
+            {formik.touched.content && formik.errors.content && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.content}</p>
+            )}
+          </div>
         </div>
 
         {/* Age Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Age *
           </label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-1">
             {renderAgeInput()}
-            <span className="text-sm text-gray-600">
-              years old
-            </span>
+            <span className="text-sm text-gray-600">years old</span>
           </div>
           {formik.touched.age && formik.errors.age && (
             <p className="mt-1 text-sm text-red-600">{formik.errors.age}</p>

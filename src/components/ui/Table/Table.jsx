@@ -12,7 +12,7 @@ const Table = ({ columns, data, onEdit, onDelete, emptyMessage = "No data availa
           {columns.map((column, index) => (
             <div 
               key={index} 
-              className={`text-sm font-medium text-gray-700 uppercase tracking-wider ${
+              className={`text-sm font-medium text-primary tracking-wider ${
                 column.className || ''
               }`}
               style={{ gridColumn: `span ${column.span || 1}` }}

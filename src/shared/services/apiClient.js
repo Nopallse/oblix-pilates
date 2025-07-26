@@ -135,7 +135,7 @@ export const get = async (endpoint, options = {}) => {
 
     return {
       success: true,
-      data: response.data,
+      data: response.data.data,
       status: response.status
     }
   } catch (error) {
@@ -189,7 +189,7 @@ export const post = async (endpoint, data = null, options = {}) => {
 
     return {
       success: true,
-      data: response.data,
+      data: response.data.data,
       status: response.status
     }
   } catch (error) {
@@ -243,7 +243,7 @@ export const put = async (endpoint, data = null, options = {}) => {
 
     return {
       success: true,
-      data: response.data,
+      data: response.data.data,
       status: response.status
     }
   } catch (error) {
@@ -297,7 +297,7 @@ export const patch = async (endpoint, data = null, options = {}) => {
 
     return {
       success: true,
-      data: response.data,
+      data: response.data.data,
       status: response.status
     }
   } catch (error) {
@@ -340,7 +340,7 @@ export const del = async (endpoint, options = {}) => {
 
     return {
       success: true,
-      data: response.data,
+      data: response.data.data,
       status: response.status
     }
   } catch (error) {

@@ -7,11 +7,11 @@ const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Get current URL information
+  // Mendapatkan informasi URL saat ini
   const location = useLocation();
   const pathname = location.pathname;
 
-  // Handle scroll events for header styling
+  // Handle event scroll untuk styling header
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -23,12 +23,12 @@ const PublicHeader = () => {
     };
   }, []);
 
-  // Close mobile menu when route changes
+  // Tutup menu mobile saat route berubah
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // Prevent body scroll when menu is open
+  // Cegah scroll body saat menu terbuka
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -41,11 +41,11 @@ const PublicHeader = () => {
     };
   }, [isMenuOpen]);
 
-  // Function to determine active menu class
+  // Fungsi untuk menentukan class menu aktif (desktop)
   const getNavLinkClass = (path) => {
     const baseClasses = "transition-colors font-montserrat";
-    const activeClasses = "text-primary font-medium";
-    const inactiveClasses = "text-white hover:text-primary";
+    const activeClasses = "text-white font-extrabold";
+    const inactiveClasses = "text-white font-normal";
 
     if (path === "/" && pathname === "/") {
       return `${baseClasses} ${activeClasses}`;
@@ -55,11 +55,11 @@ const PublicHeader = () => {
     return `${baseClasses} ${inactiveClasses}`;
   };
 
-  // Mobile menu link class
+  // Fungsi untuk menentukan class menu aktif (mobile)
   const getMobileNavLinkClass = (path) => {
     const baseClasses = "block py-4 px-6 text-lg transition-all duration-200 font-montserrat";
-    const activeClasses = "text-primary font-semibold bg-primary/10 border-l-4 border-primary";
-    const inactiveClasses = "text-white hover:text-primary hover:bg-white/10";
+    const activeClasses = "text-white font-extrabold bg-white/10 border-l-4 border-white";
+    const inactiveClasses = "text-white font-normal";
 
     if (path === "/" && pathname === "/") {
       return `${baseClasses} ${activeClasses}`;
@@ -72,8 +72,8 @@ const PublicHeader = () => {
   return (
     <>
       <header
-        className={`bg-secondary text-white fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "shadow-xl backdrop-blur-sm bg-secondary/95" : "shadow-sm"
+        className={`bg-primary text-white fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? "shadow-xl backdrop-blur-sm bg-primary/95" : "shadow-sm"
         }`}
       >
         <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-3 sm:py-4 md:py-5 lg:py-6 flex justify-between items-center">
@@ -129,7 +129,7 @@ const PublicHeader = () => {
             <div className="hidden sm:flex space-x-2 md:space-x-3 lg:space-x-4">
               <Button
                 to="/book-trial"
-                variant="primary"
+                variant="outline-white"
                 size="small"
                 className="text-xs sm:text-sm lg:text-base px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2"
               >
@@ -137,7 +137,7 @@ const PublicHeader = () => {
               </Button>
               <Button
                 to="/login"
-                variant="outline-white"
+                variant="filled-white"
                 size="small"
                 className="text-xs sm:text-sm lg:text-base px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2"
               >
@@ -285,7 +285,7 @@ const PublicHeader = () => {
             </Button>
             <Button
               to="/login"
-              variant="outline"
+              variant="filled-white"
               size="medium"
               onClick={() => setIsMenuOpen(false)}
               className="w-full text-sm sm:text-base"

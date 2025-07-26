@@ -120,16 +120,16 @@ const Sidebar = ({ user, isOpen, onClose, collapsed }) => {
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-auto bg-white shadow-xl transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 h-full bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:shadow-xl
+        lg:translate-x-0 lg:static lg:h-auto lg:shadow-xl lg:z-auto
         ${collapsed ? 'w-20' : 'w-64'}
       `}>
         {/* Sidebar Header */}

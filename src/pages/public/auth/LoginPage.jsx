@@ -19,9 +19,12 @@ const LoginPage = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
 
-  // Clear toast ketika component mount
+  // Clear toast hanya ketika component unmount atau route berubah
   useEffect(() => {
-    toast.dismiss();
+    return () => {
+      // Cleanup toast hanya ketika component unmount
+      // toast.dismiss();
+    };
   }, []);
 
   if (isAuthenticated) {

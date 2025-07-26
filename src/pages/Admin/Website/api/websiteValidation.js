@@ -38,7 +38,7 @@ export const bannerUpdateValidationSchema = Yup.object({
             if (typeof value === 'string') return true;
             // Only validate if it's a File object
             if (value instanceof File) {
-                return value.size <= 5 * 1024 * 1024; // 5MB
+            return value.size <= 5 * 1024 * 1024; // 5MB
             }
             return true;
         })
@@ -48,7 +48,7 @@ export const bannerUpdateValidationSchema = Yup.object({
             if (typeof value === 'string') return true;
             // Only validate if it's a File object
             if (value instanceof File) {
-                return ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(value.type);
+            return ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(value.type);
             }
             return true;
         }),
@@ -88,7 +88,7 @@ export const galleryUpdateValidationSchema = Yup.object({
             if (typeof value === 'string') return true;
             // Only validate if it's a File object
             if (value instanceof File) {
-                return value.size <= 5 * 1024 * 1024; // 5MB
+            return value.size <= 5 * 1024 * 1024; // 5MB
             }
             return true;
         })
@@ -98,7 +98,7 @@ export const galleryUpdateValidationSchema = Yup.object({
             if (typeof value === 'string') return true;
             // Only validate if it's a File object
             if (value instanceof File) {
-                return ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(value.type);
+            return ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(value.type);
             }
             return true;
         }),
@@ -164,7 +164,7 @@ export const trainerUpdateValidationSchema = Yup.object({
             if (typeof value === 'string') return true;
             // Only validate if it's a File object
             if (value instanceof File) {
-                return value.size <= 5 * 1024 * 1024; // 5MB
+            return value.size <= 5 * 1024 * 1024; // 5MB
             }
             return true;
         })
@@ -174,7 +174,7 @@ export const trainerUpdateValidationSchema = Yup.object({
             if (typeof value === 'string') return true;
             // Only validate if it's a File object
             if (value instanceof File) {
-                return ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(value.type);
+            return ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(value.type);
             }
             return true;
         }),

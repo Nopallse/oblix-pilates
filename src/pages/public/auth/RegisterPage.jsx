@@ -5,6 +5,7 @@ import Input from "../../../components/ui/Input/Input";
 import Button from "../../../components/ui/Button/Button";
 import { useAuth } from "./api";
 import { registerValidation, validateForm } from "./api/authValidation";
+import { showToast } from "../../../shared/services/apiErrorHandler";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -56,7 +57,16 @@ const RegisterPage = () => {
       password: formData.password
     };
 
-    await register(apiData);
+    try {
+      const result = await register(apiData);
+      if (result) {
+        // Register berhasil, toast success akan ditampilkan oleh useAuth
+        showToast('success', 'Registrasi berhasil! Silakan login dengan akun Anda.');
+      }
+    } catch (error) {
+      // Error sudah dihandle di useAuth hook
+      console.log('Register error caught in RegisterPage:', error);
+    }
   };
 
   const handleChange = (e) => {

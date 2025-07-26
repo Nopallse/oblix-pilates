@@ -33,42 +33,34 @@ export const useProfile = () => {
 
   // Load profile data
   const loadProfile = useCallback(async () => {
-    console.log('Loading profile data...')
     setLoading(true)
     setError(null)
-    
     try {
       const response = await profileAPI.getProfile()
-      console.log('Profile API Response:', response)
-      
-      // Mapping data sesuai response API
-      const user = response.data.data
-      const member = user.member || {}
-
+      if (!response.success || !response.data) {
+        throw new Error('Profile data not found')
+      }
+      const user = response.data
+      console.log('user Response:', user)
       const newProfileData = {
         id: user.id,
         email: user.email,
-        role: user.role,
-        username: member.username || '',
-        full_name: member.full_name || '',
-        phone_number: member.phone_number || '',
-        dob: member.dob || '',
-        picture: member.picture || '',
-        member_code: member.member_code || '',
-        address: member.address || '',
-        date_of_join: member.date_of_join || '',
-        status: member.status || '',
-        // tambahkan field lain jika perlu
+        username: user.username || '',
+        full_name: user.full_name || '',
+        phone_number: user.phone_number || '',
+        dob: user.dob || '',
+        picture: user.picture || '',
+        member_code: user.member_code || '',
+        address: user.address || '',
+        date_of_join: user.date_of_join || '',
+        status: user.status || '',
       }
-
-      console.log('Setting new profile data:', newProfileData)
+      // ...mapping seperti sebelumnya
       setProfile(newProfileData)
-      
-      console.log('Profile data updated successfully')
     } catch (err) {
       const errorMessage = extractErrorMessage(err, 'Gagal memuat profile')
       setError(errorMessage)
-      throw err
+      setProfile(null) // atau biarkan profile tetap null
     } finally {
       setLoading(false)
     }

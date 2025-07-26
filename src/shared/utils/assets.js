@@ -29,6 +29,8 @@ import instagramIcon from '@assets/svg/icons/instagram.svg';
 import locationIcon from '@assets/svg/icons/location.svg';
 import phoneIcon from '@assets/svg/icons/phone.svg';
 import tiktokIcon from '@assets/svg/icons/tiktok.svg';
+import editIcon from '@assets/svg/icons/edit.svg';
+import deleteIcon from '@assets/svg/icons/delete.svg';
 
 // Import Equipment SVG
 import barrelSvg from '@assets/svg/equipment/barrel.svg';
@@ -79,7 +81,9 @@ export const icons = {
     instagram: instagramIcon,
     location: locationIcon,
     phone: phoneIcon,
-    tiktok: tiktokIcon
+    tiktok: tiktokIcon,
+    edit: editIcon,
+    delete: deleteIcon
 }
 
 export const equipment = {

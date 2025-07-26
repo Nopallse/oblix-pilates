@@ -82,7 +82,7 @@ const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollaps
                 <img 
                   src={logoSekunder} 
                   alt="Oblix Pilates Admin" 
-                  className="h-6 sm:h-7 md:h-8 lg:h-9 w-auto transition-transform duration-200 group-hover:scale-105" 
+                  className="h-6 sm:h-7 md:h-8 lg:h-9 w-auto transition-transform duration-200" 
                 />
                 <span className="ml-2 text-white font-semibold text-sm sm:text-base lg:text-lg">Admin</span>
               </Link>

@@ -16,8 +16,8 @@ const Admin = () => {
       <Route path="/website/banner" element={<Banner />} />
       <Route path="/website/gallery" element={<Gallery />} />
       <Route path="/website/trainer" element={<Trainer />} />
-      <Route path="/website/testimonial" element={<Testimonial />} />
-      <Route path="/website/faq" element={<FAQ />} />
+              <Route path="/website/testimonial" element={<Testimonial />} />
+        <Route path="/website/faq" element={<FAQ />} />
       <Route path="/website/blog" element={<Blog />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

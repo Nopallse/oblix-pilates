@@ -184,137 +184,131 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
     <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? 'Edit Trainer' : 'Add Trainer'}>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title Field */}
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-            Title *
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
+            Title
           </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.title && formik.errors.title
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter trainer title"
-          />
-          {formik.touched.title && formik.errors.title && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.title}</p>
-          )}
+          <div className="flex-1">
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.title && formik.errors.title
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter trainer title"
+            />
+            {formik.touched.title && formik.errors.title && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.title}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Picture Field (moved here) */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="picture" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
+            Picture
+          </label>
+          <div className="flex-1">
+            <input
+              id="picture"
+              name="picture"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.picture && formik.errors.picture
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+            />
+            {formik.touched.picture && formik.errors.picture && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.picture}</p>
+            )}
+          </div>
         </div>
 
         {/* Description Field */}
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-            Description *
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
+            Description
           </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={4}
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.description && formik.errors.description
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="Enter trainer description"
-          />
-          {formik.touched.description && formik.errors.description && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.description}</p>
-          )}
+          <div className="flex-1">
+            <textarea
+              id="description"
+              name="description"
+              rows={4}
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.description && formik.errors.description
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="Enter trainer description"
+            />
+            {formik.touched.description && formik.errors.description && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.description}</p>
+            )}
+          </div>
         </div>
 
         {/* Instagram Field */}
-        <div>
-          <label htmlFor="instagram" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="instagram" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             Instagram URL
           </label>
-          <input
-            id="instagram"
-            name="instagram"
-            type="url"
-            value={formik.values.instagram}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.instagram && formik.errors.instagram
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="https://instagram.com/username"
-          />
-          {formik.touched.instagram && formik.errors.instagram && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.instagram}</p>
-          )}
+          <div className="flex-1">
+            <input
+              id="instagram"
+              name="instagram"
+              type="url"
+              value={formik.values.instagram}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.instagram && formik.errors.instagram
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="https://instagram.com/username"
+            />
+            {formik.touched.instagram && formik.errors.instagram && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.instagram}</p>
+            )}
+          </div>
         </div>
 
         {/* TikTok Field */}
-        <div>
-          <label htmlFor="tiktok" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <label htmlFor="tiktok" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
             TikTok URL
           </label>
-          <input
-            id="tiktok"
-            name="tiktok"
-            type="url"
-            value={formik.values.tiktok}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.tiktok && formik.errors.tiktok
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-            placeholder="https://tiktok.com/@username"
-          />
-          {formik.touched.tiktok && formik.errors.tiktok && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.tiktok}</p>
-          )}
-        </div>
-
-        {/* Picture Field */}
-        <div>
-          <label htmlFor="picture" className="block text-sm font-medium text-gray-700 mb-2">
-            Picture
-          </label>
-          <input
-            id="picture"
-            name="picture"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              formik.touched.picture && formik.errors.picture
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-primary'
-            }`}
-          />
-          {formik.touched.picture && formik.errors.picture && (
-            <p className="mt-1 text-sm text-red-600">{formik.errors.picture}</p>
-          )}
-          
-          {/* Image Preview */}
-          {imagePreview && (
-            <div className="mt-3">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-32 h-32 object-cover rounded-full border border-gray-200"
-                onError={(e) => {
-                  console.log('Image failed to load:', e.target.src)
-                  // Fallback to default image if loading fails
-                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGM0Y0RjYiLz4KPHBhdGggZD0iTTI0IDEyQzI3LjMxMzcgMTIgMzAgMTQuNjg2MyAzMCAxOEMzMCAyMS4zMTM3IDI3LjMxMzcgMjQgMjQgMjRDMjAuNjg2MyAyNCAxOCAyMS4zMTM3IDE4IDE4QzE4IDE0LjY4NjMgMjAuNjg2MyAxMiAyNCAxMloiIGZpbGw9IiM5QjlCQTAiLz4KPHBhdGggZD0iTTEyIDQwQzEyIDM0LjQ3NzIgMTYuNDc3MiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo='
-                }}
-              />
-            </div>
-          )}
+          <div className="flex-1">
+            <input
+              id="tiktok"
+              name="tiktok"
+              type="url"
+              value={formik.values.tiktok}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                formik.touched.tiktok && formik.errors.tiktok
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-primary'
+              }`}
+              placeholder="https://tiktok.com/@username"
+            />
+            {formik.touched.tiktok && formik.errors.tiktok && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.tiktok}</p>
+            )}
+          </div>
         </div>
 
         {/* Form Actions */}
@@ -333,7 +327,7 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
             loading={loading}
             disabled={loading}
           >
-            {isEdit ? 'Update Trainer' : 'Create Trainer'}
+            {isEdit ? 'Save' : 'Create Trainer'}
           </Button>
         </div>
       </form>

@@ -55,16 +55,16 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <div className={`
-        fixed top-0 left-0 h-auto bg-white shadow-lg  transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:shadow-none
+        lg:translate-x-0 lg:static lg:h-auto lg:shadow-none lg:z-auto
         ${collapsed ? 'w-20' : 'w-64'}
       `}>
         {/* Sidebar Header */}
@@ -92,7 +92,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
                     }
                   }}
                   className={`
-                    flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-colors
+                    flex items-center px-3 py-3 rounded-xl text-sm font-medium transition-colors
                     ${isActive(item.path) 
                       ? 'bg-primary bg-opacity-20 text-primary font-semibold ' 
                       : 'text-gray-600 hover:bg-primary hover:bg-opacity-20 hover:text-primary'

@@ -18,7 +18,8 @@ const Button = ({
     primary: 'bg-primary text-white hover:bg-opacity-90 focus:ring-primary disabled:bg-opacity-50',
     secondary: 'bg-secondary text-white hover:bg-opacity-90 focus:ring-secondary disabled:bg-opacity-50',
     outline: 'border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-white focus:ring-primary disabled:opacity-50',
-    'outline-white': 'border border-primary text-white hover:bg-primary hover:text-white focus:ring-primary disabled:opacity-50',
+    'outline-white': 'border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary focus:ring-white disabled:opacity-50',
+    'filled-white': 'bg-white text-primary hover:bg-gray-100 focus:ring-white disabled:opacity-50',
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300',
     submit: 'w-full bg-primary text-white font-bold py-3 px-4 rounded-xl hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
   }

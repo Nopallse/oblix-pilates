@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@shared/store/authStore';
 import { authAPI } from './authAPI';
-import { extractErrorMessage } from '@shared/services/apiErrorHandler';
+import { extractErrorMessage, showToast } from '@shared/services/apiErrorHandler';
 import { getErrorType } from '@shared/services/apiErrorHandler';
 
 export const useAuth = () => {
@@ -45,7 +45,7 @@ export const useAuth = () => {
                 console.log("Response data keys:", Object.keys(response.data));
                 
                 // Handle nested data structure
-                const actualData = response.data.data || response.data;
+                const actualData = response.data;
                 console.log("Actual data:", actualData);
                 console.log("Actual data keys:", Object.keys(actualData));
                 
@@ -86,7 +86,9 @@ export const useAuth = () => {
         } catch (err) {
             const errorMessage = extractErrorMessage(err, 'Login gagal');
             setError(errorMessage);
-            throw err;
+            showToast('error', errorMessage);
+            // Tidak perlu throw error lagi karena toast sudah ditampilkan
+            return null;
         } finally {
             setLoading(false);
             setAuthLoading(false);
@@ -126,7 +128,9 @@ export const useAuth = () => {
         } catch (err) {
             const errorMessage = extractErrorMessage(err, 'Registrasi gagal');
             setError(errorMessage);
-            throw err;
+            showToast('error', errorMessage);
+            // Tidak perlu throw error lagi karena toast sudah ditampilkan
+            return null;
         } finally {
             setLoading(false);
             setAuthLoading(false);

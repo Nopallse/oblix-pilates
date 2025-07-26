@@ -14,9 +14,9 @@ const ChangePasswordForm = ({
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-6 bg-white rounded-lg shadow-sm p-6 mb-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Change Password</h2>
+    <h2 className="text-xl font-semibold text-gray-900 mb-6">Change Password</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Current Password Field */}
         <div>
           <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-2">
@@ -25,7 +25,7 @@ const ChangePasswordForm = ({
           <input
             id="currentPassword"
             name="currentPassword"
-            type={showPassword ? 'text' : 'password'}
+        type={showPassword ? 'text' : 'password'}
             value={formik.values.currentPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -34,7 +34,7 @@ const ChangePasswordForm = ({
                 ? 'border-red-500 focus:ring-red-500'
                 : 'border-gray-300 focus:ring-primary'
             }`}
-            placeholder="Enter your current password"
+        placeholder="Enter your current password"
           />
           {formik.touched.currentPassword && formik.errors.currentPassword && (
             <p className="mt-1 text-sm text-red-600">{formik.errors.currentPassword}</p>
@@ -49,7 +49,7 @@ const ChangePasswordForm = ({
           <input
             id="newPassword"
             name="newPassword"
-            type={showPassword ? 'text' : 'password'}
+        type={showPassword ? 'text' : 'password'}
             value={formik.values.newPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -58,7 +58,7 @@ const ChangePasswordForm = ({
                 ? 'border-red-500 focus:ring-red-500'
                 : 'border-gray-300 focus:ring-primary'
             }`}
-            placeholder="Enter your new password"
+        placeholder="Enter your new password"
           />
           {formik.touched.newPassword && formik.errors.newPassword && (
             <p className="mt-1 text-sm text-red-600">{formik.errors.newPassword}</p>
@@ -73,7 +73,7 @@ const ChangePasswordForm = ({
           <input
             id="confirmPassword"
             name="confirmPassword"
-            type={showPassword ? 'text' : 'password'}
+        type={showPassword ? 'text' : 'password'}
             value={formik.values.confirmPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -82,27 +82,27 @@ const ChangePasswordForm = ({
                 ? 'border-red-500 focus:ring-red-500'
                 : 'border-gray-300 focus:ring-primary'
             }`}
-            placeholder="Confirm your new password"
-          />
+        placeholder="Confirm your new password"
+      />
           {formik.touched.confirmPassword && formik.errors.confirmPassword && (
             <p className="mt-1 text-sm text-red-600">{formik.errors.confirmPassword}</p>
           )}
         </div>
-      </div>
+    </div>
 
       {/* Password Visibility Toggle */}
-      <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          className="text-sm text-blue-600 hover:text-blue-800"
-        >
-          {showPassword ? 'Hide' : 'Show'} Password
-        </button>
-      </div>
+    <div className="flex items-center justify-between">
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="text-sm text-blue-600 hover:text-blue-800"
+      >
+        {showPassword ? 'Hide' : 'Show'} Password
+      </button>
+    </div>
 
       {/* Form Actions */}
-      <div className="flex justify-end space-x-3 pt-4">
+    <div className="flex justify-end space-x-3 pt-4">
         <Button
           type="button"
           variant="secondary"
@@ -111,17 +111,17 @@ const ChangePasswordForm = ({
         >
           Cancel
         </Button>
-        <Button
-          type="submit"
-          variant="submit"
-          loading={loading}
-          disabled={loading}
-        >
-          Change Password
-        </Button>
-      </div>
-    </form>
-  );
+      <Button
+        type="submit"
+        variant="submit"
+        loading={loading}
+        disabled={loading}
+      >
+        Change Password
+      </Button>
+    </div>
+  </form>
+);
 };
 
 export default ChangePasswordForm; 

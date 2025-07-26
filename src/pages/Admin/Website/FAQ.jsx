@@ -14,13 +14,7 @@ const FAQ = () => {
   )
 
   // Debug component data
-  console.log('FAQ Component - Received data:', {
-    faqs: faqs,
-    safeFaqs: safeFaqs,
-    loading: loading,
-    faqsLength: faqs?.length,
-    safeFaqsLength: safeFaqs?.length
-  })
+  // console.log('FAQ Component - Received data:', { faqs, safeFaqs, loading })
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this FAQ?')) {
@@ -107,55 +101,56 @@ const FAQ = () => {
   ]
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-900">FAQ</h1>
-        <Button variant="primary" size="medium" onClick={handleAdd}>
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add FAQ
-        </Button>
-      </div>
-
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-sm text-gray-500">Loading FAQs...</p>
+    <div className="min-h-screen py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-3xl font-semibold text-gray-900">FAQ</h1>
+          <Button variant="primary" size="medium" onClick={handleAdd}>
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add FAQ
+          </Button>
         </div>
-      )}
 
-      {/* Custom Table - Only render when not loading */}
-      {!loading && (
-        <Table 
-          columns={columns} 
-          data={safeFaqs} 
-          emptyMessage="Get started by creating a new FAQ."
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-2 text-sm text-gray-500">Loading FAQs...</p>
+          </div>
+        )}
+
+        {/* Custom Table - Only render when not loading */}
+        {!loading && (
+          <Table 
+            columns={columns} 
+            data={safeFaqs} 
+            emptyMessage="Get started by creating a new FAQ."
+          />
+        )}
+
+        {/* FAQ Form Modal */}
+        <FAQForm
+          isOpen={isFormOpen}
+          onClose={() => {
+            setIsFormOpen(false)
+            setSelectedFaq(null)
+          }}
+          faq={selectedFaq}
+          onSuccess={() => {
+            // Refresh FAQs after successful operation
+            if (fetchFaqs) {
+              fetchFaqs()
+            }
+            setIsFormOpen(false)
+            setSelectedFaq(null)
+          }}
+          createFaq={createFaq}
+          updateFaq={updateFaq}
+          fetchFaqs={fetchFaqs}
         />
-      )}
-
-      {/* FAQ Form Modal */}
-      <FAQForm
-        isOpen={isFormOpen}
-        onClose={() => {
-          setIsFormOpen(false)
-          setSelectedFaq(null)
-        }}
-        faq={selectedFaq}
-        onSuccess={() => {
-          // Refresh FAQs after successful operation
-          if (fetchFaqs) {
-            fetchFaqs()
-          }
-          setIsFormOpen(false)
-          setSelectedFaq(null)
-        }}
-        createFaq={createFaq}
-        updateFaq={updateFaq}
-        fetchFaqs={fetchFaqs}
-      />
+      </div>
     </div>
   )
 }

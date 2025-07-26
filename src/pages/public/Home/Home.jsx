@@ -445,13 +445,13 @@ const Home = () => {
                       <p className="text-gray-400 mt-2">Please check back later.</p>
                     </div>
                   ) : (
-                    <ImageSlider
+                  <ImageSlider
                       images={banners.map(banner => ({
                         src: getBannerImageUrl(banner.picture),
                         alt: banner.title || "Oblix Pilates",
                       }))}
-                      autoSlideInterval={5000}
-                    />
+                  autoSlideInterval={5000}
+                  />
                   )}
                 </div>
                 </section>
@@ -514,13 +514,13 @@ const Home = () => {
                 </div>
               </div>
             ) : (
-              <DraggableAutoScrollSlider
+            <DraggableAutoScrollSlider
                 images={galleries.map(gallery => ({
                   src: getGalleryImageUrl(gallery.picture),
                   alt: gallery.title || "Pilates Gallery",
                 }))}
-                autoScrollSpeed={1.2}
-              />
+              autoScrollSpeed={1.2}
+            />
             )}
           </div>
         </div>
@@ -710,15 +710,15 @@ const Home = () => {
                             
                             return (
                               <div key={trainer.id || actualIndex} data-aos="fade-up" data-aos-delay={200 + (index * 100)}>
-                                <TrainerCard
+                      <TrainerCard
                                   image={getImageUrl(trainer.picture)}
                                   name={trainer.title || 'Trainer Name'}
                                   description={trainer.description || 'Deskripsi Coach'}
                                   bio={trainer.description || 'Our certified trainers are the best at what they do—skilled, supportive, and ready to help you move better and feel stronger in every session.'}
                                   instagram={trainer.instagram}
                                   tiktok={trainer.tiktok}
-                                />
-                              </div>
+                      />
+                    </div>
                             )
                           })}
                         </div>
@@ -731,25 +731,25 @@ const Home = () => {
               {/* Navigation Buttons */}
               {getTrainerTotalSlides() > 1 && (
                 <>
-                  <button
-                    onClick={prevTrainerSlide}
+              <button
+                onClick={prevTrainerSlide}
                     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200 z-10"
                     aria-label="Previous slide"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  
-                  <button
-                    onClick={nextTrainerSlide}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button
+                onClick={nextTrainerSlide}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200 z-10"
                     aria-label="Next slide"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
                 </>
               )}
               
@@ -757,16 +757,16 @@ const Home = () => {
               {getTrainerTotalSlides() > 1 && (
                 <div className="flex justify-center mt-6 space-x-2">
                   {Array.from({ length: getTrainerTotalSlides() }, (_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentTrainerSlide(index)}
-                      className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                        index === currentTrainerSlide ? 'bg-primary' : 'bg-gray-300'
-                      }`}
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTrainerSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      index === currentTrainerSlide ? 'bg-primary' : 'bg-gray-300'
+                    }`}
                       aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
-                </div>
+                  />
+                ))}
+              </div>
               )}
             </div>
           )}
@@ -780,7 +780,7 @@ const Home = () => {
                 </svg>
                 <p className="text-lg">No trainers available</p>
                 <p className="text-sm mt-2">Check back later for our amazing trainers!</p>
-              </div>
+            </div>
             </div>
           )}
         </div>
@@ -819,10 +819,10 @@ const Home = () => {
                   <p className="text-white/60 mt-2">Please check back later.</p>
                 </div>
               ) : (
-                <DraggableTestimonialSlider
+              <DraggableTestimonialSlider
                   testimonials={testimonials}
-                  autoScrollSpeed={0.8}
-                />
+                autoScrollSpeed={0.8}
+              />
               )}
             </div>
           </div>
