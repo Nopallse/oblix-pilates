@@ -88,7 +88,7 @@ const Trainer = () => {
   return (
     <PublicLayout>
       <section className="py-8 sm:py-12 bg-white">
-        <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-secondary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
               <span className="font-raleway">Meet our</span>

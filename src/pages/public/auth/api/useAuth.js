@@ -52,6 +52,7 @@ export const useAuth = () => {
                 const user = actualData.user;
                 console.log("User object:", user);
                 console.log("User object keys:", user ? Object.keys(user) : 'No user object');
+                console.log("has_purchased_package:", user?.has_purchased_package);
 
                 const { accessToken, refreshToken } = actualData;
                 
@@ -62,6 +63,7 @@ export const useAuth = () => {
                 const userRole = user?.role || user?.type || user?.user_type || user?.userType || 'user';
                 console.log('User role detected:', userRole);
                 console.log('User object for role detection:', user);
+                console.log('has_purchased_package:', user?.has_purchased_package);
                 
                 // Redirect based on role
                 let redirectPath;
@@ -75,6 +77,7 @@ export const useAuth = () => {
                     userRole,
                     redirectPath,
                     user,
+                    hasPurchasedPackage: user?.has_purchased_package,
                     actualData
                 });
 

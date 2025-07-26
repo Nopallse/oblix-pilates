@@ -22,6 +22,7 @@ const PrivateRoute = ({ children, requireAdmin = false }) => {
     isLoading,
     user,
     userRole: user?.role || user?.type,
+    hasPurchasedPackage: user?.has_purchased_package,
     requireAdmin,
     isAdminResult: isAdmin()
   })
@@ -48,14 +49,24 @@ const PrivateRoute = ({ children, requireAdmin = false }) => {
   // Determine layout based on user role
   const userRole = user?.role || user?.type
   const isAdminUser = userRole === 'admin' || userRole === 'ADMIN'
-  const Layout = isAdminUser ? AdminLayout : UserLayout
+  const hasPurchasedPackage = user?.has_purchased_package
 
-  console.log('Using layout:', isAdminUser ? 'AdminLayout' : 'UserLayout')
+  // For admin users, always use AdminLayout
+  if (isAdminUser) {
+    console.log('Using AdminLayout')
+    return (
+      <AdminLayout>
+        <Outlet />
+      </AdminLayout>
+    )
+  }
 
+  // For regular users, check if they have purchased package
+  console.log('Using UserLayout with hasPurchasedPackage:', hasPurchasedPackage)
   return (
-    <Layout>
+    <UserLayout>
       <Outlet />
-    </Layout>
+    </UserLayout>
   )
 }
 

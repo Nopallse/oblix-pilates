@@ -392,7 +392,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="py-6 sm:py-8 md:py-12 bg-white">
         <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
-          <div className="mx-auto max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-8 px-4">
+          <div className="mx-auto max-w-7xl w-full flex flex-col md:flex-row items-center justify-between gap-8 px-4">
             {/* Kiri */}
             <div className="flex flex-col text-center md:text-left items-center md:items-start" data-aos="fade-right" data-aos-delay="100">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-normal font-raleway text-primary">
@@ -593,7 +593,7 @@ const Home = () => {
           </div>
 
           {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto">
             {/* Private Class */}
             <div data-aos="fade-up" data-aos-delay="200">
               <ClassCard
@@ -648,7 +648,7 @@ const Home = () => {
 
       {/* Trainers Section */}
       <section className="py-8 sm:py-12 bg-white">
-        <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-secondary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
               <span className="font-raleway">Meet our</span>

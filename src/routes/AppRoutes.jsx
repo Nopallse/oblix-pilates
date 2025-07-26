@@ -12,6 +12,8 @@ import RegisterPage from "../pages/public/auth/RegisterPage.jsx";
 import Profile from "../pages/User/profile/Profile.jsx";
 import MyClasses from "../pages/User/MyClasses.jsx";
 import MyPackage from "../pages/User/MyPackage.jsx";
+import BuyPackage from "../pages/User/BuyPackage";
+import PackageDetail from "../pages/User/PackageDetail";
 import Admin from "../pages/Admin/Admin";
 import User from "../pages/User/User";
 import Members from "../pages/User/Members.jsx";
@@ -27,6 +29,25 @@ import Blog from "../pages/public/Blog/Blog";
 import BlogDetail from "../pages/public/Blog/BlogDetail.jsx";
 import BookTrial from "../pages/public/BookTrial/BookTrial";
 
+// Simple PrivateRoute for BuyPackage (no layout)
+const BuyPackageRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuthStore();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -163,9 +184,28 @@ const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-classes" element={<MyClasses />} />
         <Route path="/my-package" element={<MyPackage />} />
+        <Route path="/package/:id" element={<PackageDetail />} />
         <Route path="/user" element={<User />} />
         <Route path="/members" element={<Members />} />
       </Route>
+
+      {/* Buy Package Route - Special route for users without package */}
+      <Route 
+        path="/buy-package" 
+        element={
+          <BuyPackageRoute>
+            <BuyPackage />
+          </BuyPackageRoute>
+        } 
+      />
+      <Route 
+        path="/buy-package/:id" 
+        element={
+          <BuyPackageRoute>
+            <PackageDetail />
+          </BuyPackageRoute>
+        } 
+      />
 
       {/* 404 Route */}
       <Route path="*" element={<NotFound />} />

@@ -88,7 +88,7 @@ const Classes = () => {
           </div>
 
           {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto">
             {/* Private Class */}
             <div data-aos="fade-up" data-aos-delay="200">
               <ClassCard

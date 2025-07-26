@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useAuthStore } from '@shared/store/authStore'
 import { useAuth } from '../../../pages/public/auth/api'
 import { logoSekunder } from '../../../shared/utils/assets'
 
-const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollapsed }) => {
+const Header = () => {
+  const { user } = useAuthStore()
   const { logout, loading } = useAuth()
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
@@ -46,36 +48,8 @@ const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollaps
     }`}>
       <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16 lg:h-18">
-          {/* Left side - Sidebar Toggle & Brand */}
+          {/* Left side - Brand */}
           <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-            {/* Desktop: Collapse/Expand */}
-            <button
-              onClick={onToggleSidebarCollapse}
-              className="hidden lg:inline-flex p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
-              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {sidebarCollapsed ? (
-                <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              )}
-            </button>
-            
-            {/* Mobile: Open sidebar */}
-            <button
-              onClick={onToggleSidebar}
-              className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
-              aria-label="Open sidebar"
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            
             {/* Brand */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center group">

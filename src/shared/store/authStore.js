@@ -15,6 +15,7 @@ export const useAuthStore = create(
             login: (user, accessToken, refreshToken) => {
                 console.log('Auth Store - Login Data:', { user, accessToken, refreshToken })
                 console.log('User role:', user?.role || user?.type)
+                console.log('has_purchased_package:', user?.has_purchased_package)
                 
                 set({
                     user,
@@ -105,6 +106,18 @@ export const useAuthStore = create(
                 const userRole = user?.role || user?.type
                 console.log('getUserRole:', userRole)
                 return userRole
+            },
+
+            // Check if user has purchased package
+            hasPurchasedPackage: () => {
+                const { user, isAuthenticated } = get()
+                const hasPackage = isAuthenticated && user?.has_purchased_package === true
+                console.log('hasPurchasedPackage check:', { 
+                    isAuthenticated, 
+                    hasPackage: user?.has_purchased_package, 
+                    result: hasPackage 
+                })
+                return hasPackage
             },
 
             // Clear all auth data

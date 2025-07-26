@@ -126,8 +126,8 @@ const BookTrial = () => {
 
       {/* Package Cards Section */}
       <section className="py-8 sm:py-12 bg-white relative">
-        <div className="container max-w-6xl mx-auto px-4 py-4 md:py-6">
-        <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
             <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
             Wanna book a <span className="font-fraunces italic">Trial</span>
             </h2>
