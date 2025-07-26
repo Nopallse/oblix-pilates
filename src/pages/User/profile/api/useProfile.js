@@ -252,7 +252,8 @@ export const useProfileForm = () => {
  * @returns {object} Form state and handlers
  */
 export const usePasswordForm = () => {
-  const { logout } = useAuthStore();
+  const authStore = useAuthStore();
+  const logout = authStore?.logout || (() => {});
   const [loading, setLoading] = useState(false);
 
   const formik = useFormik({

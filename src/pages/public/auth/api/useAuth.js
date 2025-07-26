@@ -8,19 +8,18 @@ import { getErrorType } from '@shared/services/apiErrorHandler';
 export const useAuth = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const {
-        login: storeLogin,
-        logout: storeLogout,
-        setLoading: setAuthLoading,
-        updateUser,
-        user,
-        isAuthenticated,
-        hasRole,
-        hasAnyRole,
-        isAdmin,
-        isBorrower,
-        checkAuth
-    } = useAuthStore();
+    const authStore = useAuthStore();
+    const storeLogin = authStore?.login || (() => {});
+    const storeLogout = authStore?.logout || (() => {});
+    const setAuthLoading = authStore?.setLoading || (() => {});
+    const updateUser = authStore?.updateUser || (() => {});
+    const user = authStore?.user || null;
+    const isAuthenticated = authStore?.isAuthenticated || false;
+    const hasRole = authStore?.hasRole || (() => false);
+    const hasAnyRole = authStore?.hasAnyRole || (() => false);
+    const isAdmin = authStore?.isAdmin || (() => false);
+    const isBorrower = authStore?.isBorrower || (() => false);
+    const checkAuth = authStore?.checkAuth || (() => false);
 
     const navigate = useNavigate();
 
@@ -56,8 +55,12 @@ export const useAuth = () => {
 
                 const { accessToken, refreshToken } = actualData;
                 
-                // Store login data
-                storeLogin(user, accessToken, refreshToken);
+                // Remove has_purchased_package from user object before storing
+                const { has_purchased_package, ...userWithoutPackage } = user;
+                console.log("User without package status:", userWithoutPackage);
+                
+                // Store login data (without has_purchased_package)
+                storeLogin(userWithoutPackage, accessToken, refreshToken);
 
                 // Determine user role and redirect
                 const userRole = user?.role || user?.type || user?.user_type || user?.userType || 'user';
@@ -267,7 +270,13 @@ export const useAuth = () => {
 };
 
 export const useRole = () => {
-    const { user, isAuthenticated, hasRole, hasAnyRole, isAdmin, isBorrower } = useAuthStore();
+    const authStore = useAuthStore();
+    const user = authStore?.user || null;
+    const isAuthenticated = authStore?.isAuthenticated || false;
+    const hasRole = authStore?.hasRole || (() => false);
+    const hasAnyRole = authStore?.hasAnyRole || (() => false);
+    const isAdmin = authStore?.isAdmin || (() => false);
+    const isBorrower = authStore?.isBorrower || (() => false);
 
     const isUser = () => hasRole('user');
     const getUserRole = () => user?.role || user?.type || null;

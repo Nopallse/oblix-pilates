@@ -1,9 +1,43 @@
 import { useState } from 'react';
-import { createOrder, initializeMidtransSnap, isMidtransSnapLoaded } from '../services/midtransService';
+import { createOrder, initializeMidtransSnap, isMidtransSnapLoaded, handlePaymentFinish, isPaymentFinishRedirect } from '../services/midtransService';
+import { useAuthStore } from '../store/authStore';
 
 export const useMidtransPayment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Handle payment finish redirect
+  const handlePaymentFinishRedirect = async (redirectUrl) => {
+    try {
+      console.log('Processing payment finish redirect...');
+      const result = await handlePaymentFinish(redirectUrl);
+      
+      if (result.success) {
+        // Update Zustand store
+        const store = useAuthStore.getState();
+        if (store.user) {
+          store.updateUser({ has_purchased_package: true });
+          console.log('Updated has_purchased_package in store');
+        }
+        
+        return { success: true, message: 'Payment successful! Package purchased.' };
+      } else {
+        return { success: false, message: 'Payment not completed successfully.' };
+      }
+    } catch (error) {
+      console.error('Error handling payment finish:', error);
+      return { success: false, message: 'Error processing payment result.' };
+    }
+  };
+
+  // Check if current page is payment finish redirect
+  const checkPaymentFinishRedirect = () => {
+    if (isPaymentFinishRedirect()) {
+      const currentUrl = window.location.href;
+      return handlePaymentFinishRedirect(currentUrl);
+    }
+    return null;
+  };
 
   // Wait for Midtrans Snap to be loaded
   const waitForMidtransSnap = (maxAttempts = 10) => {
@@ -81,7 +115,29 @@ export const useMidtransPayment = () => {
         if (paymentResult.success) {
           // Payment successful
           console.log('Payment successful');
-          onSuccess && onSuccess(paymentResult.result);
+          
+          // Check if result has finish_redirect_url
+          if (paymentResult.result && paymentResult.result.finish_redirect_url) {
+            console.log('Payment success with finish_redirect_url:', paymentResult.result.finish_redirect_url);
+            
+            // Update has_purchased_package immediately
+            const store = useAuthStore.getState();
+            if (store.user) {
+              store.updatePurchaseStatus(true);
+              console.log('Updated has_purchased_package in store after payment success');
+            }
+            
+            // Call success callback with redirect info
+            onSuccess && onSuccess({ 
+              ...paymentResult.result, 
+              status: 'success',
+              shouldRedirect: true,
+              redirectUrl: paymentResult.result.finish_redirect_url
+            });
+          } else {
+            // No redirect URL, just success
+            onSuccess && onSuccess(paymentResult.result);
+          }
         } else if (paymentResult.pending) {
           // Payment pending
           console.log('Payment pending');
@@ -125,6 +181,8 @@ export const useMidtransPayment = () => {
     processPayment,
     loading,
     error,
-    clearError: () => setError(null)
+    clearError: () => setError(null),
+    handlePaymentFinishRedirect,
+    checkPaymentFinishRedirect
   };
 }; 

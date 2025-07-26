@@ -2,8 +2,8 @@ import React from 'react'
 
 const User = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         {/* User Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-sm p-6 mb-6 text-white">
           <h1 className="text-3xl font-bold mb-2">Member Portal</h1>

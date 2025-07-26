@@ -1,12 +1,12 @@
 import React from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useAuthStore } from '@shared/store/authStore';
 
 const Dashboard = () => {
-  const { user } = useOutletContext()
+  const user = useAuthStore()?.user || null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">

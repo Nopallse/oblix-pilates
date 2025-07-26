@@ -12,3 +12,4 @@ export { default as useAOS } from './useAOS'
 
 export { usePackageData } from './usePackageData';
 export { useMidtransPayment } from './useMidtransPayment';
+export { useAuthSync } from './useAuthSync';

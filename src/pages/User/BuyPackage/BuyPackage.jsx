@@ -63,7 +63,7 @@ const BuyPackage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Pilih Package</h1>
@@ -142,10 +142,10 @@ const BuyPackage = () => {
                       </div>
 
                       {/* Package Cards for this category */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center">
                         {packages.map((pkg, index) => (
                           <div key={pkg.id || index} className="w-full md:w-64 h-96 relative">
-                            <div className="w-full md:w-64 h-96 left-0 top-0 absolute bg-neutral-700 rounded-[2rem] md:rounded-3xl" />
+                            <div className="w-full h-96 left-0 top-0 absolute bg-neutral-700 rounded-[2rem] md:rounded-3xl" />
                             <div className="absolute inset-0 p-4 flex flex-col mt-10">
                               <div className="text-center">
                                 <h3 className="text-xl md:text-base font-semibold text-white mb-8 font-raleway">{pkg.paket}</h3>

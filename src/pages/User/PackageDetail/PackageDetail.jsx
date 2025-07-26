@@ -16,7 +16,24 @@ const PackageDetail = () => {
   const [midtransStatus, setMidtransStatus] = useState('checking');
   
   // Midtrans payment hook
-  const { processPayment, loading: paymentLoading, error: paymentError } = useMidtransPayment();
+  const { processPayment, loading: paymentLoading, error: paymentError, checkPaymentFinishRedirect } = useMidtransPayment();
+
+  // Check for payment finish redirect on component mount
+  useEffect(() => {
+    const handlePaymentFinish = async () => {
+      const result = await checkPaymentFinishRedirect();
+      if (result) {
+        if (result.success) {
+          alert('Pembayaran berhasil! Package Anda telah dibeli.');
+          navigate('/dashboard');
+        } else {
+          alert('Pembayaran tidak berhasil diselesaikan.');
+        }
+      }
+    };
+
+    handlePaymentFinish();
+  }, [checkPaymentFinishRedirect, navigate]);
 
   // Format price to Indonesian currency
   const formatPrice = (price) => {
@@ -41,10 +58,15 @@ const PackageDetail = () => {
       alert('Pembayaran pending. Silakan cek status pembayaran Anda.');
     } else if (result.status === 'redirected') {
       alert('Halaman pembayaran telah dibuka di tab baru. Silakan selesaikan pembayaran Anda.');
+    } else if (result.shouldRedirect && result.redirectUrl) {
+      // Payment successful with redirect URL
+      console.log('Redirecting to finish URL:', result.redirectUrl);
+      alert('Pembayaran berhasil! Mengarahkan ke halaman konfirmasi...');
+      window.location.href = result.redirectUrl;
     } else {
       alert('Pembayaran berhasil!');
+      navigate('/dashboard');
     }
-    navigate('/dashboard');
   };
 
   // Handle payment error

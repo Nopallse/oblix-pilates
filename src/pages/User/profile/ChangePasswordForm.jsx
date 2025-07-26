@@ -13,7 +13,7 @@ const ChangePasswordForm = ({
   };
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-6 bg-white rounded-lg shadow-sm p-6 mb-6">
+    <form onSubmit={formik.handleSubmit} className="space-y-6 mb-6">
     <h2 className="text-xl font-semibold text-gray-900 mb-6">Change Password</h2>
       
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

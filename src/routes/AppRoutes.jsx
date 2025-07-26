@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../shared/store/authStore";
+import { useAuthSync } from "../shared/hooks/useAuthSync";
 import Loading from "../components/ui/Loading/Loading.jsx";
 import PrivateRoute from "./PrivateRoutes.jsx";
 import PublicRoute from "./PublicRoutes.jsx";
@@ -31,9 +32,25 @@ import BookTrial from "../pages/public/BookTrial/BookTrial";
 
 // Simple PrivateRoute for BuyPackage (no layout)
 const BuyPackageRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const authStore = useAuthStore();
+  const isAuthenticated = authStore?.isAuthenticated || false;
+  const isLoading = authStore?.isLoading || false;
+  const isSyncingPurchaseStatus = authStore?.isSyncingPurchaseStatus || false;
+  const hasPurchasedPackage = authStore?.hasPurchasedPackage || (() => false);
 
-  if (isLoading) {
+  // Sync data dengan backend
+  useAuthSync();
+
+  console.log('🛣️ BuyPackageRoute Debug:', {
+    isAuthenticated,
+    isLoading,
+    isSyncingPurchaseStatus,
+    hasPurchasedPackage: hasPurchasedPackage(),
+    user: authStore?.user,
+    userHasPackage: authStore?.user?.has_purchased_package
+  });
+
+  if (isLoading || isSyncingPurchaseStatus) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -43,9 +60,16 @@ const BuyPackageRoute = ({ children }) => {
   }
 
   if (!isAuthenticated) {
+    console.log('🔒 User not authenticated, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
+  if (hasPurchasedPackage()) {
+    console.log('✅ User has package, redirecting to dashboard');
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  console.log('✅ User can access buy-package');
   return children;
 };
 
@@ -74,7 +98,10 @@ const NotFound = () => {
 };
 
 const AppRoutes = () => {
-  const { isLoading, isAuthenticated, user } = useAuthStore();
+  const authStore = useAuthStore();
+  const isLoading = authStore?.isLoading || false;
+  const isAuthenticated = authStore?.isAuthenticated || false;
+  const user = authStore?.user || null;
 
   if (isLoading) {
     return <Loading />;
@@ -188,6 +215,22 @@ const AppRoutes = () => {
         <Route path="/user" element={<User />} />
         <Route path="/members" element={<Members />} />
       </Route>
+
+      {/* Payment Finish Redirect Route */}
+      <Route 
+        path="/payment/finish" 
+        element={
+          <BuyPackageRoute>
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-gray-600">Memproses hasil pembayaran...</p>
+                <p className="text-sm text-gray-500 mt-2">Mengarahkan ke dashboard...</p>
+              </div>
+            </div>
+          </BuyPackageRoute>
+        } 
+      />
 
       {/* Buy Package Route - Special route for users without package */}
       <Route 

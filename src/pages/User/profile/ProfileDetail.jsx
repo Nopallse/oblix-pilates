@@ -7,7 +7,7 @@ const ProfileDetail = ({ profile, onEdit }) => {
   console.log('ProfileDetail rendering with profile:', profile)
 
   return (
-  <div className="rounded-lg mb-6 flex flex-col bg-white shadow-sm p-6">
+  <div className="rounded-lg mb-6 flex flex-col">
     {/* Profile Photo */}
     <div className="mb-6 flex ">
         {profile?.picture ? (
@@ -30,36 +30,42 @@ const ProfileDetail = ({ profile, onEdit }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <Input
         label="Full Name"
+        name="fullName"
         value={profile?.full_name || ''}
         variant="soft"
         disabled
       />
       <Input
         label="Username"
+        name="username"
         value={profile?.username || ''}
         variant="soft"
         disabled
       />
       <Input
         label="Email"
+        name="email"
         value={profile?.email || ''}
         variant="soft"
         disabled
       />
       <Input
         label="Phone Number"
+        name="phoneNumber"
         value={profile?.phone_number || ''}
         variant="soft"
         disabled
       />
       <Input
         label="Date of Birth"
+        name="dob"
         value={profile?.dob ? new Date(profile.dob).toLocaleDateString() : ''}
         variant="soft"
         disabled
       />
         <Input
           label="Member Code"
+          name="memberCode"
           value={profile?.member_code || ''}
           variant="soft"
           disabled

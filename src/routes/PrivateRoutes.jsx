@@ -5,7 +5,10 @@ import AdminLayout from '../components/layout/AdminLayout/AdminLayout'
 import UserLayout from '../components/layout/UserLayout/UserLayout'
 
 const PrivateRoute = ({ children, requireAdmin = false }) => {
-  const { isAuthenticated, isLoading, user } = useAuthStore()
+  const authStore = useAuthStore()
+  const isAuthenticated = authStore?.isAuthenticated || false
+  const isLoading = authStore?.isLoading || false
+  const user = authStore?.user || null
   
   // Helper function to check if user is admin
   const isAdmin = () => {

@@ -29,4 +29,5 @@ export {
 
 export * from './packageService';
 export * from './midtransService';
+export * from './authService';
 

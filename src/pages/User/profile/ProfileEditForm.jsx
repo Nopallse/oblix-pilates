@@ -13,7 +13,7 @@ const ProfileEditForm = ({ formData, onChange, onSubmit, onCancel, loading, onUp
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 bg-white rounded-lg shadow-sm p-6 mb-6">
+    <form onSubmit={onSubmit} className="space-y-6 mb-6">
       {/* Profile Photo */}
       <div className="mb-6 flex flex-col">
         <label className="w-28 h-28 flex flex-col border-2 border-primary rounded-lg cursor-pointer hover:bg-primary/5 transition group relative overflow-hidden">

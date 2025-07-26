@@ -3,7 +3,10 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../shared/store/authStore'
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, isLoading, user } = useAuthStore()
+  const authStore = useAuthStore()
+  const isAuthenticated = authStore?.isAuthenticated || false
+  const isLoading = authStore?.isLoading || false
+  const user = authStore?.user || null
   const location = useLocation()
   const isLoginPage = location.pathname === '/login'
 

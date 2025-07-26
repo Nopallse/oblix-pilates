@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { authService } from '../services/authService'
 
 export const useAuthStore = create(
     persist(
@@ -10,6 +11,9 @@ export const useAuthStore = create(
             refreshToken: null,
             isAuthenticated: false,
             isLoading: false,
+            isSyncingPurchaseStatus: false,
+            purchaseStatusLoading: false,
+            hasPurchasedPackage: null, // Will be fetched from server
 
             // Actions
             login: (user, accessToken, refreshToken) => {
@@ -33,7 +37,8 @@ export const useAuthStore = create(
                     accessToken: null,
                     refreshToken: null,
                     isAuthenticated: false,
-                    isLoading: false
+                    isLoading: false,
+                    hasPurchasedPackage: null
                 })
             },
 
@@ -48,6 +53,105 @@ export const useAuthStore = create(
                         user: { ...currentUser, ...userData }
                     })
                 }
+            },
+
+            // Sync purchase status dengan backend
+            syncPurchaseStatus: async () => {
+                try {
+                    console.log('🔄 Syncing purchase status with backend...')
+                    set({ isSyncingPurchaseStatus: true })
+                    
+                    const response = await authService.getPurchaseStatus()
+                    
+                    console.log('📡 Backend response:', response)
+                    
+                    // Handle response yang langsung berisi data atau yang punya success property
+                    const responseData = response.success ? response.data : response
+                    
+                    if (responseData && typeof responseData.has_purchased_package === 'boolean') {
+                        const currentUser = get().user
+                        console.log('👤 Current user before sync:', currentUser)
+                        
+                        if (currentUser) {
+                            const updatedUser = {
+                                ...currentUser,
+                                has_purchased_package: responseData.has_purchased_package
+                            }
+                            set({ user: updatedUser, isSyncingPurchaseStatus: false })
+                            console.log('✅ Purchase status synced:', responseData.has_purchased_package)
+                            console.log('👤 Updated user:', updatedUser)
+                        } else {
+                            console.log('⚠️ No current user found for sync')
+                            set({ isSyncingPurchaseStatus: false })
+                        }
+                    } else {
+                        console.log('❌ Invalid response format:', responseData)
+                        set({ isSyncingPurchaseStatus: false })
+                    }
+                } catch (error) {
+                    console.error('❌ Failed to sync purchase status:', error)
+                    set({ isSyncingPurchaseStatus: false })
+                    // Jangan throw error, biarkan aplikasi tetap jalan
+                }
+            },
+
+            // Sync user data dengan backend
+            syncUserData: async () => {
+                try {
+                    console.log('Syncing user data with backend...')
+                    const response = await authService.getCurrentUser()
+                    
+                    if (response.success) {
+                        set({ user: response.data })
+                        console.log('User data synced from backend')
+                    }
+                } catch (error) {
+                    console.error('Failed to sync user data:', error)
+                    // Jangan throw error, biarkan aplikasi tetap jalan
+                }
+            },
+
+            // Fetch purchase status from server
+            fetchPurchaseStatus: async () => {
+                const { isAuthenticated } = get()
+                
+                if (!isAuthenticated) {
+                    console.log('User not authenticated, skipping purchase status fetch')
+                    return false
+                }
+
+                set({ purchaseStatusLoading: true })
+                
+                try {
+                    console.log('Fetching purchase status from server...')
+                    const response = await authService.getPurchaseStatus()
+                    
+                    if (response.success) {
+                        const hasPurchased = response.data.has_purchased_package
+                        console.log('Purchase status from server:', hasPurchased)
+                        
+                        set({ 
+                            hasPurchasedPackage: hasPurchased,
+                            purchaseStatusLoading: false
+                        })
+                        
+                        return hasPurchased
+                    } else {
+                        console.error('Failed to fetch purchase status:', response.message)
+                        set({ purchaseStatusLoading: false })
+                        return false
+                    }
+                } catch (error) {
+                    console.error('Error fetching purchase status:', error)
+                    set({ purchaseStatusLoading: false })
+                    return false
+                }
+            },
+
+            // Update purchase status (for after successful payment)
+            updatePurchaseStatus: (hasPurchased) => {
+                console.log('Updating purchase status to:', hasPurchased)
+                set({ hasPurchasedPackage: hasPurchased })
             },
 
             // Helper methods
@@ -108,13 +212,13 @@ export const useAuthStore = create(
                 return userRole
             },
 
-            // Check if user has purchased package
+            // Check if user has purchased package (from server)
             hasPurchasedPackage: () => {
                 const { user, isAuthenticated } = get()
                 const hasPackage = isAuthenticated && user?.has_purchased_package === true
                 console.log('hasPurchasedPackage check:', { 
                     isAuthenticated, 
-                    hasPackage: user?.has_purchased_package, 
+                    hasPurchasedPackage: user?.has_purchased_package, 
                     result: hasPackage 
                 })
                 return hasPackage
@@ -128,13 +232,37 @@ export const useAuthStore = create(
                     accessToken: null,
                     refreshToken: null,
                     isAuthenticated: false,
-                    isLoading: false
+                    isLoading: false,
+                    hasPurchasedPackage: null
+                })
+            },
+
+            // Clear localStorage and reset (for development/testing)
+            clearLocalStorage: () => {
+                console.log('Auth Store - Clearing localStorage')
+                localStorage.removeItem('auth-storage')
+                set({
+                    user: null,
+                    accessToken: null,
+                    refreshToken: null,
+                    isAuthenticated: false,
+                    isLoading: false,
+                    hasPurchasedPackage: null
                 })
             }
         }),
         {
             name: 'auth-storage',
             getStorage: () => localStorage,
+            // Don't persist hasPurchasedPackage - always fetch from server
+            partialize: (state) => ({
+                user: state.user,
+                accessToken: state.accessToken,
+                refreshToken: state.refreshToken,
+                isAuthenticated: state.isAuthenticated,
+                isLoading: state.isLoading
+                // hasPurchasedPackage is intentionally excluded
+            })
         }
     )
 ) 

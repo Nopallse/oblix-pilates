@@ -8,12 +8,13 @@ import ChangePasswordForm from './ChangePasswordForm'
 import Button from '../../../components/ui/Button/Button'
 import Modal from '../../../components/ui/Modal/Modal'
 import toast from 'react-hot-toast'
+import { useAuthStore } from '@shared/store/authStore';
 
 const TAB_PROFILE = 'profile';
 const TAB_PASSWORD = 'password';
 
 const Profile = () => {
-  const { user } = useOutletContext()
+  const user = useAuthStore()?.user || null;
   const { logout } = useAuth()
   const profileHook = useProfile();
   const {
@@ -153,8 +154,8 @@ const Profile = () => {
       : ' text-gray-600 hover:text-primary')
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">

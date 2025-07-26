@@ -4,8 +4,8 @@ import { logoPrimer } from "../../../shared/utils/assets";
 
 const PublicFooter = () => {
   return (
-    <footer className="bg-secondary text-white">
-      <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-8 sm:py-12 md:py-16 lg:py-20 xl:py-24">
+    <footer className="bg-secondary text-white mt-auto">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-8 sm:py-12 md:py-16 lg:py-20 xl:py-24">
         {/* Main footer content with improved mobile layout */}
         <div className="flex flex-col space-y-8 sm:space-y-10 lg:space-y-0 lg:flex-row lg:gap-8 xl:gap-12 2xl:gap-16">
           {/* Logo section - centered on mobile, left-aligned on desktop */}
