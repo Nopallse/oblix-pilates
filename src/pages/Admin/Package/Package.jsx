@@ -124,13 +124,13 @@ const Package = () => {
           key: 'price', 
           header: 'Harga', 
           span: 2, 
-          render: v => <span className="font-semibold text-green-600">{formatCurrency(v)}</span> 
+          render: v => <span className="font-semibold">{formatCurrency(v)}</span> 
         },
         { 
           key: 'actions', 
           span: 2, 
           render: (v, r) => (
-            <div className="flex space-x-2 min-w-[80px]">
+            <div className="flex items-center justify-end space-x-2">
               <button 
                 className="p-2 hover:bg-gray-100 rounded" 
                 title="Edit" 
@@ -158,9 +158,9 @@ const Package = () => {
         { key: 'name', header: 'Nama Paket', span: 3, render: v => <span className="font-medium text-gray-900">{v}</span> },
         { key: 'group_session', header: 'Sesi Grup', span: 2, render: v => <span>{v ?? '-'}</span>, className: 'text-center' },
         { key: 'private_session', header: 'Sesi Privat', span: 2, render: v => <span>{v ?? '-'}</span>, className: 'text-center' },
-        { key: 'price', header: 'Harga', span: 2, render: v => <span className="font-semibold text-green-600">{formatCurrency(v)}</span> },
+        { key: 'price', header: 'Harga', span: 2, render: v => <span className="font-semibold">{formatCurrency(v)}</span> },
         { key: 'actions', span: 2, render: (v, r) => (
-          <div className="flex space-x-2 min-w-[80px]">
+          <div className="flex items-center justify-end space-x-2">
             <button 
               className="p-2 hover:bg-gray-100 rounded" 
               title="Edit" 
@@ -207,9 +207,9 @@ const Package = () => {
         },
         { key: 'group_session', header: 'Grup', span: 1, render: v => <span>{v ?? '-'}</span>, className: 'text-center' },
         { key: 'private_session', header: 'Privat', span: 1, render: v => <span>{v ?? '-'}</span>, className: 'text-center' },
-        { key: 'price', header: 'Harga', span: 1, render: v => <span className="font-semibold text-green-600">{formatCurrency(v)}</span> },
+        { key: 'price', header: 'Harga', span: 1, render: v => <span className="font-semibold">{formatCurrency(v)}</span> },
         { key: 'actions', span: 2, render: (v, r) => (
-          <div className="flex space-x-2 min-w-[80px]">
+          <div className="flex items-center justify-end space-x-2">
             <button 
               className="p-2 hover:bg-gray-100 rounded" 
               title="Edit" 
@@ -237,7 +237,7 @@ const Package = () => {
         { key: 'group_session', header: 'Sesi Grup', span: 3, render: v => <span>{v ?? '-'}</span>, className: 'text-center' },
         { key: 'private_session', header: 'Sesi Privat', span: 3, render: v => <span>{v ?? '-'}</span>, className: 'text-center' },
         { key: 'actions', span: 2, render: (v, r) => (
-          <div className="flex space-x-2 min-w-[80px]">
+          <div className="flex items-center justify-end space-x-2">
             <button 
               className="p-2 hover:bg-gray-100 rounded" 
               title="Edit" 
@@ -303,23 +303,26 @@ const Package = () => {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-semibold text-gray-900">Package Management</h1>
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">Package</h1>
           <Button
             variant="primary"
             size="medium"
             onClick={handleAddPackage}
           >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
             Add Package
           </Button>
         </div>
-        <div className="flex space-x-2 border-b border-gray-200 mb-6">
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 mb-6">
           {packageCategories.map((cat) => (
               <button
               key={cat.value}
               onClick={() => changeCategory(cat.value)}
-              className={`px-6 py-2 font-semibold text-base duration-150 ${
+              className={`px-3 sm:px-6 py-2 font-semibold text-sm sm:text-base duration-150 ${
                 currentCategory === cat.value
                   ? 'text-primary'
                   : 'text-gray-600 hover:text-primary'

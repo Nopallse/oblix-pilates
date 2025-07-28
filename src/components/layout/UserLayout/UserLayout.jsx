@@ -9,19 +9,44 @@ import Footer from './Footer';
 const UserLayout = ({ children }) => {
   const authStore = useAuthStore();
   const user = authStore?.user || null;
-  const hasPurchasedPackage = authStore?.hasPurchasedPackage || (() => false);
-  const userHasPackage = hasPurchasedPackage();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Get hasPurchasedPackage from user object directly for consistency
+  const hasPurchasedPackage = () => {
+    const result = authStore?.isAuthenticated && user?.has_purchased_package === true;
+    console.log('UserLayout hasPurchasedPackage check:', {
+      isAuthenticated: authStore?.isAuthenticated,
+      userHasPurchasedPackage: user?.has_purchased_package,
+      result: result
+    });
+    return result;
+  };
+  
+  const userHasPackage = hasPurchasedPackage();
 
   // Sync data dengan backend
   useAuthSync();
+
+  // Debug logging with useEffect to ensure we get the latest state
+  useEffect(() => {
+    console.log('UserLayout Debug (useEffect):', {
+      user,
+      hasPurchasedPackage: user?.has_purchased_package,
+      userHasPackage,
+      currentPath: location.pathname,
+      purchaseStatusLoading: authStore?.purchaseStatusLoading,
+      isAuthenticated: authStore?.isAuthenticated
+    });
+  }, [user, userHasPackage, location.pathname, authStore?.purchaseStatusLoading, authStore?.isAuthenticated]);
 
   console.log('UserLayout Debug:', {
     user,
     hasPurchasedPackage: user?.has_purchased_package,
     userHasPackage,
-    currentPath: location.pathname
+    currentPath: location.pathname,
+    purchaseStatusLoading: authStore?.purchaseStatusLoading,
+    isAuthenticated: authStore?.isAuthenticated
   });
 
   // Mobile sidebar state
@@ -32,19 +57,26 @@ const UserLayout = ({ children }) => {
   useEffect(() => {
     const checkPurchaseStatus = async () => {
       // Only fetch if user is authenticated and purchase status is null (not fetched yet)
-      if (user && authStore?.isAuthenticated && hasPurchasedPackage === null && !authStore?.purchaseStatusLoading) {
+      if (user && authStore?.isAuthenticated && user?.has_purchased_package === null && !authStore?.purchaseStatusLoading) {
         console.log('Fetching purchase status for user:', user.email);
         await authStore?.fetchPurchaseStatus();
       }
     };
 
     checkPurchaseStatus();
-  }, [user, authStore?.isAuthenticated, hasPurchasedPackage, authStore?.purchaseStatusLoading]);
+  }, [user, authStore?.isAuthenticated, authStore?.purchaseStatusLoading]);
 
   // Redirect to buy-package if user hasn't purchased package and not already on buy-package page
   useEffect(() => {
     if (!userHasPackage && location.pathname !== '/buy-package') {
+      console.log('UserLayout - Redirecting to buy-package:', {
+        userHasPackage,
+        currentPath: location.pathname
+      });
+      // Add a small delay to ensure state is properly set
+      setTimeout(() => {
       navigate('/buy-package');
+      }, 100);
     }
   }, [userHasPackage, navigate, location.pathname]);
 
@@ -69,7 +101,7 @@ const UserLayout = ({ children }) => {
   }
 
   // Show loading while checking package status (only if not on buy-package page)
-  if (!userHasPackage && location.pathname !== '/buy-package') {
+  if (!userHasPackage && location.pathname !== '/buy-package' && user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -80,10 +112,8 @@ const UserLayout = ({ children }) => {
     );
   }
 
-  // If user doesn't have package and is on buy-package page, don't render UserLayout
-  if (!userHasPackage && location.pathname === '/buy-package') {
-    return null; // Let BuyPackage component handle its own layout
-  }
+  // Allow all users to access buy-package page with UserLayout
+  // The BuyPackage component will handle its own styling based on userHasPackage
 
   // Layout untuk user yang sudah membeli package (layout asli)
   return (
@@ -94,6 +124,7 @@ const UserLayout = ({ children }) => {
         onToggleSidebar={toggleSidebar}
         onToggleSidebarCollapse={toggleSidebarCollapse}
         sidebarCollapsed={sidebarCollapsed}
+        showSidebarControls={true}
       />
       
       {/* Content area dengan sidebar dan main content */}

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Table, Button } from '../../../components/ui'
 import { useBanners } from './api'
 import BannerForm from './components/BannerForm'
+import { icons } from '../../../shared/utils/assets'
 
 const Banner = () => {
   const { banners, loading, createBanner, updateBanner, deleteBanner, fetchBanners } = useBanners()
@@ -17,24 +18,12 @@ const Banner = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null
     
-    // If it's already a full URL, return as is
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return imagePath
-    }
-    
+
     // Construct full URL with API base URL
-    const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+    const baseURL = import.meta.env.VITE_API_BASE_URL 
     return `${baseURL}/uploads/banners/${imagePath}`
   }
 
-  // Debug component data
-  console.log('Banner Component - Received data:', {
-    banners: banners,
-    safeBanners: safeBanners,
-    loading: loading,
-    bannersLength: banners?.length,
-    safeBannersLength: safeBanners?.length
-  })
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this banner?')) {
@@ -75,7 +64,7 @@ const Banner = () => {
     { 
       key: 'title', 
       header: 'Title', 
-      span: 3,
+      span: 4,
       render: (title, row) => (
         <div className="font-medium text-gray-900">
           {title || row.title || 'No Title'}
@@ -85,7 +74,7 @@ const Banner = () => {
     { 
       key: 'picture', 
       header: 'Content', 
-      span: 6,
+      span: 5,
       render: (picture, row) => {
         const imageUrl = getImageUrl(picture || row.picture)
         const title = row.title || 'Banner'
@@ -116,33 +105,26 @@ const Banner = () => {
     },
     { 
       key: 'actions', 
-      header: 'Actions', 
       span: 2,
       className: 'text-right',
       render: (_, row) => (
         <div className="flex items-center justify-end space-x-2">
-          <Button
+          <button 
+            className="p-2 hover:bg-gray-100 rounded" 
+            title="Edit" 
+            aria-label="Edit"
             onClick={() => handleEdit(row)}
-            variant="outline"
-            size="small"
-            className="!min-w-0 !px-2 !py-1"
-            title="Edit"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          </Button>
-          <Button
+            <img src={icons.edit} alt="Edit" className="w-5 h-5" />
+          </button>
+          <button 
+            className="p-2 hover:bg-gray-100 rounded" 
+            title="Hapus" 
+            aria-label="Delete"
             onClick={() => handleDelete(row.id)}
-            variant="danger"
-            size="small"
-            className="!min-w-0 !px-2 !py-1"
-            title="Delete"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </Button>
+            <img src={icons.delete} alt="Delete" className="w-5 h-5" />
+          </button>
         </div>
       )
     }
@@ -150,7 +132,7 @@ const Banner = () => {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
       <h1 className="text-3xl font-semibold text-gray-900">Banner</h1>

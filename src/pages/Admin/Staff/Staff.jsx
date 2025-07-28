@@ -1,227 +1,294 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react';
+import { icons } from '../../../shared/utils/assets';
+import Button from '../../../components/ui/Button/Button';
+import Table from '../../../components/ui/Table/Table';
+import Input from '../../../components/ui/Input/Input';
+import StaffForm from './components/StaffForm';
+import { useStaff } from './api';
 
 const Staff = () => {
-  const [staff, setStaff] = useState([
-    {
-      id: 1,
-      name: 'Sarah Wilson',
-      email: 'sarah.wilson@oblixpilates.com',
-      phone: '+62 812-3456-7890',
-      role: 'Senior Instructor',
-      specialization: 'Classical Pilates, Rehabilitation',
-      joinDate: '2023-05-15',
-      status: 'active',
-      classesThisMonth: 45,
-      rating: 4.9
-    },
-    {
-      id: 2,
-      name: 'Mike Johnson',
-      email: 'mike.johnson@oblixpilates.com',
-      phone: '+62 811-2345-6789',
-      role: 'Instructor',
-      specialization: 'Power Pilates, Group Classes',
-      joinDate: '2023-08-20',
-      status: 'active',
-      classesThisMonth: 32,
-      rating: 4.7
-    },
-    {
-      id: 3,
-      name: 'Emma Chen',
-      email: 'emma.chen@oblixpilates.com',
-      phone: '+62 813-4567-8901',
-      role: 'Lead Instructor',
-      specialization: 'Prenatal Pilates, Mat Classes',
-      joinDate: '2023-03-10',
-      status: 'active',
-      classesThisMonth: 38,
-      rating: 4.8
-    },
-    {
-      id: 4,
-      name: 'David Kim',
-      email: 'david.kim@oblixpilates.com',
-      phone: '+62 814-5678-9012',
-      role: 'Assistant Manager',
-      specialization: 'Business Operations, Customer Service',
-      joinDate: '2023-01-15',
-      status: 'active',
-      classesThisMonth: 0,
-      rating: 4.6
+  const {
+    staff,
+    loading,
+    error,
+    pagination,
+    search,
+    loadStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff,
+    searchStaff,
+    changePage,
+  } = useStaff();
+
+  // Modal state
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    loadStaff();
+  }, []);
+
+  // Debounced search
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId;
+      return (query) => {
+        clearTimeout(timeoutId);
+        if (query.trim()) {
+          setIsSearching(true);
+        }
+        timeoutId = setTimeout(() => {
+          searchStaff(query);
+          setIsSearching(false);
+        }, 500);
+      };
+    })(),
+    [searchStaff]
+  );
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    debouncedSearch(value);
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (formData) => {
+    try {
+      let result;
+      if (selectedStaff) {
+        // Update staff
+        result = await updateStaff(selectedStaff.id, formData);
+      } else {
+        // Create staff
+        result = await createStaff(formData);
+      }
+
+      if (result.success) {
+        setIsFormOpen(false);
+        setSelectedStaff(null);
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
     }
-  ])
+  };
 
-  const [filter, setFilter] = useState('all')
+  // Handle edit staff
+  const handleEdit = (staffItem) => {
+    setSelectedStaff(staffItem);
+    setIsFormOpen(true);
+  };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'inactive': return 'bg-red-100 text-red-800'
-      case 'on-leave': return 'bg-yellow-100 text-yellow-800'
-      default: return 'bg-gray-100 text-gray-800'
+  // Handle delete staff
+  const handleDelete = async (staffItem) => {
+    if (window.confirm(`Apakah Anda yakin ingin menghapus staff "${staffItem.full_name}"?`)) {
+      try {
+        await deleteStaff(staffItem.id);
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
     }
-  }
+  };
 
-  const getRoleColor = (role) => {
-    switch (role) {
-      case 'Senior Instructor': return 'bg-purple-100 text-purple-800'
-      case 'Lead Instructor': return 'bg-blue-100 text-blue-800'
-      case 'Instructor': return 'bg-green-100 text-green-800'
-      case 'Assistant Manager': return 'bg-orange-100 text-orange-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
+  // Handle add new staff
+  const handleAddStaff = () => {
+    setSelectedStaff(null);
+    setIsFormOpen(true);
+  };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Staff Management</h1>
-          <p className="mt-1 text-sm text-gray-500">Manage staff profiles, roles, and schedules</p>
-        </div>
-        <div className="mt-4 sm:mt-0 flex space-x-3">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            <span>Add Staff</span>
+
+
+  // Table columns
+  const columns = [
+    { 
+      key: 'no', 
+      header: 'No', 
+      span: 1, 
+      render: (v, r, i) => <span>{(pagination.current_page - 1) * pagination.per_page + i + 1}</span>, 
+      className: 'text-center w-12' 
+    },
+    { 
+      key: 'full_name', 
+      header: 'Nama Lengkap', 
+      span: 2, 
+      render: v => <span className="font-medium text-gray-900">{v}</span> 
+    },
+    { 
+      key: 'username', 
+      header: 'Username', 
+      span: 2, 
+      render: v => <span className="text-gray-700">{v}</span> 
+    },
+    { 
+      key: 'email', 
+      header: 'Email', 
+      span: 3, 
+      render: v => <span className="text-gray-700">{v}</span> 
+    },
+    { 
+      key: 'phone_number', 
+      header: 'No. Telepon', 
+      span: 2, 
+      render: v => <span className="text-gray-700">{v}</span> 
+    },
+    { 
+      key: 'actions', 
+      span: 2, 
+      render: (v, r) => (
+        <div className="flex items-center justify-end space-x-2">
+          <button 
+            className="p-2 hover:bg-gray-100 rounded transition-colors duration-200" 
+            title={`Edit ${r.full_name}`}
+            aria-label="Edit"
+            onClick={() => handleEdit(r)}
+          >
+            <img src={icons.edit} alt="Edit" className="w-5 h-5" />
+          </button>
+          <button 
+            className="p-2 hover:bg-red-50 hover:text-red-600 rounded transition-colors duration-200" 
+            title={`Hapus ${r.full_name}`}
+            aria-label="Delete"
+            onClick={() => handleDelete(r)}
+          >
+            <img src={icons.delete} alt="Delete" className="w-5 h-5" />
           </button>
         </div>
+      )
+    }
+  ];
+
+  // Table data
+  const tableData = staff.map((item) => ({
+    ...item,
+    actions: '',
+  }));
+
+  return (
+    <div className="min-h-screen py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">Staff Management</h1>
+          <Button
+            variant="primary"
+            size="medium"
+            onClick={handleAddStaff}
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+            Add Staff
+          </Button>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="flex gap-4">
+            <div className="flex-1 max-w-md relative">
+              <Input
+                placeholder="Cari staff berdasarkan nama, username, atau email..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-12"
+              />
+              {/* Ikon cari */}
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg width="23" height="25" viewBox="0 0 23 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M8.94446 3.23052C5.41597 3.23052 2.55556 6.19495 2.55556 9.85174C2.55556 13.5085 5.41597 16.473 8.94446 16.473C10.7091 16.473 12.3045 15.7334 13.462 14.5336C14.6197 13.334 15.3334 11.6805 15.3334 9.85174C15.3334 6.19495 12.4729 3.23052 8.94446 3.23052ZM0 9.85174C0 4.73223 4.00457 0.582031 8.94446 0.582031C13.8844 0.582031 17.8889 4.73223 17.8889 9.85174C17.8889 11.9333 17.2257 13.8561 16.1081 15.4031L22.6258 22.1578C23.1247 22.6749 23.1247 23.5134 22.6258 24.0306C22.1268 24.5477 21.3177 24.5477 20.8187 24.0306L14.301 17.2759C12.8083 18.4342 10.953 19.1215 8.94446 19.1215C4.00457 19.1215 0 14.9713 0 9.85174Z" fill="#6C6C6C"/>
+                </svg>
+              </div>
+              {isSearching && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                </div>
+              )}
+            </div>
+            {search && (
+              <Button
+                type="button"
+                variant="outline"
+                size="medium"
+                onClick={() => {
+                  setSearchQuery('');
+                  searchStaff('');
+                }}
+                disabled={isSearching}
+              >
+                Reset
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
+
+        {/* Data Info */}
+        <div className="mb-4 flex justify-between items-center">
+          <div className="text-sm text-gray-600">
+            Menampilkan {staff.length} dari {pagination.total_items} staff
+            {search && ` untuk pencarian "${search}"`}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg w-full">
+          <Table
+            columns={columns}
+            data={tableData}
+            loading={loading}
+            emptyMessage="Tidak ada data staff."
+          />
+        </div>
+
+        {/* Pagination */}
+        {pagination.total_pages > 1 && (
+          <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-gray-600">
+              Halaman {pagination.current_page} dari {pagination.total_pages}
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="small"
+                onClick={() => changePage(pagination.current_page - 1)}
+                disabled={pagination.current_page === 1}
+              >
+                Sebelumnya
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="small"
+                onClick={() => changePage(pagination.current_page + 1)}
+                disabled={pagination.current_page === pagination.total_pages}
+              >
+                Selanjutnya
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Staff</p>
-              <p className="text-2xl font-bold text-gray-900">{staff.length}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Active Staff</p>
-              <p className="text-2xl font-bold text-gray-900">{staff.filter(s => s.status === 'active').length}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-3 bg-yellow-100 rounded-lg">
-              <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Classes This Month</p>
-              <p className="text-2xl font-bold text-gray-900">{staff.reduce((sum, s) => sum + s.classesThisMonth, 0)}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Avg Rating</p>
-              <p className="text-2xl font-bold text-gray-900">{(staff.reduce((sum, s) => sum + s.rating, 0) / staff.length).toFixed(1)}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Staff Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {staff.map((member) => (
-          <div key={member.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xl">
-                  {member.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
-                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(member.role)}`}>
-                    {member.role}
-                  </span>
-                  <p className="text-sm text-gray-600 mt-1">{member.specialization}</p>
-                </div>
-              </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(member.status)}`}>
-                {member.status}
-              </span>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">Contact</p>
-                <p className="text-sm font-medium text-gray-900">{member.email}</p>
-                <p className="text-sm text-gray-600">{member.phone}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Performance</p>
-                <p className="text-sm font-medium text-gray-900">{member.classesThisMonth} classes this month</p>
-                <div className="flex items-center mt-1">
-                  <span className="text-sm font-medium text-gray-900">{member.rating}</span>
-                  <div className="flex ml-1">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className={`w-4 h-4 ${i < Math.floor(member.rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between pt-4 border-t border-gray-200">
-              <div className="text-sm text-gray-600">
-                Joined: {new Date(member.joinDate).toLocaleDateString()}
-              </div>
-              <div className="flex space-x-2">
-                <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </button>
-                <button className="p-2 text-gray-400 hover:text-green-600 transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Staff Form Modal */}
+      <StaffForm
+        isOpen={isFormOpen}
+        onClose={() => {
+          setIsFormOpen(false);
+          setSelectedStaff(null);
+        }}
+        staffData={selectedStaff}
+        onSubmit={handleFormSubmit}
+        loading={loading}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Staff 
+export default Staff; 

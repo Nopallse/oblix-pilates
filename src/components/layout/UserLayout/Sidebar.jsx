@@ -55,7 +55,13 @@ const Sidebar = ({ user, isOpen, onClose, collapsed }) => {
   ]
 
   const isActive = (path) => {
-    return location.pathname === path
+    // Special handling for buy-package routes
+    if (path === '/my-package') {
+      return location.pathname === '/my-package' || 
+             location.pathname === '/buy-package' || 
+             location.pathname.startsWith('/buy-package/');
+    }
+    return location.pathname === path;
   }
 
   // Filter menu items based on user's package status

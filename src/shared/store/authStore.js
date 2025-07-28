@@ -20,6 +20,7 @@ export const useAuthStore = create(
                 console.log('Auth Store - Login Data:', { user, accessToken, refreshToken })
                 console.log('User role:', user?.role || user?.type)
                 console.log('has_purchased_package:', user?.has_purchased_package)
+                console.log('User object keys:', user ? Object.keys(user) : 'No user object')
                 
                 set({
                     user,
@@ -28,6 +29,15 @@ export const useAuthStore = create(
                     isAuthenticated: true,
                     isLoading: false
                 })
+                
+                console.log('Auth Store - State after login set')
+                console.log('Auth Store - User in state:', user)
+                console.log('Auth Store - has_purchased_package in state:', user?.has_purchased_package)
+                
+                // Add a small delay to ensure state is properly persisted
+                setTimeout(() => {
+                    console.log('Auth Store - State should be persisted now')
+                }, 100);
             },
 
             logout: () => {
@@ -219,7 +229,8 @@ export const useAuthStore = create(
                 console.log('hasPurchasedPackage check:', { 
                     isAuthenticated, 
                     hasPurchasedPackage: user?.has_purchased_package, 
-                    result: hasPackage 
+                    result: hasPackage,
+                    user: user
                 })
                 return hasPackage
             },
@@ -254,14 +265,13 @@ export const useAuthStore = create(
         {
             name: 'auth-storage',
             getStorage: () => localStorage,
-            // Don't persist hasPurchasedPackage - always fetch from server
+            // Persist all auth data including has_purchased_package
             partialize: (state) => ({
                 user: state.user,
                 accessToken: state.accessToken,
                 refreshToken: state.refreshToken,
                 isAuthenticated: state.isAuthenticated,
                 isLoading: state.isLoading
-                // hasPurchasedPackage is intentionally excluded
             })
         }
     )

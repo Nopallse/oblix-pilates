@@ -4,7 +4,7 @@ import { useAuthStore } from '@shared/store/authStore'
 import { useAuth } from '../../../pages/public/auth/api'
 import { logoSekunder } from '../../../shared/utils/assets'
 
-const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollapsed }) => {
+const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollapsed, showSidebarControls = true }) => {
   const authStore = useAuthStore()
   const userData = authStore?.user || null
   const { logout, loading } = useAuth()
@@ -44,40 +44,44 @@ const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollaps
   }, [])
 
   return (
-    <header className={`bg-secondary border-b border-gray-700/20 sticky top-0 z-40 transition-all duration-300 ${
+    <header className={`bg-secondary sticky top-0 z-40 transition-all duration-300 ${
       scrolled ? 'shadow-lg backdrop-blur-sm' : 'shadow-sm'
     }`}>
       <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16 lg:h-18">
           {/* Left side - Brand */}
           <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
-            {/* Desktop: Collapse/Expand */}
-            <button
-              onClick={onToggleSidebarCollapse}
-              className="hidden lg:inline-flex p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
-              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {sidebarCollapsed ? (
-                <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* Desktop: Collapse/Expand - Only show if sidebar controls are enabled */}
+            {showSidebarControls && (
+              <button
+                onClick={onToggleSidebarCollapse}
+                className="hidden lg:inline-flex p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
+                aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                {sidebarCollapsed ? (
+                  <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                )}
+              </button>
+            )}
+            
+            {/* Mobile: Open sidebar - Only show if sidebar controls are enabled */}
+            {showSidebarControls && (
+              <button
+                onClick={onToggleSidebar}
+                className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
+                aria-label="Open sidebar"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-              ) : (
-                <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              )}
-            </button>
-            
-            {/* Mobile: Open sidebar */}
-            <button
-              onClick={onToggleSidebar}
-              className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
-              aria-label="Open sidebar"
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+              </button>
+            )}
             
             {/* Brand */}
             <div className="flex-shrink-0">

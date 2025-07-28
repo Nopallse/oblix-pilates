@@ -55,12 +55,8 @@ export const useAuth = () => {
 
                 const { accessToken, refreshToken } = actualData;
                 
-                // Remove has_purchased_package from user object before storing
-                const { has_purchased_package, ...userWithoutPackage } = user;
-                console.log("User without package status:", userWithoutPackage);
-                
-                // Store login data (without has_purchased_package)
-                storeLogin(userWithoutPackage, accessToken, refreshToken);
+                // Store login data with has_purchased_package included
+                storeLogin(user, accessToken, refreshToken);
 
                 // Determine user role and redirect
                 const userRole = user?.role || user?.type || user?.user_type || user?.userType || 'user';
@@ -84,7 +80,12 @@ export const useAuth = () => {
                     actualData
                 });
 
+                // Add a delay to ensure state is properly set before navigation
+                setTimeout(() => {
+                    console.log('useAuth - Navigating after delay:', redirectPath);
                 navigate(redirectPath);
+                }, 500);
+                
                 return actualData;
             } else {
                 throw new Error(response.message || 'Login failed');
@@ -96,8 +97,11 @@ export const useAuth = () => {
             // Tidak perlu throw error lagi karena toast sudah ditampilkan
             return null;
         } finally {
+            // Add delay to ensure state is properly set
+            setTimeout(() => {
             setLoading(false);
             setAuthLoading(false);
+            }, 300);
         }
     };
 
