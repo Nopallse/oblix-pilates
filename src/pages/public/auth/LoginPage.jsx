@@ -29,7 +29,7 @@ const LoginPage = () => {
 
   if (isAuthenticated) {
     const userRole = user?.role || user?.type
-    const redirectPath = userRole === "admin" ? "/admin" : "/dashboard";
+    const redirectPath = userRole === "admin" ? "/admin" : "/check-class";
     return <Navigate to={redirectPath} replace />;
   }
 

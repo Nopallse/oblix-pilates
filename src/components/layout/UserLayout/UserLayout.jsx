@@ -38,7 +38,7 @@ const UserLayout = ({ children }) => {
       purchaseStatusLoading: authStore?.purchaseStatusLoading,
       isAuthenticated: authStore?.isAuthenticated
     });
-  }, [user, userHasPackage, location.pathname, authStore?.purchaseStatusLoading, authStore?.isAuthenticated]);
+  }, [user?.id, userHasPackage, location.pathname, authStore?.purchaseStatusLoading, authStore?.isAuthenticated]); // Use user.id instead of user object
 
   console.log('UserLayout Debug:', {
     user,
@@ -56,29 +56,49 @@ const UserLayout = ({ children }) => {
   // Fetch purchase status on mount
   useEffect(() => {
     const checkPurchaseStatus = async () => {
-      // Only fetch if user is authenticated and purchase status is null (not fetched yet)
-      if (user && authStore?.isAuthenticated && user?.has_purchased_package === null && !authStore?.purchaseStatusLoading) {
-        console.log('Fetching purchase status for user:', user.email);
-        await authStore?.fetchPurchaseStatus();
+      if (user && authStore?.isAuthenticated) {
+        // Always sync for buy-package routes to ensure latest status
+        if (location.pathname === '/buy-package' || location.pathname.startsWith('/buy-package/')) {
+          console.log('🔄 UserLayout - Fetching purchase status for buy-package route...')
+          try {
+            await authStore?.syncPurchaseStatus();
+          } catch (error) {
+            console.error('❌ UserLayout - Failed to sync purchase status:', error);
+          }
+        } else if (user?.has_purchased_package === null && !authStore?.purchaseStatusLoading) {
+          // For other routes, only sync if status is null
+          console.log('🔄 UserLayout - Fetching purchase status for user:', user.email);
+          try {
+            await authStore?.syncPurchaseStatus();
+          } catch (error) {
+            console.error('❌ UserLayout - Failed to sync purchase status:', error);
+          }
+        }
       }
     };
 
     checkPurchaseStatus();
-  }, [user, authStore?.isAuthenticated, authStore?.purchaseStatusLoading]);
+  }, [user?.id, authStore?.isAuthenticated, authStore?.purchaseStatusLoading, location.pathname]); // Use user.id instead of user object
 
   // Redirect to buy-package if user hasn't purchased package and not already on buy-package page
   useEffect(() => {
-    if (!userHasPackage && location.pathname !== '/buy-package') {
+    // Don't redirect if user is on buy-package routes
+    if (location.pathname === '/buy-package' || location.pathname.startsWith('/buy-package/')) {
+      return;
+    }
+    
+    // Redirect if user hasn't purchased package and is on protected routes
+    if (!userHasPackage) {
       console.log('UserLayout - Redirecting to buy-package:', {
         userHasPackage,
         currentPath: location.pathname
       });
       // Add a small delay to ensure state is properly set
       setTimeout(() => {
-      navigate('/buy-package');
+        navigate('/buy-package');
       }, 100);
     }
-  }, [userHasPackage, navigate, location.pathname]);
+  }, [userHasPackage, navigate, location.pathname]); // Remove user dependency to avoid infinite loop
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -101,7 +121,7 @@ const UserLayout = ({ children }) => {
   }
 
   // Show loading while checking package status (only if not on buy-package page)
-  if (!userHasPackage && location.pathname !== '/buy-package' && user) {
+  if (!userHasPackage && !(location.pathname === '/buy-package' || location.pathname.startsWith('/buy-package/')) && user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

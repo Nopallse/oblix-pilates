@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 
 export const useAuthSync = () => {
-  const { isAuthenticated, syncPurchaseStatus, syncUserData } = useAuthStore();
+  const { isAuthenticated, syncPurchaseStatus, syncUserData, refreshToken, checkAuth } = useAuthStore();
 
   useEffect(() => {
     console.log('🔄 useAuthSync hook triggered, isAuthenticated:', isAuthenticated);
@@ -21,8 +21,34 @@ export const useAuthSync = () => {
     }
   }, [isAuthenticated, syncPurchaseStatus, syncUserData]);
 
+  // Function untuk handle auth check dengan refresh token
+  const handleAuthCheck = async () => {
+    try {
+      console.log('🔍 Checking authentication status...');
+      
+      // Check if we have tokens but auth check fails
+      const isAuth = checkAuth();
+      
+      if (!isAuth) {
+        console.log('⚠️ Auth check failed, attempting token refresh...');
+        const refreshSuccess = await refreshToken();
+        
+        if (refreshSuccess) {
+          console.log('✅ Token refreshed successfully');
+          // Retry sync after successful refresh
+          syncPurchaseStatus();
+        } else {
+          console.log('❌ Token refresh failed, user needs to login again');
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error during auth check:', error);
+    }
+  };
+
   return {
     syncPurchaseStatus,
-    syncUserData
+    syncUserData,
+    handleAuthCheck
   };
 }; 

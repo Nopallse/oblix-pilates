@@ -35,7 +35,7 @@ components:
         role:
           type: string
           enum: [admin, user]
-        refresh_token:
+        refreshToken:
           type: string
           nullable: true
 
@@ -641,7 +641,7 @@ paths:
                         properties:
                           access_token:
                             type: string
-                          refresh_token:
+                          refreshToken:
                             type: string
                           user:
                             $ref: '#/components/schemas/User'
@@ -751,7 +751,7 @@ paths:
                         properties:
                           access_token:
                             type: string
-                          refresh_token:
+                          refreshToken:
                             type: string
         '401':
           description: Invalid refresh token

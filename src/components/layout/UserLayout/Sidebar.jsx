@@ -10,7 +10,7 @@ const Sidebar = ({ user, isOpen, onClose, collapsed }) => {
 
   const menuItems = [
     {
-      path: '/dashboard',
+      path: '/check-class',
       label: 'Check Classes',
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">

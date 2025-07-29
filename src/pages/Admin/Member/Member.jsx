@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Table, Input, Modal } from '@components/ui';
 import { useMember } from './api/useMember';
 import { MemberForm } from './components';
@@ -12,6 +13,7 @@ const statusOptions = [
 
 const Member = () => {
   const { members, pagination, loading, error, fetchMembers } = useMember();
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
@@ -40,18 +42,12 @@ const Member = () => {
   };
 
   const handleDetail = (row) => {
-    setDetailData(row);
-    setShowDetail(true);
+    navigate(`/admin/member/${row.id}`);
   };
 
   const handleCloseForm = () => {
     setShowForm(false);
     setEditData(null);
-  };
-
-  const handleCloseDetail = () => {
-    setShowDetail(false);
-    setDetailData(null);
   };
 
   // Dummy submit handler
@@ -226,73 +222,6 @@ const Member = () => {
           onCancel={handleCloseForm}
           loading={false}
         />
-      </Modal>
-
-      {/* Modal Detail */}
-      <Modal open={showDetail} onClose={handleCloseDetail} title="Detail Member">
-        {detailData && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Kode Member</label>
-                <p className="text-gray-900">{detailData.member_code}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Username</label>
-                <p className="text-gray-900">{detailData.username}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Nama Lengkap</label>
-                <p className="text-gray-900">{detailData.full_name}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Email</label>
-                <p className="text-gray-900">{detailData.User?.email || '-'}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">No HP</label>
-                <p className="text-gray-900">{detailData.phone_number}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Tanggal Lahir</label>
-                <p className="text-gray-900">{formatDate(detailData.dob)}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Alamat</label>
-                <p className="text-gray-900">{detailData.address || '-'}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Tanggal Bergabung</label>
-                <p className="text-gray-900">{formatDate(detailData.date_of_join)}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600">Status</label>
-                <div className="mt-1">{formatStatus(detailData.status)}</div>
-              </div>
-            </div>
-            
-            {/* Session Stats */}
-            {detailData.sessionStats && (
-              <div className="border-t pt-4">
-                <h4 className="font-medium text-gray-900 mb-3">Statistik Sesi</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">{detailData.sessionStats.totalSessions}</div>
-                    <div className="text-sm text-blue-600">Total Sesi</div>
-                  </div>
-                  <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">{detailData.sessionStats.totalUsedSessions}</div>
-                    <div className="text-sm text-green-600">Sesi Terpakai</div>
-                  </div>
-                  <div className="text-center p-3 bg-orange-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">{detailData.sessionStats.totalRemainingSessions}</div>
-                    <div className="text-sm text-orange-600">Sesi Tersisa</div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </Modal>
     </div>
   );

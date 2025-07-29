@@ -16,7 +16,7 @@ const PackageDetail = () => {
   // Check if this route uses UserLayout (with sidebar) or standalone layout
   const shouldUseUserLayout = () => {
     const userLayoutRoutes = [
-      '/dashboard',
+      '/check-class',
       '/profile', 
       '/my-classes',
       '/my-package',
@@ -49,7 +49,7 @@ const PackageDetail = () => {
       if (result) {
         if (result.success) {
           alert('Pembayaran berhasil! Package Anda telah dibeli.');
-          navigate('/dashboard');
+          navigate('/check-class');
         } else {
           alert('Pembayaran tidak berhasil diselesaikan.');
         }
@@ -58,6 +58,22 @@ const PackageDetail = () => {
 
     handlePaymentFinish();
   }, [checkPaymentFinishRedirect, navigate]);
+
+  // Sync purchase status on mount
+  useEffect(() => {
+    const syncPurchaseStatus = async () => {
+      if (authStore?.isAuthenticated && authStore?.user) {
+        console.log('🔄 PackageDetail - Syncing purchase status...')
+        try {
+          await authStore.syncPurchaseStatus();
+        } catch (error) {
+          console.error('❌ PackageDetail - Failed to sync purchase status:', error)
+        }
+      }
+    };
+
+    syncPurchaseStatus();
+  }, [authStore?.isAuthenticated, authStore?.user?.id]); // Use user.id instead of user object
 
   // Format price to Indonesian currency
   const formatPrice = (price) => {
@@ -89,7 +105,7 @@ const PackageDetail = () => {
       window.location.href = result.redirectUrl;
     } else {
       alert('Pembayaran berhasil!');
-      navigate('/dashboard');
+      navigate('/check-class');
     }
   };
 

@@ -67,6 +67,12 @@ const Package = () => {
 
   // Handle edit package
   const handleEdit = (packageItem) => {
+    console.log('🔧 Edit package clicked:', packageItem);
+    console.log('📅 Package dates for edit:', {
+      start_time: packageItem.start_time,
+      end_time: packageItem.end_time,
+      category: currentCategory
+    });
     setSelectedPackage(packageItem);
     setIsFormOpen(true);
   };

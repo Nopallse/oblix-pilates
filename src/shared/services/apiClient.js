@@ -49,8 +49,12 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // Handle token refresh
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Handle token refresh - hanya untuk 401 dan bukan request refresh token itu sendiri
+    if (error.response?.status === 401 && 
+        !originalRequest._retry && 
+        !originalRequest.url?.includes('/api/auth/refresh-token')) {
+      
+      originalRequest._retry = true
       return handleTokenRefresh(originalRequest)
     }
 
@@ -75,36 +79,75 @@ const getAuthToken = () => {
     return null
   }
 }
-
+ 
 // Handle token refresh
 const handleTokenRefresh = async (originalRequest) => {
   try {
+    console.log('🔄 Attempting token refresh...')
+    
     const authStorage = localStorage.getItem('auth-storage')
     const parsedStorage = JSON.parse(authStorage)
     const refreshToken = parsedStorage?.state?.refreshToken
 
     if (!refreshToken) {
+      console.log('❌ No refresh token available')
       throw new Error('No refresh token available')
     }
 
     // Request new token
     const response = await axios.post(`${API_CONFIG.baseURL}/api/auth/refresh-token`, { 
-      refreshToken 
+      refreshToken: refreshToken 
     })
-    const newAccessToken = response.data.accessToken
+    
+    console.log('📡 Refresh token response:', response.data)
+    
+    // Handle response format sesuai dengan API response yang diberikan
+    const responseData = response.data
+    const newAccessToken = responseData.data?.accessToken || responseData.accessToken
 
-    // Update localStorage
+    if (!newAccessToken) {
+      console.log('❌ No access token received from refresh')
+      console.log('Response data:', responseData)
+      throw new Error('No access token received from refresh')
+    }
+
+    // Update localStorage dengan token baru
+    console.log('🔍 Current localStorage structure:', parsedStorage)
+    console.log('🔍 Current accessToken in storage:', parsedStorage.state.accessToken?.substring(0, 20) + '...')
+    
     parsedStorage.state.accessToken = newAccessToken
+    // Note: API tidak mengembalikan refresh token baru, jadi kita keep yang lama
     localStorage.setItem('auth-storage', JSON.stringify(parsedStorage))
+
+    // Verify the update
+    const updatedStorage = JSON.parse(localStorage.getItem('auth-storage'))
+    console.log('🔍 Updated localStorage structure:', updatedStorage)
+    console.log('🔍 Updated accessToken in storage:', updatedStorage.state.accessToken?.substring(0, 20) + '...')
 
     // Update axios headers
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`
     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
 
+    console.log('✅ Token refreshed successfully')
+    console.log('🔑 New access token:', newAccessToken.substring(0, 20) + '...')
+    console.log('📝 Updated localStorage and axios headers')
+    
+    // Force Zustand to update by triggering a re-render
+    // This ensures the store state is in sync with localStorage
+    const authStore = JSON.parse(localStorage.getItem('auth-storage'))
+    if (authStore && authStore.state) {
+        console.log('🔄 Forcing Zustand store update...')
+        // Dispatch a custom event to notify Zustand
+        window.dispatchEvent(new CustomEvent('auth-token-updated', {
+            detail: { accessToken: newAccessToken }
+        }))
+    }
+    
     // Retry original request
     return axiosInstance(originalRequest)
   } catch (error) {
-    // Clear storage and redirect to login
+    console.error('❌ Token refresh failed:', error)
+    // Jangan hapus storage dan jangan redirect, biar bisa debug dulu
     localStorage.removeItem('auth-storage')
     window.location.href = '/login'
     return Promise.reject(error)

@@ -68,8 +68,10 @@ export const useAuth = () => {
                 let redirectPath;
                 if (userRole === 'admin' || userRole === 'ADMIN') {
                     redirectPath = '/admin';
+                } else if (user?.has_purchased_package === false) {
+                    redirectPath = '/buy-package';
                 } else {
-                    redirectPath = '/dashboard';
+                    redirectPath = '/check-class';
                 }
 
                 console.log('useAuth - Navigation Debug:', {
@@ -248,7 +250,7 @@ export const useAuth = () => {
 
     const redirectToDashboard = () => {
         const userRole = user?.role || user?.type || 'user';
-        const redirectPath = (userRole === 'admin' || userRole === 'ADMIN') ? '/admin' : '/dashboard';
+        const redirectPath = (userRole === 'admin' || userRole === 'ADMIN') ? '/admin' : '/check-class';
         navigate(redirectPath);
     };
 

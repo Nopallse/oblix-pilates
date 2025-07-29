@@ -10,7 +10,7 @@ const NotFound = () => {
 
   const handleGoHome = () => {
     if (isAuthenticated) {
-      const dashboardRoute = isAdmin() ? ROUTES.ADMIN.DASHBOARD : ROUTES.USER.DASHBOARD
+      const dashboardRoute = isAdmin() ? ROUTES.ADMIN.DASHBOARD : ROUTES.USER.CHECK_CLASS
       navigate(dashboardRoute)
     } else {
       navigate(ROUTES.LOGIN)

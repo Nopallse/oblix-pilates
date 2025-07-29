@@ -77,7 +77,7 @@ export const ROUTES = {
     USERS: '/admin/users'
   },
   USER: {
-    DASHBOARD: '/user/dashboard'
+    CHECK_CLASS: '/user/check-class'
   }
 }
 

@@ -41,7 +41,7 @@ const PublicRoute = ({ children }) => {
     } else {
       // Check if user has purchased package
       const hasPurchasedPackage = user?.has_purchased_package === true;
-      redirectTo = hasPurchasedPackage ? '/dashboard' : '/buy-package';
+      redirectTo = hasPurchasedPackage ? '/check-class' : '/buy-package';
     }
     
     console.log('PublicRoute - Redirect after login:', {
@@ -61,7 +61,7 @@ const PublicRoute = ({ children }) => {
   // Redirect authenticated users based on purchase status
   if (isAuthenticated && (user?.role === 'user' || user?.type === 'user')) {
     const hasPurchasedPackage = user?.has_purchased_package === true;
-    const redirectTo = hasPurchasedPackage ? '/dashboard' : '/buy-package';
+    const redirectTo = hasPurchasedPackage ? '/check-class' : '/buy-package';
     
     console.log('PublicRoute - Redirect user:', {
       hasPurchasedPackage,

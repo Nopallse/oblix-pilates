@@ -14,6 +14,7 @@ export const useAuthStore = create(
             isSyncingPurchaseStatus: false,
             purchaseStatusLoading: false,
             hasPurchasedPackage: null, // Will be fetched from server
+            isSyncingPurchaseStatusFlag: false, // Flag to prevent multiple calls
 
             // Actions
             login: (user, accessToken, refreshToken) => {
@@ -34,10 +35,18 @@ export const useAuthStore = create(
                 console.log('Auth Store - User in state:', user)
                 console.log('Auth Store - has_purchased_package in state:', user?.has_purchased_package)
                 
-                // Add a small delay to ensure state is properly persisted
-                setTimeout(() => {
-                    console.log('Auth Store - State should be persisted now')
-                }, 100);
+                // Sync purchase status after login with delay
+                setTimeout(async () => {
+                    try {
+                        console.log('🔄 Syncing purchase status after login...')
+                        const store = get()
+                        if (!store.isSyncingPurchaseStatusFlag) {
+                            await store.syncPurchaseStatus()
+                        }
+                    } catch (error) {
+                        console.error('❌ Failed to sync purchase status after login:', error)
+                    }
+                }, 500); // Increased delay to ensure state is properly set
             },
 
             logout: () => {
@@ -67,9 +76,17 @@ export const useAuthStore = create(
 
             // Sync purchase status dengan backend
             syncPurchaseStatus: async () => {
+                const { isSyncingPurchaseStatusFlag } = get()
+                
+                // Prevent multiple simultaneous calls
+                if (isSyncingPurchaseStatusFlag) {
+                    console.log('🔄 Purchase status sync already in progress, skipping...')
+                    return
+                }
+                
                 try {
                     console.log('🔄 Syncing purchase status with backend...')
-                    set({ isSyncingPurchaseStatus: true })
+                    set({ isSyncingPurchaseStatus: true, isSyncingPurchaseStatusFlag: true })
                     
                     const response = await authService.getPurchaseStatus()
                     
@@ -87,20 +104,20 @@ export const useAuthStore = create(
                                 ...currentUser,
                                 has_purchased_package: responseData.has_purchased_package
                             }
-                            set({ user: updatedUser, isSyncingPurchaseStatus: false })
+                            set({ user: updatedUser, isSyncingPurchaseStatus: false, isSyncingPurchaseStatusFlag: false })
                             console.log('✅ Purchase status synced:', responseData.has_purchased_package)
                             console.log('👤 Updated user:', updatedUser)
                         } else {
                             console.log('⚠️ No current user found for sync')
-                            set({ isSyncingPurchaseStatus: false })
+                            set({ isSyncingPurchaseStatus: false, isSyncingPurchaseStatusFlag: false })
                         }
                     } else {
                         console.log('❌ Invalid response format:', responseData)
-                        set({ isSyncingPurchaseStatus: false })
+                        set({ isSyncingPurchaseStatus: false, isSyncingPurchaseStatusFlag: false })
                     }
                 } catch (error) {
                     console.error('❌ Failed to sync purchase status:', error)
-                    set({ isSyncingPurchaseStatus: false })
+                    set({ isSyncingPurchaseStatus: false, isSyncingPurchaseStatusFlag: false })
                     // Jangan throw error, biarkan aplikasi tetap jalan
                 }
             },
@@ -260,6 +277,93 @@ export const useAuthStore = create(
                     isLoading: false,
                     hasPurchasedPackage: null
                 })
+            },
+
+            // Refresh token manually
+            refreshToken: async () => {
+                try {
+                    console.log('🔄 Auth Store - Manual token refresh...')
+                    const { refreshToken } = get()
+                    
+                    if (!refreshToken) {
+                        console.log('❌ No refresh token available')
+                        throw new Error('No refresh token available')
+                    }
+
+                    const response = await authService.refreshToken(refreshToken)
+                    
+                    if (response.success) {
+                        const currentUser = get().user
+                        const oldToken = get().accessToken
+                        
+                        console.log('🔄 Auth Store - Updating tokens...')
+                        console.log('🔑 Old access token:', oldToken?.substring(0, 20) + '...')
+                        console.log('🔑 New access token:', response.accessToken.substring(0, 20) + '...')
+                        
+                        set({
+                            accessToken: response.accessToken,
+                            refreshToken: response.refreshToken,
+                            user: currentUser,
+                            isAuthenticated: true
+                        })
+                        
+                        // Verify the update
+                        const updatedToken = get().accessToken
+                        console.log('🔍 Auth Store - Token after update:', updatedToken?.substring(0, 20) + '...')
+                        
+                        console.log('✅ Auth Store - Token refreshed successfully')
+                        console.log('🔑 New access token in store:', response.accessToken.substring(0, 20) + '...')
+                        return true
+                    } else {
+                        throw new Error('Refresh token failed')
+                    }
+                } catch (error) {
+                    console.error('❌ Auth Store - Token refresh failed:', error)
+                    
+                    // Clear auth data and redirect to login
+                    set({
+                        user: null,
+                        accessToken: null,
+                        refreshToken: null,
+                        isAuthenticated: false,
+                        isLoading: false,
+                        hasPurchasedPackage: null
+                    })
+                    
+                    // Redirect to login
+                    window.location.href = '/login'
+                    return false
+                }
+            },
+
+            // Sync token from localStorage (for external updates)
+            syncTokenFromStorage: () => {
+                try {
+                    const authStorage = localStorage.getItem('auth-storage')
+                    if (authStorage) {
+                        const parsedStorage = JSON.parse(authStorage)
+                        const storedToken = parsedStorage?.state?.accessToken
+                        
+                        if (storedToken) {
+                            const currentToken = get().accessToken
+                            if (storedToken !== currentToken) {
+                                console.log('🔄 Auth Store - Syncing token from localStorage...')
+                                console.log('🔑 Current token in store:', currentToken?.substring(0, 20) + '...')
+                                console.log('🔑 Token in localStorage:', storedToken.substring(0, 20) + '...')
+                                
+                                set({
+                                    accessToken: storedToken,
+                                    user: get().user,
+                                    isAuthenticated: true
+                                })
+                                
+                                console.log('✅ Auth Store - Token synced from localStorage')
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error syncing token from localStorage:', error)
+                }
             }
         }),
         {

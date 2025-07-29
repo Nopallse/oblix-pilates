@@ -22,6 +22,33 @@ const FlexibleLayout = ({ children }) => {
     return result;
   };
   
+  // Sync purchase status on mount if user is authenticated
+  useEffect(() => {
+    const syncPurchaseStatus = async () => {
+      if (authStore?.isAuthenticated && user) {
+        // Always sync for buy-package routes to ensure latest status
+        if (location.pathname === '/buy-package' || location.pathname.startsWith('/buy-package/')) {
+          console.log('🔄 FlexibleLayout - Syncing purchase status for buy-package route...')
+          try {
+            await authStore.syncPurchaseStatus();
+          } catch (error) {
+            console.error('❌ FlexibleLayout - Failed to sync purchase status:', error)
+          }
+        } else if (user?.has_purchased_package === null) {
+          // For other routes, only sync if status is null
+          console.log('🔄 FlexibleLayout - Syncing purchase status...')
+          try {
+            await authStore.syncPurchaseStatus();
+          } catch (error) {
+            console.error('❌ FlexibleLayout - Failed to sync purchase status:', error)
+          }
+        }
+      }
+    };
+
+    syncPurchaseStatus();
+  }, [authStore?.isAuthenticated, user?.id, location.pathname]); // Use user.id instead of user object
+  
   // Debug logging with useEffect to ensure we get the latest state
   useEffect(() => {
     console.log('FlexibleLayout Debug (useEffect):', {
@@ -32,7 +59,7 @@ const FlexibleLayout = ({ children }) => {
       userHasPurchasedPackage: user?.has_purchased_package,
       isAuthenticated: authStore?.isAuthenticated
     });
-  }, [location.pathname, user, authStore?.isAuthenticated]);
+  }, [location.pathname, user?.id, authStore?.isAuthenticated]); // Use user.id instead of user object
 
   console.log('FlexibleLayout Debug:', {
     currentPath: location.pathname,
@@ -58,10 +85,11 @@ const FlexibleLayout = ({ children }) => {
   // Determine if this route should use UserLayout (with sidebar)
   const shouldUseUserLayout = () => {
     const userLayoutRoutes = [
-      '/dashboard',
+      '/check-class',
       '/profile', 
       '/my-classes',
       '/my-package',
+      
       '/user',
       '/members'
     ];

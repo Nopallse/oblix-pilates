@@ -75,6 +75,20 @@ const PackageForm = ({
   useEffect(() => {
     if (isOpen) {
       if (packageData) {
+        console.log('📦 Package data received for edit:', packageData);
+        
+        // Helper function untuk format tanggal ke YYYY-MM-DD
+        const formatDateForInput = (dateString) => {
+          if (!dateString) return '';
+          try {
+            const date = new Date(dateString);
+            return date.toISOString().split('T')[0];
+          } catch (error) {
+            console.error('Error formatting date:', error);
+            return '';
+          }
+        };
+
         setFormData({
           name: packageData.name || '',
           price: packageData.price || '',
@@ -85,11 +99,28 @@ const PackageForm = ({
           reminder_session: packageData.reminder_session || '',
           category_id: packageData.category?.id || '',
           member_id: packageData.member_id || (packageData.members?.[0]?.id ?? ''),
-          start_time: packageData.start_time || '',
-          end_time: packageData.end_time || '',
+          start_time: formatDateForInput(packageData.start_time),
+          end_time: formatDateForInput(packageData.end_time),
           group_session: packageData.group_session || '',
           private_session: packageData.private_session || '',
         });
+        
+        console.log('📅 Package data dates:', {
+          original_start_time: packageData.start_time,
+          formatted_start_time: formatDateForInput(packageData.start_time),
+          original_end_time: packageData.end_time,
+          formatted_end_time: formatDateForInput(packageData.end_time)
+        });
+        
+        // Log formData setelah setFormData
+        setTimeout(() => {
+          console.log('📝 Form data after setFormData:', {
+            start_time: formData.start_time,
+            end_time: formData.end_time,
+            category: category
+          });
+        }, 100);
+        
         // Untuk bonus, set memberSearch ke nama member
         if (packageData.members?.[0]?.name) {
           setMemberSearch(packageData.members[0].name);

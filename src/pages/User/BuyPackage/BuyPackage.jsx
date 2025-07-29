@@ -14,7 +14,7 @@ const BuyPackage = () => {
   // Check if this route uses UserLayout (with sidebar) or standalone layout
   const shouldUseUserLayout = () => {
     const userLayoutRoutes = [
-      '/dashboard',
+      '/check-class',
       '/profile', 
       '/my-classes',
       '/my-package',
@@ -82,6 +82,22 @@ const BuyPackage = () => {
       setActiveTab(availableCategories[0]);
     }
   }, [loading, availableCategories, activeTab]);
+
+  // Sync purchase status on mount
+  useEffect(() => {
+    const syncPurchaseStatus = async () => {
+      if (authStore?.isAuthenticated && authStore?.user) {
+        console.log('🔄 BuyPackage - Syncing purchase status...')
+        try {
+          await authStore.syncPurchaseStatus();
+        } catch (error) {
+          console.error('❌ BuyPackage - Failed to sync purchase status:', error)
+        }
+      }
+    };
+
+    syncPurchaseStatus();
+  }, [authStore?.isAuthenticated, authStore?.user?.id]); // Use user.id instead of user object
 
   // Main content component
   const MainContent = () => (

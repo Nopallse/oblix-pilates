@@ -24,7 +24,7 @@ const RegisterPage = () => {
   const [fieldErrors, setFieldErrors] = useState({});
 
   if (isAuthenticated) {
-    const redirectPath = user?.type === "admin" ? "/admin" : "/dashboard";
+    const redirectPath = user?.type === "admin" ? "/admin" : "/check-class";
     return <Navigate to={redirectPath} replace />;
   }
 

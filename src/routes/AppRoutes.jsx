@@ -8,7 +8,7 @@ import PublicRoute from "./PublicRoutes.jsx";
 import FlexibleLayout from "../components/layout/FlexibleLayout";
 
 // Page imports
-import Dashboard from "../pages/User/Dashboard.jsx";
+import CheckClass from "../pages/User/CheckClass.jsx";
 import LoginPage from "../pages/public/auth/LoginPage.jsx";
 import RegisterPage from "../pages/public/auth/RegisterPage.jsx";
 import Profile from "../pages/User/profile/Profile.jsx";
@@ -19,6 +19,7 @@ import PackageDetail from "../pages/User/PackageDetail";
 import Admin from "../pages/Admin/Admin";
 import User from "../pages/User/User";
 import Members from "../pages/User/Members.jsx";
+import MemberDetail from "@pages/Admin/Member/MemberDetail";
 
 // Public page imports
 import Home from "../pages/public/Home/Home";
@@ -62,6 +63,20 @@ const AppRoutes = () => {
   const isLoading = authStore?.isLoading || false;
   const isAuthenticated = authStore?.isAuthenticated || false;
   const user = authStore?.user || null;
+
+  // Listen for token updates from apiClient
+  useEffect(() => {
+    const handleTokenUpdate = (event) => {
+      console.log('📡 Received auth-token-updated event:', event.detail);
+      authStore.syncTokenFromStorage();
+    };
+
+    window.addEventListener('auth-token-updated', handleTokenUpdate);
+    
+    return () => {
+      window.removeEventListener('auth-token-updated', handleTokenUpdate);
+    };
+  }, [authStore]);
 
   if (isLoading) {
     return <Loading />;
@@ -170,9 +185,9 @@ const AppRoutes = () => {
         } />
         
         {/* User Routes */}
-        <Route path="/dashboard" element={
+        <Route path="/check-class" element={
           <FlexibleLayout>
-            <Dashboard />
+            <CheckClass />
           </FlexibleLayout>
         } />
         <Route path="/profile" element={
@@ -198,6 +213,11 @@ const AppRoutes = () => {
         <Route path="/members" element={
           <FlexibleLayout>
             <Members />
+          </FlexibleLayout>
+        } />
+        <Route path="/admin/member/:id" element={
+          <FlexibleLayout>
+            <MemberDetail />
           </FlexibleLayout>
         } />
         <Route path="/buy-package" element={

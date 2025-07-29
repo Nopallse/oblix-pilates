@@ -290,7 +290,7 @@ const Schedule = () => {
       } else {
         // Create schedule based on type
         if (currentScheduleType === 'group') {
-          await createGroupSchedule(formData);
+        await createGroupSchedule(formData);
         } else if (currentScheduleType === 'semi-private') {
           await createSemiPrivateSchedule(formData);
         } else if (currentScheduleType === 'private') {
@@ -420,7 +420,7 @@ const Schedule = () => {
                 }
 
                 const { day, isCurrentMonth, isPrevMonth, date, hasSchedule } = dayData;
-                
+
                 // Create date string for API data lookup
                 const dateString = format(date, 'yyyy-MM-dd');
                 const schedules = getSchedulesForDate(dateString);
@@ -461,15 +461,15 @@ const Schedule = () => {
                     {/* Schedules Preview - Show for current month and any month dates with schedules */}
                     {(isCurrentMonth || hasSchedule) && (
                       <div className="">
-                        {schedules.slice(0, 3).map((schedule) => (
-                          <div
-                            key={schedule.id}
-                            className={`text-xs p-1 rounded `}
-                            style={{
-                              backgroundColor: `${schedule.class_color}20`,
-                              borderColor: schedule.class_color,
-                            }}
-                          >
+                      {schedules.slice(0, 3).map((schedule) => (
+                        <div
+                          key={schedule.id}
+                          className={`text-xs p-1 rounded `}
+                          style={{
+                            backgroundColor: `${schedule.class_color}20`,
+                            borderColor: schedule.class_color,
+                          }}
+                        >
                             <div>
                               {/* Desktop/tablet: show all info, Mobile: show only time_start */}
                               <div className="hidden sm:grid grid-cols-4 items-center truncate">
@@ -486,15 +486,15 @@ const Schedule = () => {
                                 <span className="font-bold">{schedule.time_start.slice(0, 5)}</span>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                        
-                        {schedules.length > 3 && (
-                          <div className="text-xs text-gray-500 text-center py-1">
-                            dan {schedules.length - 3} lainnya
-                          </div>
-                        )}
-                      </div>
+                        </div>
+                      ))}
+                      
+                      {schedules.length > 3 && (
+                        <div className="text-xs text-gray-500 text-center py-1">
+                          dan {schedules.length - 3} lainnya
+                        </div>
+                      )}
+                    </div>
                     )}
                   </div>
                 );
@@ -620,9 +620,9 @@ const Schedule = () => {
                           >
                             <img src={icons.delete} alt="Delete" className="w-4 h-4" />
                           </button>
-                        </div>
-                      )
-                    }
+    </div>
+  )
+}
                   ];
 
                   return (

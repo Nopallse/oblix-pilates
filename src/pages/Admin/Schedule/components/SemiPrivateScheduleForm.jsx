@@ -19,6 +19,8 @@ const SemiPrivateScheduleForm = ({
     class_name: '',
     color_sign: '#FF6B6B'
   });
+  const [isEditingClass, setIsEditingClass] = useState(false);
+  const [editingClassId, setEditingClassId] = useState(null);
   const [selectedRepeatDays, setSelectedRepeatDays] = useState([]);
   const [selectedPicture, setSelectedPicture] = useState(null);
 
@@ -35,21 +37,37 @@ const SemiPrivateScheduleForm = ({
 
   const handleCreateClass = async () => {
     try {
-      const response = await apiClient.post('/api/class', newClassData);
+      let response;
+      
+      if (isEditingClass && editingClassId) {
+        // Update existing class
+        response = await apiClient.put(`/api/class/${editingClassId}`, newClassData);
+      } else {
+        // Create new class
+        response = await apiClient.post('/api/class', newClassData);
+      }
       
       if (response.success) {
-        showToast('Class berhasil dibuat', 'success');
+        // Don't show toast here as API might already show one
         setIsCreateClassOpen(false);
         setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
+        setIsEditingClass(false);
+        setEditingClassId(null);
         // Refresh classes list
         if (onClassCreated) {
           onClassCreated();
         }
       } else {
-        showToast('Gagal membuat class', 'error');
+        showToast(
+          isEditingClass ? 'Gagal mengupdate class' : 'Gagal membuat class', 
+          'error'
+        );
       }
     } catch (error) {
-      showToast('Gagal membuat class', 'error');
+      showToast(
+        isEditingClass ? 'Gagal mengupdate class' : 'Gagal membuat class', 
+        'error'
+      );
     }
   };
 
@@ -169,10 +187,40 @@ const SemiPrivateScheduleForm = ({
                 </select>
                 <button
                   type="button"
-                  onClick={() => setIsCreateClassOpen(true)}
-                  className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm font-medium"
+                  onClick={() => {
+                    setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
+                    setIsEditingClass(false);
+                    setEditingClassId(null);
+                    setIsCreateClassOpen(true);
+                  }}
+                  className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-colors text-sm font-medium"
+                  title="Tambah Class Baru"
                 >
                   + Add
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const selectedClassId = document.querySelector('select[name="class_id"]').value;
+                    if (selectedClassId) {
+                      const selectedClass = classes.find(cls => cls.id === selectedClassId);
+                      if (selectedClass) {
+                        setNewClassData({
+                          class_name: selectedClass.class_name,
+                          color_sign: selectedClass.color_sign || '#FF6B6B'
+                        });
+                        setIsEditingClass(true);
+                        setEditingClassId(selectedClassId);
+                        setIsCreateClassOpen(true);
+                      }
+                    } else {
+                      showToast('Pilih class terlebih dahulu untuk edit', 'error');
+                    }
+                  }}
+                  className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm font-medium"
+                  title="Edit Class Terpilih"
+                >
+                  ✏️ Edit
                 </button>
               </div>
             </div>
@@ -421,11 +469,13 @@ const SemiPrivateScheduleForm = ({
         </div>
       </div>
 
-      {/* Create Class Modal */}
+      {/* Create/Edit Class Modal */}
       {isCreateClassOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">Create New Class</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              {isEditingClass ? 'Edit Class' : 'Create New Class'}
+            </h3>
             
             <div className="space-y-4">
               <div>
@@ -460,6 +510,8 @@ const SemiPrivateScheduleForm = ({
                 onClick={() => {
                   setIsCreateClassOpen(false);
                   setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
+                  setIsEditingClass(false);
+                  setEditingClassId(null);
                 }}
               >
                 Cancel
@@ -469,7 +521,7 @@ const SemiPrivateScheduleForm = ({
                 onClick={handleCreateClass}
                 disabled={!newClassData.class_name}
               >
-                Create Class
+                {isEditingClass ? 'Update Class' : 'Create Class'}
               </Button>
             </div>
           </div>
