@@ -15,7 +15,7 @@ const HeroSection = ({ title1, title2, image, className = "", variant = "default
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          background: "linear-gradient(272deg, rgba(82, 82, 81, 0) -58.44%, #525251 82.16%)"
+          background: "linear-gradient(200.18deg, rgba(123, 143, 203, 0) 26.68%, #7B8FCB 93.37%)"
         }}
       />
 

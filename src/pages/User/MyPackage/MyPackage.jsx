@@ -145,23 +145,44 @@ const MyPackage = () => {
                 </div>
 
                 {/* Group Classes Progress */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Session Group Classes</span>
-                    <span className="font-medium">
-                      {data.current_active_package.session_group_classes.used} of {data.current_active_package.session_group_classes.total}
-                    </span>
+                {data.current_active_package.session_group_classes.total > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Session Private Classes</span>
+                      <span className="font-medium">
+                        {data.current_active_package.session_group_classes.used} of {data.current_active_package.session_group_classes.total}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${data.current_active_package.session_group_classes.progress_percentage}%` 
+                        }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-300"
-                      style={{ 
-                        width: `${data.current_active_package.session_group_classes.progress_percentage}%` 
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                )}
 
+                {/* Private Classes Progress */}
+                {data.current_active_package.session_semi_private_classes.total > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Session Private Classes</span>
+                      <span className="font-medium">
+                        {data.current_active_package.session_semi_private_classes.used} of {data.current_active_package.session_semi_private_classes.total}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${data.current_active_package.session_semi_private_classes.progress_percentage}%` 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
                 {/* Private Classes Progress */}
                 {data.current_active_package.session_private_classes.total > 0 && (
                   <div className="space-y-2">

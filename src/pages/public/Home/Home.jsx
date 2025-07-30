@@ -4,6 +4,8 @@ import PublicLayout from "../../../components/layout/PublicLayout/PublicLayout";
 import TrainerCard from "../../../components/ui/Card/TrainerCard.jsx";
 import ClassCard from "../../../components/ui/Card/ClassCard.jsx";
 import Divider from "../../../components/ui/Divider/Divider.jsx";
+import { flower2Icon } from "../../../shared/utils/assets.js"; 
+
 import ImageSlider from "../../../components/ui/ImageSlider/ImageSlider.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import { scheduleData } from "../../../data/scheduleData";
@@ -459,79 +461,99 @@ const Home = () => {
                 <Divider />
 
                 {/* About Section */}
-      <section className="py-8 sm:py-12 bg-white">
-        <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
-          <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
-            <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
-              Get to <span className="font-fraunces italic">Know</span>
-            </h2>
-            <div className="mt-2 ml-0 sm:ml-4 transform -rotate-2">
-              <span className="bg-primary text-white text-xl sm:text-2xl md:text-[28px] font-raleway font-medium leading-none px-4 py-1 inline-block">
-                Oblix Pilates
-              </span>
+      <div className="relative w-full">
+        <section className="py-8 sm:py-12 bg-white">
+          <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
+            <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
+              <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
+                Get to <span className="font-fraunces italic">Know</span>
+              </h2>
+              <div className="mt-2 ml-0 sm:ml-4 transform -rotate-2">
+                <span className="bg-primary text-white text-xl sm:text-2xl md:text-[28px] font-raleway font-medium leading-none px-4 py-1 inline-block">
+                  Oblix Pilates
+                </span>
+              </div>
+            </div>
+
+            <div className="max-w-3xl mx-auto text-center px-4" data-aos="fade-up" data-aos-delay="200">
+              <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
+                From better posture to a stronger core and a calmer mind, Pilates
+                at Oblix helps you move smarter and feel stronger. More than a
+                workout—it's your reset, your recharge, your time.
+              </p>
             </div>
           </div>
+        </section>
 
-          <div className="max-w-3xl mx-auto text-center px-4" data-aos="fade-up" data-aos-delay="200">
-            <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
-              From better posture to a stronger core and a calmer mind, Pilates
-              at Oblix helps you move smarter and feel stronger. More than a
-              workout—it's your reset, your recharge, your time.
-            </p>
+        {/* Image container with horizontal scroll, pola selang-seling persegi dan persegi panjang vertikal, auto-scroll, recycle */}
+        <section className="py-6 sm:py-8 bg-white w-full" data-aos="fade-up">
+          <div className="mx-auto py-4 md:py-6 flex justify-between items-center w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
+            <div className="relative overflow-hidden rounded-lg w-full">
+              {/* Gradient overlay (samping) */}
+              <div
+                className="absolute inset-0 z-10 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 12.5%, rgba(255,255,255,0) 87.5%, rgba(255,255,255,1) 100%)",
+                }}
+              ></div>
+              {/* Image slider - draggable and auto-scroll */}
+              {galleriesLoading ? (
+                <div className="flex justify-center items-center h-full">
+                  <Loading />
+                </div>
+              ) : galleriesError ? (
+                <div className="flex justify-center items-center h-full">
+                  <div className="text-center">
+                    <p className="text-red-500 text-lg">Error loading gallery: {galleriesError}</p>
+                    <p className="text-gray-500 mt-2">Please try refreshing the page.</p>
+                  </div>
+                </div>
+              ) : galleries.length === 0 ? (
+                <div className="flex justify-center items-center h-full">
+                  <div className="text-center">
+                    <p className="text-gray-500 text-lg">No gallery images available.</p>
+                    <p className="text-gray-400 mt-2">Please check back later.</p>
+                  </div>
+                </div>
+              ) : (
+                <DraggableAutoScrollSlider
+                  images={galleries.map(gallery => ({
+                    src: getGalleryImageUrl(gallery.picture),
+                    alt: gallery.title || "Pilates Gallery",
+                  }))}
+                  autoScrollSpeed={1.2}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+        {/* Gradient overlay bawah */}
+        <div
+          className="pointer-events-none"
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: "120px",
+            zIndex: 20,
+            background: "linear-gradient(180deg, rgba(123, 143, 203, 0) 25.16%, rgba(123, 143, 203, 0.4) 115.33%)"
+          }}
+        />
+      </div>
 
-      {/* Image container with horizontal scroll, pola selang-seling persegi dan persegi panjang vertikal, auto-scroll, recycle */}
-      <section className="py-6 sm:py-8 bg-white w-full" data-aos="fade-up">
-        <div className="mx-auto py-4 md:py-6 flex justify-between items-center w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
-          <div className="relative overflow-hidden rounded-lg w-full">
-            {/* Gradient overlay */}
-            <div
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 12.5%, rgba(255,255,255,0) 87.5%, rgba(255,255,255,1) 100%)",
-              }}
-            ></div>
-            {/* Image slider - draggable and auto-scroll */}
-            {galleriesLoading ? (
-              <div className="flex justify-center items-center h-full">
-                <Loading />
-              </div>
-            ) : galleriesError ? (
-              <div className="flex justify-center items-center h-full">
-                <div className="text-center">
-                  <p className="text-red-500 text-lg">Error loading gallery: {galleriesError}</p>
-                  <p className="text-gray-500 mt-2">Please try refreshing the page.</p>
-                </div>
-              </div>
-            ) : galleries.length === 0 ? (
-              <div className="flex justify-center items-center h-full">
-                <div className="text-center">
-                  <p className="text-gray-500 text-lg">No gallery images available.</p>
-                  <p className="text-gray-400 mt-2">Please check back later.</p>
-                </div>
-              </div>
-            ) : (
-            <DraggableAutoScrollSlider
-                images={galleries.map(gallery => ({
-                  src: getGalleryImageUrl(gallery.picture),
-                  alt: gallery.title || "Pilates Gallery",
-                }))}
-              autoScrollSpeed={1.2}
-            />
-            )}
-          </div>
-        </div>
-      </section>
-      <Divider />
+
+     
 
       {/* Our Classes Section */}
-      <section className="py-8 sm:py-12 bg-white">
+      <section className="py-8 sm:py-12 bg-primary">
+      <div className="w-full flex justify-center my-8">
+        <img src={flower2Icon} alt="" className="h-8 w-auto opacity-70" />
+      </div>
         <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-tertiary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-white text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
               <span className="font-raleway">Our</span>
               <span className="font-fraunces italic">Classes</span>
             </div>
@@ -786,6 +808,7 @@ const Home = () => {
         </div>
       </section>
 
+      <Divider />
       {/* Testimonial Section */}
       <section className="py-6 sm:py-8 md:py-12 bg-white relative overflow-hidden" data-aos="fade-up">
         <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
@@ -829,142 +852,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Divider Section */}
-      <Divider />
-
-      <section className="py-8 sm:py-12 bg-white">
-        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
-          <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-tertiary text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium leading-none">
-              <span className="font-raleway">Classes</span>
-              <span className="font-fraunces italic">Schedule</span>
-            </div>
-          </div>
-
-          <div className="w-full max-w-4xl mx-auto relative space-y-10" data-aos="fade-up" data-aos-delay="200">
-            {scheduleData.map((daySchedule, index) => (
-              <div key={index} className="mb-6">
-                <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold font-raleway text-tertiary mb-4">
-                  {daySchedule.day}
-                </h3>
-
-                <div className="space-y-3 sm:space-y-4">
-                  {daySchedule.classes.map((classItem) => {
-                    // Split time for mobile display
-                    const timeParts = classItem.time.split(' - ');
-                    const startTime = timeParts[0];
-                    const endTime = timeParts[1];
-                    
-                    return (
-                      <div
-                        key={classItem.id}
-                        className="w-full bg-neutral-50 rounded-2xl sm:rounded-3xl py-2 sm:p-6 overflow-hidden"
-                      >
-                        <div className="grid grid-cols-3 gap-3 sm:gap-6 items-center">
-                          <div className="text-sm sm:text-base md:text-lg lg:text-xl font-normal font-raleway text-tertiary">
-                            {/* Desktop: Show full time range */}
-                            <span className="hidden sm:block">
-                              {classItem.time}
-                            </span>
-                            {/* Mobile: Show time in separate lines */}
-                            <div className="sm:hidden flex flex-col items-center justify-center">
-                              <div>{startTime}</div>
-                              <div className="text-xs text-neutral-400">-</div>
-                              <div>{endTime}</div>
-                            </div>
-                          </div>
-                          <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold font-raleway text-tertiary">
-                            {classItem.className}
-                          </span>
-                          <span className="text-sm sm:text-base md:text-lg lg:text-xl font-normal font-raleway text-neutral-500">
-                            {classItem.coach}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="w-full relative py-8 sm:py-12"></div>
-          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden" data-aos="fade-up" data-aos-delay="400">
-            <img
-              src={classesScheduleBanner}
-              alt="Schedule Banner"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute left-6 sm:left-20 md:left-28 top-1/2 transform -translate-y-1/2 z-10">
-              <svg
-                className="w-16 h-16 sm:w-48 sm:h-48 md:w-56 md:h-56 opacity-80"
-                viewBox="0 0 366 372"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M95.7547 243.971C88.7643 243.63 82.4858 243.188 76.2194 242.464C61.5078 240.676 47.4398 237.084 34.1496 230.21C13.8675 219.736 3.56131 202.699 1.18805 180.535C0.13992 170.347 0.435835 160.167 3.26653 150.278C9.52821 128.057 24.3126 114.978 46.6376 110.843C68.1771 106.873 88.9532 110.79 108.866 119.967C110.254 120.616 111.715 121.198 113.102 121.846C113.58 120.599 112.978 119.785 112.591 118.912C105.942 100.745 102.644 81.9969 103.255 62.8418C103.708 48.9887 106.967 35.7259 116.211 24.7991C122.915 16.9801 131.357 11.5297 140.733 7.40896C152.563 2.15841 165.136 -0.640521 178.184 0.341769C191.374 1.33239 202.81 6.89341 212.388 16.1689C230.808 33.7558 237.698 56.186 239.907 80.5354C240.431 86.444 240.317 92.3858 240.062 98.3193C240.026 99.167 239.48 100.339 240.665 100.763C241.5 101.095 242.107 100.14 242.696 99.6078C253.72 90.0607 266.261 83.0817 280.313 78.812C301.962 72.2996 322.185 75.9006 339.892 90.3295C361.902 108.341 369.173 131.785 363.54 159.141C361.832 167.609 356.796 174.465 351.429 180.805C338.315 196.177 322.204 207.194 302.568 212.976C301.206 213.391 299.782 213.59 298.42 214.006C297.199 214.429 295.726 214.13 294.536 215.476C297.213 217.404 299.748 219.324 302.351 221.319C316.392 232.133 327.574 245.256 335.449 261.229C343.589 277.643 342.535 293.939 335.337 309.944C329.164 323.53 319.638 334.441 307.312 342.99C291.263 354.224 274.238 353.573 256.719 346.308C241.011 339.716 228.161 329.185 217.409 315.945C214.185 311.931 211.47 307.593 208.608 303.387C208.074 302.648 207.987 301.368 206.846 301.584C205.919 301.742 206.012 302.880 205.767 303.645C202.213 315.544 197.069 326.572 190.464 337.017C183.865 347.321 175.904 356.411 165.762 363.531C156.713 369.938 146.373 371.806 135.43 371.231C119.97 370.39 105.583 366 92.4328 357.505C79.0068 348.853 72.0535 336.12 70.0947 320.78C66.5898 293.663 75.5882 270.329 91.4243 249.239C92.6264 247.611 93.9636 246.132 95.7547 243.971Z"
-                  fill="url(#paint0_linear_74_419)"
-                />
-                <defs>
-                  <linearGradient
-                    id="paint0_linear_74_419"
-                    x1="71.6121"
-                    y1="64.4558"
-                    x2="316.523"
-                    y2="335.68"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#7B8FCB" />
-                    <stop offset="1" stopColor="#ADBFF6" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-
-            <div className="absolute left-1/2 md:left-96 transform -translate-x-1/2 top-1/2 transform -translate-y-1/2 z-10">
-              <div className="text-white flex flex-col items-center gap-4 sm:gap-6">
-                <div className="text-center md:text-start">
-                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium font-raleway leading-tight block">
-                    Book your
-                  </span>
-                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal font-fraunces leading-tight">
-                    Session Now
-                  </span>
-                </div>
-                <div className="sm:hidden">
-                  <a
-                    href={`https://wa.me/6285883335533?text=${encodeURIComponent(
-                      "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button as="span" variant="primary" size="medium">
-                      WhatsApp
-                    </Button>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute right-6 sm:right-20 md:right-28 top-1/2 transform -translate-y-1/2 z-10">
-              <a
-                href={`https://wa.me/6285883335533?text=${encodeURIComponent(
-                  "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:inline-flex"
-              >
-                <Button as="span" variant="primary" size="large">
-                  Click Here
-                </Button>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
     </PublicLayout>
   );
 };

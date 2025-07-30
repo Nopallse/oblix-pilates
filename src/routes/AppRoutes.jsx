@@ -12,7 +12,7 @@ import CheckClass from "../pages/User/CheckClass.jsx";
 import LoginPage from "../pages/public/auth/LoginPage.jsx";
 import RegisterPage from "../pages/public/auth/RegisterPage.jsx";
 import Profile from "../pages/User/profile/Profile.jsx";
-import MyClasses from "../pages/User/MyClasses.jsx";
+import MyClasses from "../pages/User/MyClasses/MyClasses.jsx";
 import MyPackage from "../pages/User/MyPackage";
 import BuyPackage from "../pages/User/BuyPackage";
 import PackageDetail from "../pages/User/PackageDetail";

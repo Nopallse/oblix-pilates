@@ -25,6 +25,7 @@ import logoSekunder from '@assets/logos/logo_sekunder.png';
 
 // Import SVG
 import flowerIcon from '@assets/svg/flower.svg';
+import flower2Icon from '@assets/svg/flower2.svg';
 import instagramIcon from '@assets/svg/icons/instagram.svg';
 import locationIcon from '@assets/svg/icons/location.svg';
 import phoneIcon from '@assets/svg/icons/phone.svg';
@@ -78,6 +79,7 @@ export const logos = {
 
 export const icons = {
     flower: flowerIcon,
+    flower2: flower2Icon,
     instagram: instagramIcon,
     location: locationIcon,
     phone: phoneIcon,
@@ -157,6 +159,7 @@ export {
     logoPrimer,
     logoSekunder,
     flowerIcon,
+    flower2Icon,
     instagramIcon,
     locationIcon,
     phoneIcon,

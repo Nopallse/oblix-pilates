@@ -95,7 +95,7 @@ const UserLayout = ({ children }) => {
       });
       // Add a small delay to ensure state is properly set
       setTimeout(() => {
-        navigate('/buy-package');
+      navigate('/buy-package');
       }, 100);
     }
   }, [userHasPackage, navigate, location.pathname]); // Remove user dependency to avoid infinite loop

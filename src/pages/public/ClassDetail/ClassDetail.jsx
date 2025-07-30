@@ -220,7 +220,7 @@ const ClassDetail = () => {
       </section>
       <Divider />
       <div className="relative mx-auto mb-6 sm:mb-8 w-fit text-center px-4">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-tertiary text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium leading-none">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-primary text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium leading-none">
           <span className="font-raleway">{classData.title} Class</span>
           <span className="font-fraunces italic">Equipment</span>
         </div>

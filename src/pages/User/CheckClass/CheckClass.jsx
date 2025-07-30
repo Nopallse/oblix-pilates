@@ -128,7 +128,14 @@ const CheckClass = () => {
 
     if (is_booked && booking_status === 'signup') {
       return (
-        <Button variant="outline" size="sm" onClick={() => handleCancelBooking(schedule)} loading={bookingLoading[loadingKey]} disabled={bookingLoading[loadingKey]} className="border-red-300 text-red-600 hover:bg-red-50">
+        <Button 
+          variant="primary" 
+          size="small" 
+          onClick={() => handleCancelBooking(schedule)} 
+          loading={bookingLoading[loadingKey]} 
+          disabled={bookingLoading[loadingKey]}
+          className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+        >
           Cancel Booking
         </Button>
       );
@@ -136,7 +143,14 @@ const CheckClass = () => {
 
     if (is_booked && booking_status === 'waiting_list') {
       return (
-        <Button variant="outline" size="sm" onClick={() => handleCancelBooking(schedule)} loading={bookingLoading[loadingKey]} disabled={bookingLoading[loadingKey]} className="border-orange-300 text-orange-600 hover:bg-orange-50">
+        <Button 
+          variant="primary" 
+          size="small" 
+          onClick={() => handleCancelBooking(schedule)} 
+          loading={bookingLoading[loadingKey]} 
+          disabled={bookingLoading[loadingKey]}
+          className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+        >
           Cancel Waitlist
         </Button>
       );
@@ -144,7 +158,13 @@ const CheckClass = () => {
 
     if (isClassFull(schedule) && can_book) {
       return (
-        <Button variant="outline" size="sm" onClick={() => handleBooking(scheduleId, 'waitlist')} loading={bookingLoading[scheduleId]} disabled={bookingLoading[scheduleId]} className="border-purple-300 text-purple-600 hover:bg-purple-50">
+        <Button 
+          variant="primary" 
+          size="small" 
+          onClick={() => handleBooking(scheduleId, 'waitlist')} 
+          loading={bookingLoading[scheduleId]} 
+          disabled={bookingLoading[scheduleId]}
+        >
           Join Waitlist
         </Button>
       );
@@ -152,14 +172,25 @@ const CheckClass = () => {
 
     if (can_book && !is_booked) {
       return (
-        <Button variant="primary" size="sm" onClick={() => handleBooking(scheduleId, 'book')} loading={bookingLoading[scheduleId]} disabled={bookingLoading[scheduleId]} className="bg-purple-500 hover:bg-purple-600 text-white">
+        <Button 
+          variant="primary" 
+          size="small" 
+          onClick={() => handleBooking(scheduleId, 'book')} 
+          loading={bookingLoading[scheduleId]} 
+          disabled={bookingLoading[scheduleId]}
+        >
           Book Class
         </Button>
       );
     }
 
     return (
-      <Button variant="primary" size="small" disabled className="cursor-not-allowed">
+      <Button 
+        variant="outline" 
+        size="small" 
+        disabled 
+        className="cursor-not-allowed opacity-50"
+      >
         Cannot Book
       </Button>
     );
@@ -182,7 +213,8 @@ const CheckClass = () => {
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-600">{error}</p>
             <Button 
-              variant="secondary" 
+              variant="primary" 
+              size="small"
               onClick={clearError}
               className="mt-2"
             >
@@ -210,7 +242,7 @@ const CheckClass = () => {
                 My Package
               </div>
               <div className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium">
-                {data.package_info.remaining_sessions.group + data.package_info.remaining_sessions.private} Session Left ({data.package_info.package_name})
+                {data.package_info.remaining_sessions.group + data.package_info.remaining_sessions.semi_private + data.package_info.remaining_sessions.private} Session Left ({data.package_info.package_name})
               </div>
             </div>
           )}
@@ -223,7 +255,10 @@ const CheckClass = () => {
               onClick={prevWeek}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
             >
-              <img src={icons.chevronLeft} alt="Previous" className="w-5 h-5" />
+              {/* SVG panah kiri custom sesuai instruksi */}
+              <svg width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.0933 1.53564L1.8838 10.7451L11.0933 19.9546" stroke="#525251" strokeWidth="2.51167" strokeLinecap="round"/>
+              </svg>
             </button>
             {/* Date Cards */}
             <div className="flex justify-center w-full">
@@ -233,15 +268,19 @@ const CheckClass = () => {
                     key={date.toISOString()}
                     onClick={() => selectDate(date)}
                     className={`
-                      flex-shrink-0 
-                      w-full 
-                      max-w-[80px] 
-                      sm:max-w-[100px] 
-                      px-2 sm:px-4 
-                      py-2 sm:py-3 
-                      rounded-lg 
-                      text-center 
-                      transition-all 
+                      flex-shrink-0
+                      w-full
+                      max-w-[80px]
+                      sm:max-w-[60px]
+                      md:max-w-[80px]
+                      lg:max-w-[80px]
+                      xl:max-w-[120px]
+                      2xl:max-w-[180px]
+                      px-2 sm:px-4 md:px-5 lg:px-6 xl:px-7 2xl:px-8
+                      py-2 sm:py-3 md:py-4 lg:py-5 xl:py-6 2xl:py-7
+                      rounded-lg
+                      text-center
+                      transition-all
                       ${isSameDay(date, selectedDate)
                         ? 'bg-primary text-white'
                         : 'bg-quaternary text-gray-700 hover:bg-gray-200'
@@ -315,7 +354,7 @@ const CheckClass = () => {
                   {/* Availability */}
                   <div className="flex-1 text-center">
                     <div className={`text-xs  ${
-                      isClassFull(schedule) ? 'text-red-600' : 'text-green-600'
+                      isClassFull(schedule) ? 'text-red-600' : ''
                     }`}>
                       {getAvailabilityText(schedule)}
                     </div>
@@ -367,17 +406,18 @@ const CheckClass = () => {
             <div className="flex justify-end space-x-3">
               <Button
                 variant="outline"
+                size="small"
                 onClick={handleCloseCancelModal}
                 disabled={bookingLoading[cancelScheduleId]}
               >
                 Batal
               </Button>
               <Button
-                variant="primary"
+                variant="danger"
+                size="small"
                 onClick={handleConfirmCancel}
                 loading={bookingLoading[cancelScheduleId]}
                 disabled={bookingLoading[cancelScheduleId] || !cancelReason.trim()}
-                className="bg-red-500 hover:bg-red-600 text-white"
               >
                 Konfirmasi Pembatalan
               </Button>

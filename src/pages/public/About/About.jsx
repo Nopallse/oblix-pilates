@@ -10,7 +10,7 @@ const About = () => {
       <section className="py-8 sm:py-12 bg-white">
         <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           <div className="mx-auto mb-8 w-fit text-center" data-aos="fade-up">
-            <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
+            <h2 className="text-primary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium leading-none">
               welcome <span className="font-fraunces italic">to</span>
             </h2>
             <div className="mt-2 ml-0 sm:ml-4 transform -rotate-2">
