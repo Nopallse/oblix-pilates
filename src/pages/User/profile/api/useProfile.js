@@ -298,3 +298,79 @@ export const usePasswordForm = () => {
     loading
   };
 }; 
+
+// Hook untuk mengambil data user (bisa digunakan di Header)
+export const useUserData = () => {
+  const [userData, setUserData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const authStore = useAuthStore()
+
+  // Load user data
+  const loadUserData = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await profileAPI.getProfile()
+      if (!response.success || !response.data) {
+        throw new Error('User data not found')
+      }
+      const user = response.data
+      console.log('User data loaded from API:', user)
+      
+      // Map user data untuk Header
+      const mappedUserData = {
+        id: user.id,
+        name: user.full_name || user.username || 'User',
+        email: user.email || '',
+        username: user.username || '',
+        picture: user.picture || '',
+        member_code: user.member_code || '',
+        status: user.status || '',
+        role: user.role || user.type || 'user',
+        has_purchased_package: user.has_purchased_package
+      }
+      
+      setUserData(mappedUserData)
+    } catch (err) {
+      const errorMessage = extractErrorMessage(err, 'Gagal memuat data user')
+      setError(errorMessage)
+      console.error('Error loading user data from API:', err)
+      
+      // Fallback ke local storage data
+      const localUser = authStore?.user
+      if (localUser) {
+        console.log('Using fallback data from local storage:', localUser)
+        const fallbackUserData = {
+          id: localUser.id,
+          name: localUser.name || localUser.full_name || localUser.username || 'User',
+          email: localUser.email || '',
+          username: localUser.username || '',
+          picture: localUser.picture || '',
+          member_code: localUser.member_code || '',
+          status: localUser.status || '',
+          role: localUser.role || localUser.type || 'user',
+          has_purchased_package: localUser.has_purchased_package
+        }
+        setUserData(fallbackUserData)
+        setError(null) // Clear error since we have fallback data
+      } else {
+        setUserData(null)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [authStore])
+
+  // Load user data on mount
+  useEffect(() => {
+    loadUserData()
+  }, [loadUserData])
+
+  return {
+    userData,
+    loading,
+    error,
+    loadUserData
+  }
+} 

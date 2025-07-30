@@ -1,3 +1,16 @@
-// Export all profile API related functions and hooks
+// Export profile API functions
 export { profileAPI } from './profileAPI'
-export { useProfile, useProfileForm, usePasswordForm } from './useProfile' 
+
+// Export validation schemas and utilities
+export { 
+  profileUpdateValidation, 
+  changePasswordValidation,
+  validateForm,
+  validateField,
+  validateProfilePicture,
+  validatePasswordConfirmation,
+  validateDeleteConfirmation
+} from './profileValidation'
+
+// Export profile hooks
+export { useProfile, useProfileForm, usePasswordForm, useUserData } from './useProfile' 

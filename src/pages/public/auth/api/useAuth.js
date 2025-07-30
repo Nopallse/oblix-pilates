@@ -129,6 +129,20 @@ export const useAuth = () => {
                 throw new Error('Password harus minimal 8 karakter');
             }
 
+            // Validate phone number format
+            if (userData.phone_number.startsWith('08')) {
+                throw new Error('Nomor telepon harus dimulai dengan +62, bukan 08. Gunakan format: +6281234567890');
+            }
+
+            if (!userData.phone_number.startsWith('+62')) {
+                throw new Error('Nomor telepon harus dimulai dengan +62. Gunakan format: +6281234567890');
+            }
+
+            const numberAfterPrefix = userData.phone_number.substring(3);
+            if (!/^[1-9][0-9]{6,14}$/.test(numberAfterPrefix)) {
+                throw new Error('Format nomor telepon tidak valid. Gunakan format: +6281234567890');
+            }
+
             const response = await authAPI.register(userData);
 
             if (response.success) {

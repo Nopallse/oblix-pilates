@@ -70,8 +70,29 @@ export const registerValidation = {
   phoneNumber: {
     required: 'Phone number is required',
     pattern: {
-      value: /^[\+]?[1-9][\d]{0,15}$/,
-      message: 'Please enter a valid phone number'
+      value: /^\+62[1-9][0-9]{6,14}$/,
+      message: 'Phone number must start with +62 followed by 7-15 digits (e.g., +6281234567890)'
+    },
+    validate: (value) => {
+      if (!value) return 'Phone number is required';
+      
+      // Check if starts with 08 (invalid format)
+      if (value.startsWith('08')) {
+        return 'Phone number must start with +62, not 08. Please use format: +6281234567890';
+      }
+      
+      // Check if starts with +62
+      if (!value.startsWith('+62')) {
+        return 'Phone number must start with +62. Please use format: +6281234567890';
+      }
+      
+      // Check if after +62 is valid number
+      const numberAfterPrefix = value.substring(3);
+      if (!/^[1-9][0-9]{6,14}$/.test(numberAfterPrefix)) {
+        return 'Invalid phone number format. Please use format: +6281234567890';
+      }
+      
+      return true;
     }
   },
   password: {

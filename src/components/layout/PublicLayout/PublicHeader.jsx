@@ -76,17 +76,17 @@ const PublicHeader = () => {
           scrolled ? "shadow-xl backdrop-blur-sm bg-primary/95" : "shadow-sm"
         }`}
       >
-        <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-3 sm:py-4 md:py-5 lg:py-6 flex justify-between items-center">
+        <div className="w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-2 sm:py-3 md:py-4 lg:py-4 flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center flex-shrink-0">
-            <Link to="/" className="block">
-              <img
-                src={logoSekunder}
-                alt="Oblix Pilates"
-                className="h-6 sm:h-7 md:h-8 lg:h-9 xl:h-10 w-auto"
-              />
-            </Link>
-          </div>
+          <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center group">
+                <img 
+                  src={logoSekunder} 
+                  alt="Oblix Pilates Logo" 
+                  className="h-6 sm:h-7 md:h-8 lg:h-9 w-auto " 
+                />
+              </Link>
+            </div>
 
           <div className="flex items-center">
             {/* Desktop Navigation */}
@@ -131,7 +131,7 @@ const PublicHeader = () => {
                 to="/book-trial"
                 variant="outline-white"
                 size="small"
-                className="text-xs sm:text-sm lg:text-base px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2"
+                className="text-xs sm:text-sm lg:text-base px-3 sm:px-4 lg:px-5 "
               >
                 Book a Trial
               </Button>
@@ -139,7 +139,7 @@ const PublicHeader = () => {
                 to="/login"
                 variant="filled-white"
                 size="small"
-                className="text-xs sm:text-sm lg:text-base px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2"
+                className="text-xs sm:text-sm lg:text-base px-5 sm:px-7 lg:px-9 "
               >
                 Login
               </Button>

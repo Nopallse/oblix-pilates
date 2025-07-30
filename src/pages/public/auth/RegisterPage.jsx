@@ -78,6 +78,35 @@ const RegisterPage = () => {
       setFieldErrors({ ...fieldErrors, [name]: null });
     }
     
+    // Real-time validation for phone number
+    if (name === 'phoneNumber') {
+      // Check if user is typing 08 format
+      if (value.startsWith('08')) {
+        setFieldErrors(prev => ({
+          ...prev,
+          phoneNumber: 'Phone number must start with +62, not 08. Please use format: +6281234567890'
+        }));
+      } else if (value && !value.startsWith('+62')) {
+        setFieldErrors(prev => ({
+          ...prev,
+          phoneNumber: 'Phone number must start with +62. Please use format: +6281234567890'
+        }));
+      } else if (value && value.startsWith('+62')) {
+        const numberAfterPrefix = value.substring(3);
+        if (numberAfterPrefix && !/^[1-9][0-9]{0,14}$/.test(numberAfterPrefix)) {
+          setFieldErrors(prev => ({
+            ...prev,
+            phoneNumber: 'Invalid phone number format. Please use format: +6281234567890'
+          }));
+        } else {
+          // Clear error if format is correct
+          setFieldErrors(prev => ({
+            ...prev,
+            phoneNumber: null
+          }));
+        }
+      }
+    }
   };
 
   const handleToggle = () => {
@@ -154,17 +183,19 @@ const RegisterPage = () => {
               error={fieldErrors.dateOfBirth}
             />
             {/* Phone Number Input */}
-            <Input
-              label="Phone Number"
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              placeholder="Enter your phone number"
-              required
-              error={fieldErrors.phoneNumber}
-            />
+            <div>
+              <Input
+                label="Phone Number"
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                placeholder="+6281234567890"
+                required
+                error={fieldErrors.phoneNumber}
+              />
+            </div>
             {/* Password Input */}
             <Input
               label="Password"

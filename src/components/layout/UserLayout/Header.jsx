@@ -2,12 +2,13 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@shared/store/authStore'
 import { useAuth } from '../../../pages/public/auth/api'
-import { logoSekunder } from '../../../shared/utils/assets'
+import { useUserData } from '../../../pages/User/profile/api'
+import { logoSekunder, getProfileImageUrl } from '../../../shared/utils/assets'
 
 const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollapsed, showSidebarControls = true }) => {
   const authStore = useAuthStore()
-  const userData = authStore?.user || null
-  const { logout, loading } = useAuth()
+  const { logout, loading: logoutLoading } = useAuth()
+  const { userData, loading: userDataLoading, error: userDataError, loadUserData } = useUserData()
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -42,6 +43,15 @@ const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollaps
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  // Refresh user data when dropdown is opened
+  const handleDropdownToggle = () => {
+    if (!showDropdown) {
+      // Refresh data when opening dropdown
+      loadUserData()
+    }
+    setShowDropdown(!showDropdown)
+  }
 
   return (
     <header className={`bg-secondary sticky top-0 z-40 transition-all duration-300 ${
@@ -97,21 +107,69 @@ const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollaps
 
           {/* Right side - Profile dropdown */}
           <div className="flex items-center" ref={dropdownRef}>
+            {/* Error indicator */}
+            {userDataError && (
+              <div className="mr-2">
+                <button
+                  onClick={loadUserData}
+                  className="p-1 text-red-400 hover:text-red-300 transition-colors"
+                  title="Error loading user data. Click to retry."
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
             {/* Profile Dropdown */}
             <div className="relative">
               <button
-                onClick={() => setShowDropdown(!showDropdown)}
+                onClick={handleDropdownToggle}
                 className="flex items-center space-x-2 sm:space-x-3 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 group"
+                disabled={userDataLoading}
               >
                 {/* Profile Photo */}
-                <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm lg:text-base ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-200">
-                  {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                <div className="relative w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-200 overflow-hidden">
+                  {userDataLoading ? (
+                    <div className="w-full h-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
+                      <svg className="w-4 h-4 animate-spin text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                  ) : userData?.picture ? (
+                    <>
+                      <img
+                        src={getProfileImageUrl(userData.picture)}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.log('Profile image failed to load:', userData.picture)
+                          e.target.style.display = 'none'
+                          // Show fallback initials
+                          const fallback = e.target.parentElement.querySelector('.profile-fallback')
+                          if (fallback) {
+                            fallback.style.display = 'flex'
+                          }
+                        }}
+                      />
+                      {/* Fallback initials - hidden by default if image exists */}
+                      <div className="profile-fallback absolute inset-0 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm lg:text-base hidden">
+                        {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                      </div>
+                    </>
+                  ) : (
+                    /* No picture - show initials only */
+                    <div className="w-full h-full bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm lg:text-base">
+                      {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  )}
                 </div>
                 
                 {/* Name */}
                 <div className="hidden sm:block text-left">
                   <span className="text-xs sm:text-sm lg:text-base font-medium text-white block leading-tight">
-                    {userData?.name || 'User'}
+                    {userDataLoading ? 'Loading...' : (userData?.name || 'User')}
                   </span>
                   {userData?.email && (
                     <span className="text-xs text-gray-300 block leading-tight truncate max-w-32 lg:max-w-40">
@@ -134,51 +192,16 @@ const Header = ({ user, onToggleSidebar, onToggleSidebarCollapse, sidebarCollaps
               {/* Dropdown Menu */}
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
-                  {/* User Info in Dropdown */}
-                  <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {userData?.name || 'User'}
-                    </p>
-                    {userData?.email && (
-                      <p className="text-xs text-gray-500 truncate">
-                        {userData.email}
-                      </p>
-                    )}
-                  </div>
-                  
-                  {/* Menu Items */}
                   <div className="py-1">
-                    <Link
-                      to="/profile"
-                      onClick={() => setShowDropdown(false)}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
-                    >
-                      <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                      My Profile
-                    </Link>
-                    <Link
-                      to="/settings"
-                      onClick={() => setShowDropdown(false)}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
-                    >
-                      <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      Settings
-                    </Link>
-                    <div className="border-t border-gray-100 my-1"></div>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
-                      disabled={loading}
+                      disabled={logoutLoading}
                     >
                       <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                       </svg>
-                      {loading ? 'Logging out...' : 'Sign out'}
+                      {logoutLoading ? 'Logging out...' : 'Sign out'}
                     </button>
                   </div>
                 </div>
