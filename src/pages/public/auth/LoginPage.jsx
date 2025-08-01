@@ -78,6 +78,20 @@ const LoginPage = () => {
       {/* Left: Login Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-8 lg:px-12 py-8 bg-white order-2 lg:order-1">
         <div className="max-w-md mx-auto w-full">
+          {/* Home Button */}
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-primary hover:text-blue-700 font-medium text-sm transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Home
+            </button>
+          </div>
+          
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <h2 className="text-xl lg:text-4xl font-bold font-raleway text-tertiary mb-6">

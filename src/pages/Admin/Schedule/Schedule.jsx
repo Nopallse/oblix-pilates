@@ -82,8 +82,13 @@ const Schedule = () => {
 
   // Debug state changes
   useEffect(() => {
-    console.log('Detail modal state changed:', { isDetailModalOpen, detailScheduleData, detailLoading });
-  }, [isDetailModalOpen, detailScheduleData, detailLoading]);
+    console.log('State changes:', { 
+      isFormOpen, 
+      currentScheduleType, 
+      selectedSchedule: selectedSchedule?.id,
+      semiPrivateIsOpen: isFormOpen && currentScheduleType === 'semi_private'
+    });
+  }, [isFormOpen, currentScheduleType, selectedSchedule]);
 
   // Generate calendar days for current month
   const generateCalendarDays = () => {
@@ -140,21 +145,7 @@ const Schedule = () => {
     return dayNames[date.getDay()];
   };
 
-  // Get class colors based on class type (fallback)
-  const getClassColor = (className) => {
-    if (className.includes('Chair')) {
-      if (className.includes('Basic')) return 'bg-blue-100 text-blue-800 border-blue-200';
-      if (className.includes('Flow')) return 'bg-purple-100 text-purple-800 border-purple-200';
-      return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-    }
-    if (className.includes('Tower')) {
-      if (className.includes('Basic')) return 'bg-green-100 text-green-800 border-green-200';
-      if (className.includes('Flow')) return 'bg-teal-100 text-teal-800 border-teal-200';
-      if (className.includes('Chair')) return 'bg-orange-100 text-orange-800 border-orange-200';
-      return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-    }
-    return 'bg-gray-100 text-gray-800 border-gray-200';
-  };
+ 
 
   // Format month year
   const formatMonthYear = (date) => {
@@ -222,15 +213,28 @@ const Schedule = () => {
   // Handle edit schedule directly
   const handleEditSchedule = async (schedule) => {
     try {
-      // Get schedule type from the schedule data
-      const scheduleType = schedule.type || 'group';
+      // Get schedule type from the schedule data with fallback
+      let scheduleType = schedule.type || 'group';
+      
+      // Handle different format types
+      if (scheduleType === 'semi_private' || scheduleType === 'semi-private') {
+        scheduleType = 'semi_private';
+      } else if (scheduleType === 'private') {
+        scheduleType = 'private';
+      } else {
+        scheduleType = 'group';
+      }
+      
+      console.log('handleEditSchedule debug:', { schedule, originalType: schedule.type, scheduleType });
       
       // Get detailed schedule data for editing
       const detailedSchedule = await getScheduleDetail(schedule.id, scheduleType);
+      console.log('Detailed schedule data:', detailedSchedule);
       
       setSelectedSchedule(detailedSchedule);
       setCurrentScheduleType(scheduleType);
       setIsFormOpen(true);
+      console.log('Modal should open with:', { scheduleType, isFormOpen: true });
     } catch (error) {
       showToast('Gagal memuat data schedule untuk edit', 'error');
     }
@@ -240,8 +244,20 @@ const Schedule = () => {
   const handleEditFromDetail = () => {
     setIsDetailModalOpen(false);
     setSelectedSchedule(detailScheduleData);
-    setCurrentScheduleType(detailScheduleData?.type || 'group');
+    
+    // Handle different format types
+    let scheduleType = detailScheduleData?.type || 'group';
+    if (scheduleType === 'semi_private' || scheduleType === 'semi-private') {
+      scheduleType = 'semi_private';
+    } else if (scheduleType === 'private') {
+      scheduleType = 'private';
+    } else {
+      scheduleType = 'group';
+    }
+    
+    setCurrentScheduleType(scheduleType);
     setIsFormOpen(true);
+    console.log('Edit from detail modal:', { scheduleType, isFormOpen: true });
   };
 
   // Handle delete from detail modal
@@ -291,7 +307,7 @@ const Schedule = () => {
         // Create schedule based on type
         if (currentScheduleType === 'group') {
         await createGroupSchedule(formData);
-        } else if (currentScheduleType === 'semi-private') {
+        } else if (currentScheduleType === 'semi_private') {
           await createSemiPrivateSchedule(formData);
         } else if (currentScheduleType === 'private') {
           await createPrivateSchedule(formData);
@@ -402,7 +418,7 @@ const Schedule = () => {
           {/* Calendar Grid */}
           <div className="py-6">
             {/* Week Headers */}
-            <div className="bg-secondary rounded-lg mb-2 border border-blue-300">
+            <div className="bg-secondary rounded-lg mb-2 ">
               <div className="grid grid-cols-7">
                 {weekDays.map((day) => (
                   <div key={day} className="p-3 text-center text-sm font-semibold text-white">
@@ -442,8 +458,8 @@ const Schedule = () => {
                     onClick={() => (isCurrentMonth || hasSchedule) && setSelectedDate(date)}
                   >
                     {/* Date Number */}
-                    <div className={`text-sm font-medium mb-2 text-center ${
-                      today ? 'text-blue-600 font-semibold' :
+                    <div className={`text-sm font-medium my-2 text-center ${
+                      today ? 'text-primary font-semibold' :
                       isCurrentMonth 
                         ? (hasSchedules ? 'text-gray-800' : 'text-gray-600')
                         : hasSchedule
@@ -452,7 +468,7 @@ const Schedule = () => {
                     }`}>
                       {day}
                       {today && (
-                        <span className="ml-1 text-xs bg-blue-600 text-white px-1.5 py-0.5 rounded-full">
+                        <span className="ml-1 text-xs bg-primary text-white px-1.5 py-0.5 rounded-full">
                           Today
                         </span>
                       )}
@@ -580,7 +596,12 @@ const Schedule = () => {
                       span: 2, 
                       render: (v, row) => (
                         <span className="text-center">
-                          {row.participants || 0}/{row.capacity || 10}
+                          {row.current_signups || 0}/{row.max_capacity}
+                          {row.waitlist_count > 0 && (
+                            <span className="ml-1 text-xs text-primary">
+                              (+{row.waitlist_count} waitlist)
+                            </span>
+                          )}
                         </span>
                       ),
                       className: 'text-center'
@@ -666,8 +687,9 @@ const Schedule = () => {
       />
 
       {/* Semi-Private Schedule Form */}
+      {console.log('SemiPrivateScheduleForm debug:', { isFormOpen, currentScheduleType, isOpen: isFormOpen && currentScheduleType === 'semi_private' })}
       <SemiPrivateScheduleForm
-        isOpen={isFormOpen && currentScheduleType === 'semi-private'}
+        isOpen={isFormOpen && currentScheduleType === 'semi_private'}
         onClose={() => {
           setIsFormOpen(false);
           setSelectedSchedule(null);
@@ -721,6 +743,19 @@ const Schedule = () => {
         onEdit={handleEditFromDetail}
         onDelete={handleDeleteFromDetail}
         loading={detailLoading}
+        onRefresh={async () => {
+          // Refresh schedule detail data
+          if (detailScheduleData) {
+            try {
+              const scheduleType = detailScheduleData.type || 'group';
+              const refreshedData = await getScheduleDetail(detailScheduleData.id, scheduleType);
+              setDetailScheduleData(refreshedData);
+            } catch (error) {
+              console.error('Error refreshing schedule detail:', error);
+              throw error;
+            }
+          }
+        }}
       />
     </div>
   );

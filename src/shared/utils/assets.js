@@ -32,6 +32,7 @@ import phoneIcon from '@assets/svg/icons/phone.svg';
 import tiktokIcon from '@assets/svg/icons/tiktok.svg';
 import editIcon from '@assets/svg/icons/edit.svg';
 import deleteIcon from '@assets/svg/icons/delete.svg';
+import settingIcon from '@assets/svg/icons/setting.svg';
 
 // Import Equipment SVG
 import barrelSvg from '@assets/svg/equipment/barrel.svg';
@@ -86,6 +87,7 @@ export const icons = {
     tiktok: tiktokIcon,
     edit: editIcon,
     delete: deleteIcon,
+    setting: settingIcon,
     // Add chevron icons
     chevronLeft: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjUgMTVMMTAgMTIuNUwxMi41IDEwIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K',
     chevronRight: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcuNSAxNUwxMCAxMi41TDcuNSAxMCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==',
@@ -168,5 +170,6 @@ export {
     caformer2in1Svg,
     spineCorrectorSvg,
     wundaChairSvg,
-    reformerSvg
+    reformerSvg,
+    settingIcon
 }

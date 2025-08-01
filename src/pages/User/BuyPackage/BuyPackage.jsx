@@ -247,12 +247,14 @@ const BuyPackage = () => {
                 ));
               })()
             ) : (
-              // Same card style for Trial and Promo packages
+              // Different card style for Trial and Promo packages
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {activePackages.map((pkg, index) => (
                   <div
                     key={pkg.id || index}
                     className="relative flex flex-col bg-neutral-700 rounded-2xl md:rounded-3xl shadow-lg overflow-hidden w-full max-w-xs mx-auto min-h-[370px] transition-transform duration-200 hover:scale-105"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
                   >
                     <div className="flex-1 flex flex-col justify-between p-6">
                       <div>
@@ -275,9 +277,9 @@ const BuyPackage = () => {
                           <Button
                             variant="primary"
                             size="medium"
-                            className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+                            className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm text-center"
                           >
-                            Buy Now
+                            {activeTab === 'Trial Package' ? 'Book Trial' : 'Buy Now'}
                           </Button>
                         </Link>
                       </div>

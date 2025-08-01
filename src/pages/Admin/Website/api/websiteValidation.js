@@ -125,6 +125,18 @@ export const trainerValidationSchema = Yup.object({
         .nullable()
         .url('TikTok must be a valid URL')
         .trim(),
+    rate_group_class: Yup.number()
+        .required('Rate untuk Group Class wajib diisi')
+        .min(0, 'Rate tidak boleh negatif')
+        .integer('Rate harus berupa angka bulat'),
+    rate_semi_private_class: Yup.number()
+        .required('Rate untuk Semi-Private Class wajib diisi')
+        .min(0, 'Rate tidak boleh negatif')
+        .integer('Rate harus berupa angka bulat'),
+    rate_private_class: Yup.number()
+        .required('Rate untuk Private Class wajib diisi')
+        .min(0, 'Rate tidak boleh negatif')
+        .integer('Rate harus berupa angka bulat'),
     picture: Yup.mixed()
         .nullable()
         .test('fileSize', 'File size must be less than 5MB', (value) => {
@@ -156,6 +168,18 @@ export const trainerUpdateValidationSchema = Yup.object({
         .nullable()
         .url('TikTok must be a valid URL')
         .trim(),
+    rate_group_class: Yup.number()
+        .required('Rate untuk Group Class wajib diisi')
+        .min(0, 'Rate tidak boleh negatif')
+        .integer('Rate harus berupa angka bulat'),
+    rate_semi_private_class: Yup.number()
+        .required('Rate untuk Semi-Private Class wajib diisi')
+        .min(0, 'Rate tidak boleh negatif')
+        .integer('Rate harus berupa angka bulat'),
+    rate_private_class: Yup.number()
+        .required('Rate untuk Private Class wajib diisi')
+        .min(0, 'Rate tidak boleh negatif')
+        .integer('Rate harus berupa angka bulat'),
     picture: Yup.mixed()
         .nullable()
         .test('fileSize', 'File size must be less than 5MB', (value) => {

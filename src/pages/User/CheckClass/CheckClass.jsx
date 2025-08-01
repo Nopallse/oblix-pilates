@@ -56,7 +56,7 @@ const CheckClass = () => {
     setBookingLoading(prev => ({ ...prev, [scheduleId]: true }));
     try {
       if (scheduleType === 'waitlist') {
-        await joinWaitlist(scheduleId);
+        await bookClass(scheduleId);
       } else {
         await bookClass(scheduleId);
       }
@@ -106,11 +106,32 @@ const CheckClass = () => {
   // Get availability text
   const getAvailabilityText = (schedule) => {
     if (schedule.available_slots === null) {
+      // Jika sudah penuh, tampilkan angka + "Waitlist"
+      if (schedule.available_sessions === 0) {
+        return `0/10 Waitlist`;
+      }
       return `${schedule.available_sessions}/10 Available`;
     }
-    // Format: "booked_count/total_capacity Available"
-    const totalCapacity = schedule.booked_count + schedule.available_slots;
-    return `${schedule.booked_count}/${totalCapacity} Available`;
+    
+    const totalCapacity = schedule.capacity;
+    const bookedCount = schedule.booked_count;
+    
+    // Jika user sudah booking, tampilkan status booking
+    if (schedule.is_booked) {
+      if (schedule.booking_status === 'signup') {
+        return `${bookedCount}/${totalCapacity} Booked`; // Sudah booking sebelum full
+      } else if (schedule.booking_status === 'waiting_list') {
+        return `${bookedCount}/${totalCapacity} Waitlisted`; // Booking setelah full (waitlist)
+      }
+    }
+    
+    // Jika sudah penuh atau melebihi, tampilkan angka + "Waitlist"
+    if (bookedCount >= totalCapacity) {
+      return `${bookedCount}/${totalCapacity} Waitlist`;
+    }
+    
+    // Jika belum penuh, tampilkan available
+    return `${bookedCount}/${totalCapacity} Available`;
   };
 
   // Check if class is full
@@ -119,6 +140,31 @@ const CheckClass = () => {
       return schedule.available_sessions === 0;
     }
     return schedule.available_slots === 0;
+  };
+
+  // Get booking status for styling
+  const getBookingStatus = (schedule) => {
+    if (schedule.is_booked) {
+      if (schedule.booking_status === 'signup') {
+        return 'booked'; // Sudah booking sebelum full
+      } else if (schedule.booking_status === 'waiting_list') {
+        return 'waitlisted'; // Booking setelah full (waitlist)
+      }
+    }
+    
+    if (isClassFull(schedule)) {
+      return 'full'; // Class sudah full
+    }
+    
+    return 'available'; // Masih available
+  };
+
+  // Get availability text with status
+  const getAvailabilityTextWithStatus = (schedule) => {
+    const status = getBookingStatus(schedule);
+    const text = getAvailabilityText(schedule);
+    
+    return { text, status };
   };
 
   // Get action button based on booking status
@@ -134,7 +180,7 @@ const CheckClass = () => {
           onClick={() => handleCancelBooking(schedule)} 
           loading={bookingLoading[loadingKey]} 
           disabled={bookingLoading[loadingKey]}
-          className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+          className="bg-red-600 hover:bg-red-700"
         >
           Cancel Booking
         </Button>
@@ -353,11 +399,21 @@ const CheckClass = () => {
 
                   {/* Availability */}
                   <div className="flex-1 text-center">
-                    <div className={`text-xs  ${
-                      isClassFull(schedule) ? 'text-red-600' : ''
-                    }`}>
-                      {getAvailabilityText(schedule)}
+                    {(() => {
+                      const { text, status } = getAvailabilityTextWithStatus(schedule);
+                      const statusClasses = {
+                        booked: 'text-green-600 font-semibold', // Sudah booking sebelum full
+                        waitlisted: 'text-orange-600 font-semibold', // Booking setelah full (waitlist)
+                        full: 'text-red-600 font-semibold', // Class sudah full
+                        available: 'text-gray-900' // Masih available
+                      };
+                      
+                      return (
+                        <div className={`text-xs ${statusClasses[status]}`}>
+                          {text}
                     </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Action Button */}

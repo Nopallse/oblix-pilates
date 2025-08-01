@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@components/ui';
+import { Button, Input, Dropdown, FileInput } from '@components/ui';
 import { useApiToast } from '@shared/hooks';
 import { apiClient } from '@shared/services';
+import ManageClassModal from './ManageClassModal';
+import { icons } from '@shared/utils/assets';
 
 const SemiPrivateScheduleForm = ({ 
   isOpen, 
@@ -14,102 +16,87 @@ const SemiPrivateScheduleForm = ({
   onClassCreated
 }) => {
   const { showToast } = useApiToast();
-  const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
-  const [newClassData, setNewClassData] = useState({
-    class_name: '',
-    color_sign: '#FF6B6B'
-  });
-  const [isEditingClass, setIsEditingClass] = useState(false);
-  const [editingClassId, setEditingClassId] = useState(null);
+  const [isManageClassOpen, setIsManageClassOpen] = useState(false);
   const [selectedRepeatDays, setSelectedRepeatDays] = useState([]);
-  const [selectedPicture, setSelectedPicture] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [repeatType, setRepeatType] = useState(selectedSchedule?.repeat_type || 'none');
+  const [selectedClassId, setSelectedClassId] = useState(selectedSchedule?.class_id || '');
+  const [selectedTrainerId, setSelectedTrainerId] = useState(selectedSchedule?.trainer_id || '');
+  
+  // Form state for controlled inputs
+  const [formData, setFormData] = useState({
+    pax: selectedSchedule?.max_capacity || selectedSchedule?.pax || 10,
+    date_start: selectedSchedule?.date_start || '',
+    time_start: selectedSchedule?.time_start?.slice(0, 5) || '07:30',
+    time_end: selectedSchedule?.time_end?.slice(0, 5) || '08:30',
+    schedule_until: selectedSchedule?.schedule_until || '',
+    booking_deadline_hour: selectedSchedule?.booking_deadline_hour || 24,
+    waitlist_lock_minutes: selectedSchedule?.waitlist_lock_minutes || 30,
+    min_signup: selectedSchedule?.min_signup || 1,
+    cancel_buffer_minutes: selectedSchedule?.cancel_buffer_minutes || 60
+  });
 
-  // Initialize selectedRepeatDays from selectedSchedule
+  console.log('SemiPrivateScheduleForm props:', { isOpen, selectedSchedule: selectedSchedule?.id });
+
+  // Initialize selectedRepeatDays and repeatType from selectedSchedule
   useEffect(() => {
     if (selectedSchedule?.repeat_days) {
       setSelectedRepeatDays(selectedSchedule.repeat_days);
     } else {
       setSelectedRepeatDays([]);
     }
+    
+    if (selectedSchedule?.repeat_type) {
+      setRepeatType(selectedSchedule.repeat_type);
+    } else {
+      setRepeatType('none');
+    }
+    
+    if (selectedSchedule?.class_id) {
+      setSelectedClassId(selectedSchedule.class_id);
+    } else {
+      setSelectedClassId('');
+    }
+    
+    if (selectedSchedule?.trainer_id) {
+      setSelectedTrainerId(selectedSchedule.trainer_id);
+    } else {
+      setSelectedTrainerId('');
+    }
+    
+    // Update form data when selectedSchedule changes
+    if (selectedSchedule) {
+      setFormData({
+        pax: selectedSchedule.max_capacity || selectedSchedule.pax || 10,
+        date_start: selectedSchedule.date_start || '',
+        time_start: selectedSchedule.time_start?.slice(0, 5) || '07:30',
+        time_end: selectedSchedule.time_end?.slice(0, 5) || '08:30',
+        schedule_until: selectedSchedule.schedule_until || '',
+        booking_deadline_hour: selectedSchedule.booking_deadline_hour || 24,
+        waitlist_lock_minutes: selectedSchedule.waitlist_lock_minutes || 30,
+        min_signup: selectedSchedule.min_signup || 1,
+        cancel_buffer_minutes: selectedSchedule.cancel_buffer_minutes || 60
+      });
+    }
   }, [selectedSchedule]);
 
   if (!isOpen) return null;
 
-  const handleCreateClass = async () => {
-    try {
-      let response;
-      
-      if (isEditingClass && editingClassId) {
-        // Update existing class
-        response = await apiClient.put(`/api/class/${editingClassId}`, newClassData);
-      } else {
-        // Create new class
-        response = await apiClient.post('/api/class', newClassData);
-      }
-      
-      if (response.success) {
-        // Don't show toast here as API might already show one
-        setIsCreateClassOpen(false);
-        setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
-        setIsEditingClass(false);
-        setEditingClassId(null);
-        // Refresh classes list
-        if (onClassCreated) {
-          onClassCreated();
-        }
-      } else {
-        showToast(
-          isEditingClass ? 'Gagal mengupdate class' : 'Gagal membuat class', 
-          'error'
-        );
-      }
-    } catch (error) {
-      showToast(
-        isEditingClass ? 'Gagal mengupdate class' : 'Gagal membuat class', 
-        'error'
-      );
-    }
-  };
 
-  const handlePictureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        showToast('Ukuran file terlalu besar. Maksimal 5MB', 'error');
-        return;
-      }
-      
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        showToast('Tipe file tidak didukung. Gunakan JPG, PNG, GIF, atau WebP', 'error');
-        return;
-      }
-      
-      setSelectedPicture(file);
-    }
-  };
 
-  const handleFormSubmit = async () => {
-    // Get form data
-    const form = document.querySelector('#semi-private-schedule-form');
-    const formData = new FormData(form);
-    
+
+
+  const handleFormSubmit = () => {
     // Validate required fields
-    const class_id = formData.get('class_id');
-    const trainer_id = formData.get('trainer_id');
-    const date_start = formData.get('date_start');
-    const time_start = formData.get('time_start');
-    const time_end = formData.get('time_end');
-    const pax = formData.get('pax');
-    const booking_deadline_hour = formData.get('booking_deadline_hour');
-    const waitlist_lock_minutes = formData.get('waitlist_lock_minutes');
-    const min_signup = formData.get('min_signup');
-    const cancel_buffer_minutes = formData.get('cancel_buffer_minutes');
+    const class_id = selectedClassId;
+    const trainer_id = selectedTrainerId;
+    const date_start = formData.date_start;
+    const time_start = formData.time_start;
+    const time_end = formData.time_end;
+    const pax = formData.pax;
     
-    if (!class_id || !trainer_id || !date_start || !time_start || !time_end || !pax || 
-        !booking_deadline_hour || !waitlist_lock_minutes || !min_signup || !cancel_buffer_minutes) {
+    if (!class_id || !trainer_id || !date_start || !time_start || !time_end || !pax) {
       showToast('Mohon lengkapi field yang wajib diisi', 'error');
       return;
     }
@@ -120,332 +107,424 @@ const SemiPrivateScheduleForm = ({
       return;
     }
 
-    // Validate repeat_days for weekly repeat
-    const repeatType = formData.get('repeat_type');
-    if (repeatType === 'weekly' && selectedRepeatDays.length === 0) {
+    // Validate repeat_days for weekly repeat (only for new schedules)
+    if (!selectedSchedule && repeatType === 'weekly' && selectedRepeatDays.length === 0) {
       showToast('Mohon pilih hari untuk repeat weekly', 'error');
       return;
     }
 
     // Validate schedule_until for weekly repeat
-    if (repeatType === 'weekly' && !formData.get('schedule_until')) {
+    if (repeatType === 'weekly' && !formData.schedule_until) {
       showToast('Schedule until wajib diisi untuk repeat weekly', 'error');
       return;
     }
     
+    // Handle file upload
+    let pictureData = null;
+    
+    if (selectedImage) {
+      // New file is selected
+      pictureData = selectedImage;
+    } else if (selectedSchedule?.picture) {
+      // Keep existing picture if no new file is selected
+      pictureData = selectedSchedule.picture;
+    }
+    
     const data = {
-      class_id: class_id,
-      trainer_id: trainer_id,
+      class_id: selectedClassId,
+      trainer_id: selectedTrainerId,
       pax: parseInt(pax),
       date_start: date_start,
       time_start: time_start,
       time_end: time_end,
-      repeat_type: formData.get('repeat_type'),
-      repeat_days: formData.get('repeat_type') === 'weekly' ? selectedRepeatDays : [],
-      schedule_until: formData.get('schedule_until') || null,
-      booking_deadline_hour: parseInt(booking_deadline_hour),
-      waitlist_lock_minutes: parseInt(waitlist_lock_minutes),
-      min_signup: parseInt(min_signup),
-      cancel_buffer_minutes: parseInt(cancel_buffer_minutes)
+      ...(selectedSchedule ? {} : {
+        repeat_type: repeatType,
+        repeat_days: repeatType === 'weekly' ? selectedRepeatDays : [],
+        schedule_until: formData.schedule_until || null,
+      }),
+      booking_deadline_hour: parseInt(formData.booking_deadline_hour),
+      waitlist_lock_minutes: parseInt(formData.waitlist_lock_minutes),
+      min_signup: parseInt(formData.min_signup),
+      cancel_buffer_minutes: parseInt(formData.cancel_buffer_minutes),
+      picture: pictureData
     };
-
-    // Add picture if selected
-    if (selectedPicture) {
-      data.picture = selectedPicture;
-    }
     
     onSubmit(data);
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-semibold mb-4">
-          {selectedSchedule ? 'Edit Semi-Private Schedule' : 'Add Semi-Private Schedule'}
+      <div className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="bg-primary bg-opacity-20 -m-6 p-6 rounded mb-4">
+          <h3 className="text-lg text-primary font-semibold">
+            {selectedSchedule ? 'Edit Semi-Private Schedule' : 'Add Semi-Private Schedule'}
+          </h3>
+        </div>
+
+        <h3 className="text-md font-semibold mb-4 mt-4">
+          Class Information
         </h3>
         
         <form id="semi-private-schedule-form">
+          <input type="hidden" name="class_id" value={selectedClassId} />
+          <input type="hidden" name="trainer_id" value={selectedTrainerId} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Class *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Class Name *
               </label>
-              <div className="flex gap-2">
-                <select
+              <div className="flex gap-2 flex-1">
+                <Dropdown
                   name="class_id"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  defaultValue={selectedSchedule?.class_id || ''}
-                  required
-                  disabled={classes.length === 0}
-                >
-                  <option value="">{classes.length === 0 ? 'Loading classes...' : 'Pilih Class'}</option>
-                  {classes.map((cls) => (
-                    <option key={cls.id} value={cls.id} selected={cls.class_name === selectedSchedule?.class_name}>
-                      {cls.class_name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
-                    setIsEditingClass(false);
-                    setEditingClassId(null);
-                    setIsCreateClassOpen(true);
-                  }}
-                  className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-colors text-sm font-medium"
-                  title="Tambah Class Baru"
-                >
-                  + Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const selectedClassId = document.querySelector('select[name="class_id"]').value;
-                    if (selectedClassId) {
-                      const selectedClass = classes.find(cls => cls.id === selectedClassId);
-                      if (selectedClass) {
-                        setNewClassData({
-                          class_name: selectedClass.class_name,
-                          color_sign: selectedClass.color_sign || '#FF6B6B'
-                        });
-                        setIsEditingClass(true);
-                        setEditingClassId(selectedClassId);
-                        setIsCreateClassOpen(true);
-                      }
-                    } else {
-                      showToast('Pilih class terlebih dahulu untuk edit', 'error');
+                  value={selectedClassId}
+                  onChange={(value) => {
+                    setSelectedClassId(value);
+                    // Update the form field value
+                    const form = document.querySelector('#semi-private-schedule-form');
+                    const classField = form.querySelector('input[name="class_id"]');
+                    if (classField) {
+                      classField.value = value;
                     }
                   }}
-                  className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm font-medium"
-                  title="Edit Class Terpilih"
+                  options={[
+                    { value: '', label: classes.length === 0 ? 'Loading classes...' : 'Pilih Class' },
+                    ...classes.map((cls) => ({
+                      value: cls.id,
+                      label: cls.class_name
+                    }))
+                  ]}
+                  searchable={true}
+                  variant="soft"
+                  className="flex-1"
+                  required
+                  disabled={classes.length === 0}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsManageClassOpen(true);
+                  }}
+                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl transition-colors text-sm font-medium"
+                  title="Kelola Class"
                 >
-                  ✏️ Edit
+                  <img src={icons.setting} alt="Setting" className="w-7 h-7" />
                 </button>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
                 Trainer *
               </label>
-              <select
+              <Dropdown
                 name="trainer_id"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.trainer_id || ''}
+                value={selectedTrainerId}
+                onChange={(value) => {
+                  setSelectedTrainerId(value);
+                  // Update the form field value
+                  const form = document.querySelector('#semi-private-schedule-form');
+                  const trainerField = form.querySelector('input[name="trainer_id"]');
+                  if (trainerField) {
+                    trainerField.value = value;
+                  }
+                }}
+                options={[
+                  { value: '', label: trainers.length === 0 ? 'Loading trainers...' : 'Pilih Trainer' },
+                  ...trainers.map((trainer) => ({
+                    value: trainer.id,
+                    label: trainer.title
+                  }))
+                ]}
+                searchable={true}
+                variant="soft"
+                className="flex-1"
                 required
                 disabled={trainers.length === 0}
-              >
-                <option value="">{trainers.length === 0 ? 'Loading trainers...' : 'Pilih Trainer'}</option>
-                {trainers.map((trainer) => (
-                  <option key={trainer.id} value={trainer.id} selected={trainer.title === selectedSchedule?.trainer_name}>
-                    {trainer.title}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date Start *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Date *
               </label>
-              <input
+              <Input
                 name="date_start"
                 type="date"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.date_start || ''}
+                variant="soft"
+                value={formData.date_start}
+                onChange={(e) => setFormData({...formData, date_start: e.target.value})}
                 required
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time Start *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Time *
               </label>
-              <input
-                name="time_start"
-                type="time"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.time_start?.slice(0, 5) || '07:30'}
-                required
-              />
+              <div className="flex gap-2 flex-1">
+                <Input
+                  name="time_start"
+                  type="time"
+                  variant="soft"
+                  value={formData.time_start}
+                  onChange={(e) => setFormData({...formData, time_start: e.target.value})}
+                  required
+                  className="flex-1"
+                />
+                <Input
+                  name="time_end"
+                  type="time"
+                  variant="soft"
+                  value={formData.time_end}
+                  onChange={(e) => setFormData({...formData, time_end: e.target.value})}
+                  required
+                  className="flex-1"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time End *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Pax (Max 20) *
               </label>
-              <input
-                name="time_end"
-                type="time"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.time_end?.slice(0, 5) || '08:30'}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pax (Max Participants) * <span className="text-xs text-gray-500">(Max 20)</span>
-              </label>
-              <input
+              <Input
                 name="pax"
                 type="number"
                 min="1"
                 max="20"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.max_capacity || selectedSchedule?.pax || 10}
+                variant="soft"
+                value={formData.pax}
+                onChange={(e) => setFormData({...formData, pax: e.target.value})}
                 required
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Repeat Type
-              </label>
-              <select
-                name="repeat_type"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.repeat_type || 'none'}
-                onChange={(e) => {
-                  if (e.target.value !== 'weekly') {
-                    setSelectedRepeatDays([]);
-                  }
-                }}
-              >
-                <option value="none">No Repeat</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-
-            {/* Repeat Days for Weekly */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Repeat Days (Weekly Only)
-              </label>
-              <div className="grid grid-cols-7 gap-1">
-                {[
-                  { value: 0, label: 'Sun' },
-                  { value: 1, label: 'Mon' },
-                  { value: 2, label: 'Tue' },
-                  { value: 3, label: 'Wed' },
-                  { value: 4, label: 'Thu' },
-                  { value: 5, label: 'Fri' },
-                  { value: 6, label: 'Sat' }
-                ].map((day) => (
-                  <button
-                    key={day.value}
-                    type="button"
-                    onClick={() => {
-                      if (selectedRepeatDays.includes(day.value)) {
-                        setSelectedRepeatDays(selectedRepeatDays.filter(d => d !== day.value));
-                      } else {
-                        setSelectedRepeatDays([...selectedRepeatDays, day.value]);
+            {/* Repeat Settings - Only show when creating new schedule */}
+            {!selectedSchedule && (
+              <>
+                <div className="flex items-center gap-3">
+                  <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                    Does it repeat?
+                  </label>
+                  <Dropdown
+                    name="repeat_type"
+                    value={repeatType}
+                    onChange={(value) => {
+                      setRepeatType(value);
+                      if (value !== 'weekly') {
+                        setSelectedRepeatDays([]);
                       }
                     }}
-                    className={`p-2 text-xs font-medium rounded border transition-colors ${
-                      selectedRepeatDays.includes(day.value)
-                        ? 'bg-primary text-white border-primary'
-                        : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
-                    }`}
-                  >
-                    {day.label}
-                  </button>
-                ))}
+                    options={[
+                      { value: 'none', label: 'No Repeat' },
+                      { value: 'weekly', label: 'Weekly' }
+                    ]}
+                    variant="soft"
+                    className="flex-1"
+                  />
+                </div>
+
+                {/* Repeat Days for Weekly - Only show if weekly is selected */}
+                {repeatType === 'weekly' && (
+                  <div className="flex items-start gap-3">
+                    <div className="flex-1">
+                      <div className="grid grid-cols-7 gap-1">
+                        {[
+                          { value: 0, label: 'Sun' },
+                          { value: 1, label: 'Mon' },
+                          { value: 2, label: 'Tue' },
+                          { value: 3, label: 'Wed' },
+                          { value: 4, label: 'Thu' },
+                          { value: 5, label: 'Fri' },
+                          { value: 6, label: 'Sat' }
+                        ].map((day) => (
+                          <button
+                            key={day.value}
+                            type="button"
+                            onClick={() => {
+                              if (selectedRepeatDays.includes(day.value)) {
+                                setSelectedRepeatDays(selectedRepeatDays.filter(d => d !== day.value));
+                              } else {
+                                setSelectedRepeatDays([...selectedRepeatDays, day.value]);
+                              }
+                            }}
+                            className={`p-2 text-xs font-medium rounded border transition-colors ${
+                              selectedRepeatDays.includes(day.value)
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                            }`}
+                          >
+                            {day.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Schedule Until - Only show if weekly is selected */}
+                {repeatType === 'weekly' && (
+                  <div className="flex items-center gap-3 md:col-span-2">
+                    <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                      Schedule Until
+                    </label>
+                    <Input
+                      name="schedule_until"
+                      type="date"
+                      variant="soft"
+                      value={formData.schedule_until}
+                      onChange={(e) => setFormData({...formData, schedule_until: e.target.value})}
+                      className="flex-1"
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Show repeat info when editing */}
+            {selectedSchedule && (
+              <div className="flex items-center gap-3 md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                  Repeat Settings
+                </label>
+                <div className="flex-1 px-3 py-2 bg-gray-50 rounded-lg text-sm text-gray-900">
+                  {selectedSchedule.repeat_type === 'none' ? 'No Repeat' : 
+                   selectedSchedule.repeat_type === 'weekly' ? 
+                   `Weekly on ${selectedSchedule.repeat_days?.map(day => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]).join(', ')}` : 
+                   selectedSchedule.repeat_type}
+                </div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Pilih hari untuk repeat weekly (0=Sunday, 1=Monday, dst)
-              </p>
-            </div>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Schedule Until
-              </label>
-              <input
-                name="schedule_until"
-                type="date"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.schedule_until || ''}
-              />
-            </div>
+            <h3 className="text-md font-semibold mb-4 mt-4 flex items-center gap-3 md:col-span-2">
+              Other Information
+            </h3>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Booking Deadline (Hours) *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Booking Deadline (H)*
               </label>
-              <input
+              <Input
                 name="booking_deadline_hour"
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.booking_deadline_hour || 24}
-                required
+                variant="soft"
+                value={formData.booking_deadline_hour}
+                onChange={(e) => setFormData({...formData, booking_deadline_hour: e.target.value})}
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Waitlist Lock (Minutes) *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Waitlist Lock Period (M)*
               </label>
-              <input
+              <Input
                 name="waitlist_lock_minutes"
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.waitlist_lock_minutes || 30}
-                required
+                variant="soft"
+                value={formData.waitlist_lock_minutes}
+                onChange={(e) => setFormData({...formData, waitlist_lock_minutes: e.target.value})}
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Min Signup *
+            <h3 className="text-md font-semibold mb-4 mt-4">
+              Cancel Rule
+            </h3>
+
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Minimum Signup *
               </label>
-              <input
+              <Input
                 name="min_signup"
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.min_signup || 1}
-                required
+                variant="soft"
+                value={formData.min_signup}
+                onChange={(e) => setFormData({...formData, min_signup: e.target.value})}
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cancel Buffer (Minutes) *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Cancel Buffer *
               </label>
-              <input
+              <Input
                 name="cancel_buffer_minutes"
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.cancel_buffer_minutes || 60}
-                required
+                variant="soft"
+                value={formData.cancel_buffer_minutes}
+                onChange={(e) => setFormData({...formData, cancel_buffer_minutes: e.target.value})}
+                className="flex-1"
               />
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Picture (Optional)
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Picture
               </label>
-              <input
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                onChange={handlePictureChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                JPG, PNG, GIF, WebP. Maksimal 5MB
-              </p>
-              {selectedPicture && (
-                <p className="text-xs text-green-600 mt-1">
-                  File dipilih: {selectedPicture.name}
-                </p>
-              )}
+              <div className="flex-1">
+                <FileInput
+                  name="picture"
+                  accept="image/*"
+                  value={selectedImage}
+                  onChange={(file) => {
+                    if (file) {
+                      // Validate file size (max 5MB)
+                      if (file.size > 5 * 1024 * 1024) {
+                        showToast('File terlalu besar. Maksimal 5MB', 'error');
+                        setSelectedImage(null);
+                        setImagePreview(null);
+                        return;
+                      }
+                      // Validate file type
+                      if (!file.type.startsWith('image/')) {
+                        showToast('File harus berupa gambar', 'error');
+                        setSelectedImage(null);
+                        setImagePreview(null);
+                        return;
+                      }
+                      
+                      // Set selected image and create preview
+                      setSelectedImage(file);
+                      const reader = new FileReader();
+                      reader.onload = (e) => {
+                        setImagePreview(e.target.result);
+                      };
+                      reader.readAsDataURL(file);
+                    } else {
+                      setSelectedImage(null);
+                      setImagePreview(null);
+                    }
+                  }}
+                  variant="soft"
+                  placeholder="Choose image file"
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  allowedTypes={['image/']}
+                  showPreview={true}
+                  className="flex-1"
+                />
+                
+                {/* Image Preview for existing image */}
+                {!imagePreview && selectedSchedule?.picture && (
+                  <div className="mt-3">
+                    <div className="relative inline-block">
+                      <img
+                        src={selectedSchedule.picture}
+                        alt="Preview"
+                        className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </form>
@@ -454,7 +533,11 @@ const SemiPrivateScheduleForm = ({
           <Button
             variant="outline"
             disabled={loading}
-            onClick={onClose}
+            onClick={() => {
+              setSelectedImage(null);
+              setImagePreview(null);
+              onClose();
+            }}
           >
             Cancel
           </Button>
@@ -469,64 +552,14 @@ const SemiPrivateScheduleForm = ({
         </div>
       </div>
 
-      {/* Create/Edit Class Modal */}
-      {isCreateClassOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">
-              {isEditingClass ? 'Edit Class' : 'Create New Class'}
-            </h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Class Name *
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={newClassData.class_name}
-                  onChange={(e) => setNewClassData({...newClassData, class_name: e.target.value})}
-                  placeholder="Pilates Mat"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Color Sign *
-                </label>
-                <input
-                  type="color"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={newClassData.color_sign}
-                  onChange={(e) => setNewClassData({...newClassData, color_sign: e.target.value})}
-                />
-              </div>
-            </div>
-            
-            <div className="flex justify-end space-x-3 mt-6">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsCreateClassOpen(false);
-                  setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
-                  setIsEditingClass(false);
-                  setEditingClassId(null);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleCreateClass}
-                disabled={!newClassData.class_name}
-              >
-                {isEditingClass ? 'Update Class' : 'Create Class'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Manage Class Modal */}
+      <ManageClassModal
+        isOpen={isManageClassOpen}
+        onClose={() => setIsManageClassOpen(false)}
+        classes={classes}
+        onClassCreated={onClassCreated}
+      />
+
     </div>
   );
 };

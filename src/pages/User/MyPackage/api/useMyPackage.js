@@ -91,19 +91,37 @@ export const useAvailablePackages = () => {
   }
 
   // Transform package data for display
-  const transformPackageData = (packages) => {
-    return packages.map(pkg => ({
-      id: pkg.id,
-      paket: pkg.name,
-      harga: formatPrice(pkg.price),
-      benefit: [
-        `${pkg.session} ${pkg.category?.name || 'Session'}`,
-        `Duration: ${pkg.duration_value} ${pkg.duration_unit}${pkg.duration_value > 1 ? 's' : ''}`,
-        `Reminder: ${pkg.reminder_day} day${pkg.reminder_day > 1 ? 's' : ''} before`
-      ],
-      kategori: pkg.category?.name || 'Other',
-      originalData: pkg
-    }))
+  const transformPackageData = (packages, packageType = 'membership') => {
+    return packages.map(pkg => {
+      if (packageType === 'trial') {
+        return {
+          id: pkg.id,
+          paket: pkg.name,
+          harga: formatPrice(pkg.price),
+          benefit: [
+            `${pkg.group_session} Group Classes`,
+            `${pkg.private_session} Private Classes`,
+            `Duration: ${pkg.duration_value} ${pkg.duration_unit}${pkg.duration_value > 1 ? 's' : ''}`,
+            `Reminder: ${pkg.reminder_day} day${pkg.reminder_day > 1 ? 's' : ''} before`
+          ],
+          kategori: pkg.category?.name || 'Other',
+          originalData: pkg
+        }
+      } else {
+        return {
+          id: pkg.id,
+          paket: pkg.name,
+          harga: formatPrice(pkg.price),
+          benefit: [
+            `${pkg.session} ${pkg.category?.name || 'Session'}`,
+            `Duration: ${pkg.duration_value} ${pkg.duration_unit}${pkg.duration_value > 1 ? 's' : ''}`,
+            `Reminder: ${pkg.reminder_day} day${pkg.reminder_day > 1 ? 's' : ''} before`
+          ],
+          kategori: pkg.category?.name || 'Other',
+          originalData: pkg
+        }
+      }
+    })
   }
 
   // Load all available packages
@@ -122,7 +140,7 @@ export const useAvailablePackages = () => {
       try {
         const trialResponse = await myPackageAPI.getTrialPackages()
         if (trialResponse.success) {
-          const transformedTrial = transformPackageData(trialResponse.data.packages)
+          const transformedTrial = transformPackageData(trialResponse.data.packages, 'trial')
           setTrialPackages(transformedTrial)
         }
       } catch (trialError) {

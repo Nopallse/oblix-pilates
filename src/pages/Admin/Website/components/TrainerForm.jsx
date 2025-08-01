@@ -27,6 +27,9 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
       description: trainer.description,
       instagram: trainer.instagram,
       tiktok: trainer.tiktok,
+      rate_group_class: trainer.rate_group_class || '',
+      rate_semi_private_class: trainer.rate_semi_private_class || '',
+      rate_private_class: trainer.rate_private_class || '',
       picture: trainer.picture // Pertahankan picture yang sudah ada
     } : {},
     isEdit
@@ -105,6 +108,22 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
           console.log('TikTok changed:', values.tiktok)
         }
         
+        // Handle rate changes
+        if (values.rate_group_class !== trainer.rate_group_class) {
+          formData.append('rate_group_class', values.rate_group_class)
+          console.log('Rate Group Class changed:', values.rate_group_class)
+        }
+        
+        if (values.rate_semi_private_class !== trainer.rate_semi_private_class) {
+          formData.append('rate_semi_private_class', values.rate_semi_private_class)
+          console.log('Rate Semi-Private Class changed:', values.rate_semi_private_class)
+        }
+        
+        if (values.rate_private_class !== trainer.rate_private_class) {
+          formData.append('rate_private_class', values.rate_private_class)
+          console.log('Rate Private Class changed:', values.rate_private_class)
+        }
+        
         // Handle picture changes
         if (values.picture instanceof File) {
           // New file selected
@@ -118,14 +137,17 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
         // If picture is the same, don't append anything
       } else {
         // For create mode, append all required fields
-      formData.append('title', values.title)
-      formData.append('description', values.description)
-      if (values.instagram) {
-        formData.append('instagram', values.instagram)
-      }
-      if (values.tiktok) {
-        formData.append('tiktok', values.tiktok)
+        formData.append('title', values.title)
+        formData.append('description', values.description)
+        if (values.instagram) {
+          formData.append('instagram', values.instagram)
         }
+        if (values.tiktok) {
+          formData.append('tiktok', values.tiktok)
+        }
+        formData.append('rate_group_class', values.rate_group_class)
+        formData.append('rate_semi_private_class', values.rate_semi_private_class)
+        formData.append('rate_private_class', values.rate_private_class)
         if (values.picture) {
           formData.append('picture', values.picture)
         }
@@ -308,6 +330,90 @@ const TrainerForm = ({ isOpen, onClose, trainer = null, onSuccess, createTrainer
             {formik.touched.tiktok && formik.errors.tiktok && (
               <p className="mt-1 text-sm text-red-600">{formik.errors.tiktok}</p>
             )}
+          </div>
+        </div>
+
+        {/* Rate Fields */}
+        <div className="grid grid-cols-1 gap-4">
+          {/* Rate Group Class */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <label htmlFor="rate_group_class" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
+              Rate Group Class *
+            </label>
+            <div className="flex-1">
+              <input
+                id="rate_group_class"
+                name="rate_group_class"
+                type="number"
+                min="0"
+                value={formik.values.rate_group_class}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                  formik.touched.rate_group_class && formik.errors.rate_group_class
+                    ? 'border-red-500 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary'
+                }`}
+                placeholder="250000"
+              />
+              {formik.touched.rate_group_class && formik.errors.rate_group_class && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.rate_group_class}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Rate Semi-Private Class */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <label htmlFor="rate_semi_private_class" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
+              Rate Semi-Private *
+            </label>
+            <div className="flex-1">
+              <input
+                id="rate_semi_private_class"
+                name="rate_semi_private_class"
+                type="number"
+                min="0"
+                value={formik.values.rate_semi_private_class}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                  formik.touched.rate_semi_private_class && formik.errors.rate_semi_private_class
+                    ? 'border-red-500 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary'
+                }`}
+                placeholder="250000"
+              />
+              {formik.touched.rate_semi_private_class && formik.errors.rate_semi_private_class && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.rate_semi_private_class}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Rate Private Class */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <label htmlFor="rate_private_class" className="block text-sm font-medium text-gray-700 mb-2 sm:mb-0 sm:w-40">
+              Rate Private *
+            </label>
+            <div className="flex-1">
+              <input
+                id="rate_private_class"
+                name="rate_private_class"
+                type="number"
+                min="0"
+                value={formik.values.rate_private_class}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                  formik.touched.rate_private_class && formik.errors.rate_private_class
+                    ? 'border-red-500 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary'
+                }`}
+                placeholder="275000"
+              />
+              {formik.touched.rate_private_class && formik.errors.rate_private_class && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.rate_private_class}</p>
+              )}
+            </div>
           </div>
         </div>
 

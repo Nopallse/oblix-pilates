@@ -42,47 +42,83 @@ const MyPackage = () => {
 
   // Table columns configuration
   const tableColumns = [
-    { key: 'no', header: 'No', span: 1 },
-    { key: 'invoice_number', header: 'No Invoice', span: 2 },
-    { key: 'payment_date', header: 'Payment Date', span: 2 },
-    { key: 'expired_date', header: 'Expired Date', span: 2 },
-    { key: 'package_name', header: 'Package', span: 2 },
-    { key: 'session_count', header: 'Session', span: 1 },
-    { key: 'price', header: 'Price', span: 1 },
     { 
-      key: 'action', 
-      header: 'Action', 
+      key: 'no', 
+      header: 'No', 
       span: 1,
-      render: (value, row) => (
-        <Button 
-          variant="secondary" 
-          size="sm"
-          onClick={async () => {
-            try {
-              const response = await getInvoiceDetail(row.invoice_number);
-              if (response.success) {
-                // Handle view invoice - bisa redirect ke halaman invoice detail
-                console.log('Invoice detail:', response.data);
-                // TODO: Implement invoice detail view
-              }
-            } catch (err) {
-              console.error('Error fetching invoice detail:', err);
-            }
-          }}
-        >
-          View Invoice
-        </Button>
+      render: (v) => <span className="text-sm text-gray-900">{v}</span>
+    },
+    { 
+      key: 'package_name', 
+      header: 'Package Name', 
+      span: 2,
+      render: (v) => (
+        <div className="font-medium text-gray-900">{v}</div>
       )
+    },
+    { 
+      key: 'package_type', 
+      header: 'Package Type', 
+      span: 2,
+      render: (v) => (
+        <div className="text-sm text-gray-500 capitalize">{v}</div>
+      )
+    },
+    { 
+      key: 'start_date', 
+      header: 'Start Date', 
+      span: 2,
+      render: (v) => <span className="text-sm text-gray-900">{formatDate(v)}</span>
+    },
+    { 
+      key: 'expired_date', 
+      header: 'Expired Date', 
+      span: 2,
+      render: (v) => <span className="text-sm text-gray-900">{formatDate(v)}</span>
+    },
+    { 
+      key: 'group_sessions', 
+      header: 'Group', 
+      span: 1,
+      render: (v, row) => {
+        const sessions = row.group_sessions;
+        return (
+          <div className="text-sm text-gray-900">
+            {sessions.used}/{sessions.total} <span className="text-xs text-gray-500"></span>
+          </div>
+        );
+      }
+    },
+    { 
+      key: 'semi_private_sessions', 
+      header: 'Semi-Private', 
+      span: 1,
+      render: (v, row) => {
+        const sessions = row.semi_private_sessions;
+        return (
+          <div className="text-sm text-gray-900">
+            {sessions.used}/{sessions.total} <span className="text-xs text-gray-500"></span>
+          </div>
+        );
+      }
+    },
+    { 
+      key: 'private_sessions', 
+      header: 'Private', 
+      span: 1,
+      render: (v, row) => {
+        const sessions = row.private_sessions;
+        return (
+          <div className="text-sm text-gray-900">
+            {sessions.used}/{sessions.total} <span className="text-xs text-gray-500"></span>
+          </div>
+        );
+      }
     }
   ];
 
   // Transform data for table
-  const tableData = data?.package_history?.map(item => ({
-    ...item,
-    payment_date: formatDateTime(item.payment_date),
-    expired_date: formatDate(item.expired_date),
-    price: formatPrice(item.price)
-  })) || [];
+  const tableData = data?.active_package || [];
 
   if (loading) {
     return (
@@ -126,112 +162,58 @@ const MyPackage = () => {
           </p>
         </div>
 
-        {/* Current Package and Buy New Package */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Current Active Package */}
+        {/* Current Package Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          
           <div className="bg-[#f8f8f8] rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Current Package</h2>
-            {data?.current_active_package ? (
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">
-                      {data.current_active_package.package_name}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      valid until {formatDate(data.current_active_package.validity_until)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Group Classes Progress */}
-                {data.current_active_package.session_group_classes.total > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Session Private Classes</span>
-                      <span className="font-medium">
-                        {data.current_active_package.session_group_classes.used} of {data.current_active_package.session_group_classes.total}
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-300"
-                        style={{ 
-                          width: `${data.current_active_package.session_group_classes.progress_percentage}%` 
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Private Classes Progress */}
-                {data.current_active_package.session_semi_private_classes.total > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Session Private Classes</span>
-                      <span className="font-medium">
-                        {data.current_active_package.session_semi_private_classes.used} of {data.current_active_package.session_semi_private_classes.total}
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-300"
-                        style={{ 
-                          width: `${data.current_active_package.session_semi_private_classes.progress_percentage}%` 
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-                {/* Private Classes Progress */}
-                {data.current_active_package.session_private_classes.total > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Session Private Classes</span>
-                      <span className="font-medium">
-                        {data.current_active_package.session_private_classes.used} of {data.current_active_package.session_private_classes.total}
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-300"
-                        style={{ 
-                          width: `${data.current_active_package.session_private_classes.progress_percentage}%` 
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">Kamu belum memiliki paket aktif yang pernah digunakan.</p>
-                <Link to="/schedule">
-                  <Button variant="primary">
-                    Jadwalkan Sesi Pertamamu
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Buy New Package */}
-          <div className="bg-[#f8f8f8] rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Get More Packages</h2>
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">
-                Explore our packages and find the perfect fit for your Pilates journey
-              </p>
-              <Link to="/buy-package">
-                <Button variant="primary">
-                  Buy New Package
-                </Button>
-              </Link>
+            <h3 className="text-sm font-medium text-gray-600 mb-2">Group Sessions</h3>
+            <div className="text-2xl font-bold text-gray-900">
+              {data?.group_sessions?.total || 0}
+            </div>
+            <div className="text-sm text-gray-500">
+              {data?.group_sessions?.used || 0} used, {data?.group_sessions?.remaining || 0} remaining
             </div>
           </div>
+          
+          <div className="bg-[#f8f8f8] rounded-2xl p-6">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">Semi Private</h3>
+            <div className="text-2xl font-bold text-gray-900">
+              {data?.semi_private_sessions?.total || 0}
+            </div>
+            <div className="text-sm text-gray-500">
+              {data?.semi_private_sessions?.used || 0} used, {data?.semi_private_sessions?.remaining || 0} remaining
+            </div>
+          </div>
+          
+          <div className="bg-[#f8f8f8] rounded-2xl p-6">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">Private Sessions</h3>
+            <div className="text-2xl font-bold text-gray-900">
+              {data?.private_sessions?.total || 0}
+            </div>
+            <div className="text-sm text-gray-500">
+              {data?.private_sessions?.used || 0} used, {data?.private_sessions?.remaining || 0} remaining
+            </div>
+          </div>
+
+          <div className="bg-[#f8f8f8] rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Get More Packages</h2>
+              <Link to="/buy-package">
+                  <Button variant="primary">
+                    Buy New Package
+                  </Button>
+                </Link>
+          </div>
+
+          
         </div>
 
+        
+
         {/* Package History */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Package Active</h2>
+        </div>
+        
         <Table 
           columns={tableColumns}
           data={tableData}

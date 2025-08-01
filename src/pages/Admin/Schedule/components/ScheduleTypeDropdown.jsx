@@ -3,9 +3,9 @@ import { Button } from '@components/ui';
 
 const ScheduleTypeDropdown = ({ isOpen, onClose, onSelectType }) => {
   const scheduleTypes = [
-    { value: 'group', label: 'Group', description: 'Kelas grup dengan multiple participants' },
-    { value: 'semi-private', label: 'Semi Private', description: 'Kelas semi private dengan 2-3 participants' },
-    { value: 'private', label: 'Private', description: 'Kelas private 1-on-1' }
+    { value: 'group', label: 'Group', description: 'Kelas group dengan banyak participants' },
+    { value: 'semi_private', label: 'Semi Private', description: 'Kelas semi private dengan 2-3 participants' },
+    { value: 'private', label: 'Private', description: 'Kelas private dengan 1 participant' }
   ];
 
   if (!isOpen) return null;

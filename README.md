@@ -114,3 +114,13 @@ src/
 - AOS (Animate On Scroll)
 - React Router
 - React Icons
+
+## Documentation
+
+- [API Documentation](README_API.md)
+- [Dashboard Implementation](docs/001_implement_dashboard_page.md)
+- [Custom Dropdown Component](docs/002_create_custom_dropdown_component.md)
+- [Manage Class Modal Improvement](docs/004_manage_class_modal_improvement.md)
+- [Custom Color Picker Component](docs/005_create_custom_color_picker_component.md)
+- [ManageClassModal Component](docs/006_create_manage_class_modal_component.md)
+- [Report Page Implementation](docs/007_implement_report_page.md)

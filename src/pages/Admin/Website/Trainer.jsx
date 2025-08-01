@@ -70,7 +70,7 @@ const Trainer = () => {
     { 
       key: 'title', 
       header: 'Trainer Name', 
-      span: 6,
+      span: 2,
       render: (title, row) => (
         <div className="font-medium text-gray-900">
           {title || row.title || 'No Name'}
@@ -80,7 +80,7 @@ const Trainer = () => {
     { 
       key: 'picture', 
       header: 'Picture', 
-      span: 3,
+      span: 1,
       render: (picture, row) => {
         const imageUrl = getImageUrl(picture || row.picture)
         const title = row.title || 'Trainer'
@@ -100,11 +100,74 @@ const Trainer = () => {
               onError={(e) => {
                 console.log('Image failed to load:', imageUrl)
                 // Prevent infinite loop by checking if already set to fallback
-                if (e.target.src !== 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGM0Y0RjYiLz4KPHBhdGggZD0iTTI0IDEyQzI3LjMxMzcgMTIgMzAgMTQuNjg2MyAzMCAxOEMzMCAyMS4zMTM3IDI3LjMxMzcgMjQgMjQgMjRDMjAuNjg2MyAyNCAxOCAyMS4zMTM3IDE4IDE4QzE4IDE0LjY4NjMgMjAuNjg2MyAxMiAyNCAxMloiIGZpbGw9IiM5QjlCQTAiLz4KPHBhdGggZD0iTTEyIDQwQzEyIDM0LjQ3NzIgMTYuNDc3MiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=') {
-                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGM0Y0RjYiLz4KPHBhdGggZD0iTTI0IDEyQzI3LjMxMzcgMTIgMzAgMTQuNjg2MyAzMCAxOEMzMCAyMS4zMTM3IDI3LjMxMzcgMjQgMjQgMjRDMjAuNjg2MyAyNCAxOCAyMS4zMTM3IDE4IDE4QzE4IDE0LjY4NjMgMjAuNjg2MyAxMiAyNCAxMloiIGZpbGw9IiM5QjlCQTAiLz4KPHBhdGggZD0iTTEyIDQwQzEyIDM0LjQ3NzIgMTYuNDc3MiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo='
+                if (e.target.src !== 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeXg9IjI0IiBjeT0iMjQiIHI9IjI0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yNCAxMkMyNy4zMTM3IDEyIDMwIDE0LjY4NjMgMzAgMThDMzAgMjEuMzEzNyAyNy4zMTM3IDI0IDI0IDI0QzIwLjY4NjMgMjQgMTggMjEuMzEzNyAxOCAxOEMxOCAxNC42ODYzIDIwLjY4NjMgMTIgMjQgMTJaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0xMiA0MEMxMiAzNC40NzczMiAxNi40NzczMiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo=') {
+                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeXg9IjI0IiBjeT0iMjQiIHI9IjI0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yNCAxMkMyNy4zMTM3IDEyIDMwIDE0LjY4NjMgMzAgMThDMzAgMjEuMzEzNyAyNy4zMTM3IDI0IDI0IDI0QzIwLjY4NjMgMjQgMTggMjEuMzEzNyAxOCAxOEMxOCAxNC42ODYzIDIwLjY4NjMgMTIgMjQgMTJaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0xMiA0MEMxMiAzNC40NzczMiAxNi40NzczMiAzMCAyMiAzMEgyNkMzMS41MjI4IDMwIDM2IDM0LjQ3NzIgMzYgNDBIMTJaIiBmaWxsPSIjOUI5QkEwIi8+Cjwvc3ZnPgo='
                 }
               }}
             />
+          </div>
+        )
+      }
+    },
+    { 
+      key: 'rate_group_class', 
+      header: <div className="text-center w-full">Group Rate</div>, 
+      span: 2,
+      render: (_, row) => {
+        const formatCurrency = (amount) => {
+          if (!amount) return '-'
+          return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+          }).format(amount)
+        }
+        
+        return (
+          <div className="text-sm font-medium text-gray-900 flex justify-center items-center">
+            {formatCurrency(row.rate_group_class)}
+          </div>
+        )
+      }
+    },
+    { 
+      key: 'rate_semi_private_class', 
+      header: <div className="text-center w-full">Semi-Private Rate</div>, 
+      span: 2,
+      render: (_, row) => {
+        const formatCurrency = (amount) => {
+          if (!amount) return '-'
+          return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+          }).format(amount)
+        }
+        
+        return (
+          <div className="text-sm font-medium text-gray-900 flex justify-center items-center">
+            {formatCurrency(row.rate_semi_private_class)}
+          </div>
+        )
+      }
+    },
+    { 
+      key: 'rate_private_class', 
+      header: <div className="text-center w-full">Private Rate</div>, 
+      span: 2,
+      render: (_, row) => {
+        const formatCurrency = (amount) => {
+          if (!amount) return '-'
+          return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+          }).format(amount)
+        }
+        
+        return (
+          <div className="text-sm font-medium text-gray-900 flex justify-center items-center">
+            {formatCurrency(row.rate_private_class)}
           </div>
         )
       }

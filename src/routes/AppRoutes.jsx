@@ -14,6 +14,8 @@ import RegisterPage from "../pages/public/auth/RegisterPage.jsx";
 import Profile from "../pages/User/profile/Profile.jsx";
 import MyClasses from "../pages/User/MyClasses/MyClasses.jsx";
 import MyPackage from "../pages/User/MyPackage";
+import MyOrders from "../pages/User/MyOrders";
+import OrderDetail from "../pages/User/MyOrders/OrderDetail";
 import BuyPackage from "../pages/User/BuyPackage";
 import PackageDetail from "../pages/User/PackageDetail";
 import Admin from "../pages/Admin/Admin";
@@ -203,6 +205,16 @@ const AppRoutes = () => {
         <Route path="/my-package" element={
           <FlexibleLayout>
             <MyPackage />
+          </FlexibleLayout>
+        } />
+        <Route path="/my-orders" element={
+          <FlexibleLayout>
+            <MyOrders />
+          </FlexibleLayout>
+        } />
+        <Route path="/my-orders/:id" element={
+          <FlexibleLayout>
+            <OrderDetail />
           </FlexibleLayout>
         } />
         <Route path="/user" element={

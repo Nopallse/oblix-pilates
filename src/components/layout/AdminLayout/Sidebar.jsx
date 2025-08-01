@@ -110,6 +110,10 @@ const Sidebar = ({ user, isOpen, onClose, collapsed }) => {
   ]
 
   const isActive = (path) => {
+    // Special handling for member routes
+    if (path === '/admin/member') {
+      return location.pathname === '/admin/member' || location.pathname.startsWith('/admin/member/');
+    }
     return location.pathname === path
   }
 
@@ -128,7 +132,6 @@ const Sidebar = ({ user, isOpen, onClose, collapsed }) => {
     `}>
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          {!collapsed && <h2 className="text-lg font-semibold text-gray-800">Admin Menu</h2>}
           <button 
             onClick={onClose}
             className="lg:hidden text-gray-500 hover:text-gray-700"

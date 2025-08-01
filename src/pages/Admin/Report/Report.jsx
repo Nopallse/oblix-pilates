@@ -1,223 +1,430 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import { Button, Table, Dropdown } from '@components/ui';
+import { useReport } from './api';
+import { PayrollDetailModal } from './components';
+import { useApiToast } from '@shared/hooks';
 
 const Report = () => {
-  const [timeRange, setTimeRange] = useState('month')
-  
-  const [reportData, setReportData] = useState({
-    revenue: {
-      total: 45800000,
-      growth: 12.5,
-      transactions: 156
-    },
-    members: {
-      total: 245,
-      new: 28,
-      active: 180
-    },
-    classes: {
-      total: 89,
-      completed: 82,
-      cancelled: 7
-    },
-    packages: {
-      mostPopular: 'Premium Monthly',
-      totalSales: 173
-    }
-  })
+  const { showToast } = useApiToast();
+  const {
+    revenueData,
+    payrollData,
+    payrollDetailData,
+    loading,
+    error,
+    fetchRevenueReport,
+    fetchPayrollReport,
+    fetchPayrollDetail,
+  } = useReport();
 
-  const [monthlyData] = useState([
-    { month: 'Jan', revenue: 38500000, members: 215 },
-    { month: 'Feb', revenue: 42000000, members: 228 },
-    { month: 'Mar', revenue: 45800000, members: 245 },
-  ])
+  const [activeTab, setActiveTab] = useState('revenue');
+  const [showPayrollDetail, setShowPayrollDetail] = useState(false);
+  const [selectedInstructorId, setSelectedInstructorId] = useState(null);
+  const [filterType, setFilterType] = useState('custom'); // 'custom' or 'monthly'
+  const [dateRange, setDateRange] = useState({
+    start_date: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+    end_date: new Date().toISOString().split('T')[0]
+  });
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  // Generate month options
+  const monthOptions = [
+    { value: 0, label: 'January' },
+    { value: 1, label: 'February' },
+    { value: 2, label: 'March' },
+    { value: 3, label: 'April' },
+    { value: 4, label: 'May' },
+    { value: 5, label: 'June' },
+    { value: 6, label: 'July' },
+    { value: 7, label: 'August' },
+    { value: 8, label: 'September' },
+    { value: 9, label: 'October' },
+    { value: 10, label: 'November' },
+    { value: 11, label: 'December' }
+  ];
+
+  // Generate year options (current year - 5 to current year + 5)
+  const currentYear = new Date().getFullYear();
+  const yearOptions = [];
+  for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+    yearOptions.push({ value: year, label: year.toString() });
+  }
+
+  // Fetch data when component mounts or filters change
+  useEffect(() => {
+    let currentDateRange = dateRange;
+    
+    if (filterType === 'monthly') {
+      const startDate = new Date(selectedYear, selectedMonth, 1);
+      const endDate = new Date(selectedYear, selectedMonth + 1, 0);
+      
+      currentDateRange = {
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0]
+      };
+    }
+
+    if (activeTab === 'revenue') {
+      fetchRevenueReport(currentDateRange);
+    } else if (activeTab === 'payroll') {
+      fetchPayrollReport(currentDateRange);
+    }
+  }, [activeTab, dateRange, selectedMonth, selectedYear, filterType, fetchRevenueReport, fetchPayrollReport]);
+
+  // Handle payroll detail view
+  const handleViewPayrollDetail = async (instructorId) => {
+    setSelectedInstructorId(instructorId);
+    
+    let currentDateRange = dateRange;
+    if (filterType === 'monthly') {
+      const startDate = new Date(selectedYear, selectedMonth, 1);
+      const endDate = new Date(selectedYear, selectedMonth + 1, 0);
+      
+      currentDateRange = {
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0]
+      };
+    }
+    
+    await fetchPayrollDetail(instructorId, currentDateRange);
+    setShowPayrollDetail(true);
+  };
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  // Handle date range change
+  const handleDateRangeChange = (field, value) => {
+    setDateRange(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Get current filter display text
+  const getFilterDisplayText = () => {
+    if (filterType === 'monthly') {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      return `${monthNames[selectedMonth]} ${selectedYear}`;
+    } else {
+      return `${dateRange.start_date} to ${dateRange.end_date}`;
+    }
+  };
+
+  if (error) {
+    showToast(error, 'error');
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
-          <p className="mt-1 text-sm text-gray-500">Business insights and performance metrics</p>
+    <div className="min-h-screen py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">Report</h1>
+          
+          {/* Filter Section */}
+          <div className="">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+              {/* Filter Type Toggle */}
+              <div className="flex items-center gap-3">
+                <div className="flex bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setFilterType('custom')}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      filterType === 'custom'
+                        ? 'bg-white text-primary shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Custom Range
+                  </button>
+                  <button
+                    onClick={() => setFilterType('monthly')}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                      filterType === 'monthly'
+                        ? 'bg-white text-primary shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                </div>
+              </div>
+
+              {/* Date Filters */}
+              {filterType === 'custom' ? (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700 min-w-[80px]">Start:</label>
+                    <input
+                      type="date"
+                      value={dateRange.start_date}
+                      onChange={(e) => handleDateRangeChange('start_date', e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700 min-w-[80px]">End:</label>
+                    <input
+                      type="date"
+                      value={dateRange.end_date}
+                      onChange={(e) => handleDateRangeChange('end_date', e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">Month:</label>
+                    <Dropdown
+                      value={selectedMonth}
+                      onChange={(value) => setSelectedMonth(value)}
+                      options={monthOptions}
+                      variant="soft"
+                      className="w-32"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">Year:</label>
+                    <Dropdown
+                      value={selectedYear}
+                      onChange={(value) => setSelectedYear(value)}
+                      options={yearOptions}
+                      variant="soft"
+                      className="w-24"
+                    />
+                  </div>
+                </div>
+              )}
+
+          
+            </div>
+          </div>
         </div>
-        <div className="mt-4 sm:mt-0 flex space-x-3">
-          <select 
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+
+        {/* Tabs */}
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 mb-6">
+          <button
+            onClick={() => setActiveTab('revenue')}
+            className={`px-3 sm:px-6 py-2 font-semibold text-sm sm:text-base duration-150 ${
+              activeTab === 'revenue'
+                ? 'text-primary'
+                : 'text-gray-600 hover:text-primary'
+            }`}
           >
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="quarter">This Quarter</option>
-            <option value="year">This Year</option>
-          </select>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>Export Report</span>
+            Revenue
+          </button>
+          <button
+            onClick={() => setActiveTab('payroll')}
+            className={`px-3 sm:px-6 py-2 font-semibold text-sm sm:text-base duration-150 ${
+              activeTab === 'payroll'
+                ? 'text-primary'
+                : 'text-gray-600 hover:text-primary'
+            }`}
+          >
+            Payroll
           </button>
         </div>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-900">Rp {reportData.revenue.total.toLocaleString()}</p>
-              <p className="text-sm text-green-600 flex items-center mt-1">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-                +{reportData.revenue.growth}%
-              </p>
-            </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-            </div>
+        
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-600">{error}</p>
           </div>
-        </div>
+        )}
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Active Members</p>
-              <p className="text-2xl font-bold text-gray-900">{reportData.members.active}</p>
-              <p className="text-sm text-blue-600">+{reportData.members.new} new this month</p>
-            </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Classes Completed</p>
-              <p className="text-2xl font-bold text-gray-900">{reportData.classes.completed}</p>
-              <p className="text-sm text-gray-600">{reportData.classes.cancelled} cancelled</p>
-            </div>
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Package Sales</p>
-              <p className="text-2xl font-bold text-gray-900">{reportData.packages.totalSales}</p>
-              <p className="text-sm text-gray-600">Most popular: {reportData.packages.mostPopular}</p>
-            </div>
-            <div className="p-3 bg-yellow-100 rounded-lg">
-              <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Chart */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
-          <div className="h-64 flex items-end justify-between space-x-2">
-            {monthlyData.map((data, index) => (
-              <div key={index} className="flex flex-col items-center flex-1">
-                <div 
-                  className="bg-blue-500 rounded-t w-full"
-                  style={{ height: `${(data.revenue / 50000000) * 200}px` }}
-                ></div>
-                <span className="text-sm text-gray-600 mt-2">{data.month}</span>
-                <span className="text-xs text-gray-500">
-                  Rp {(data.revenue / 1000000).toFixed(0)}M
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Member Growth */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Member Growth</h3>
-          <div className="h-64 flex items-end justify-between space-x-2">
-            {monthlyData.map((data, index) => (
-              <div key={index} className="flex flex-col items-center flex-1">
-                <div 
-                  className="bg-green-500 rounded-t w-full"
-                  style={{ height: `${(data.members / 300) * 200}px` }}
-                ></div>
-                <span className="text-sm text-gray-600 mt-2">{data.month}</span>
-                <span className="text-xs text-gray-500">{data.members}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Detailed Reports */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Packages */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Performing Packages</h3>
-          <div className="space-y-4">
-            {[
-              { name: 'Premium Monthly', sales: 68, revenue: 81600000 },
-              { name: 'Basic Monthly', sales: 52, revenue: 41600000 },
-              { name: 'Elite Unlimited', sales: 28, revenue: 56000000 },
-              { name: 'Trial Package', sales: 25, revenue: 3750000 }
-            ].map((pkg, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-900">{pkg.name}</p>
-                  <p className="text-sm text-gray-600">{pkg.sales} sales</p>
+        {/* Content */}
+        {activeTab === 'revenue' && (
+          <div>
+            {/* Revenue Metrics */}
+            {revenueData?.metrics && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-secondary rounded-2xl p-10 text-white">
+          <h3 className="text-lg font-semibold mb-2">Total Members</h3>
+                  <p className="text-3xl font-bold">{revenueData.metrics.total_members}</p>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium text-gray-900">Rp {pkg.revenue.toLocaleString()}</p>
-                  <p className="text-sm text-gray-600">Revenue</p>
+                <div className="bg-secondary rounded-2xl p-10 text-white">
+                <h3 className="text-lg font-semibold mb-2">Total Payments</h3>
+                  <p className="text-3xl font-bold">{revenueData.metrics.total_payments}</p>
+                </div>
+                <div className="bg-secondary rounded-2xl p-10 text-white">
+                <h3 className="text-lg font-semibold mb-2">Total Revenue</h3>
+                  <p className="text-3xl font-bold">{formatCurrency(revenueData.metrics.total_revenue)}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            )}
 
-        {/* Recent Transactions */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Transactions</h3>
-          <div className="space-y-4">
-            {[
-              { member: 'Sarah Johnson', package: 'Premium Monthly', amount: 1200000, date: '2024-01-20' },
-              { member: 'Mike Chen', package: 'Basic Monthly', amount: 800000, date: '2024-01-19' },
-              { member: 'Emma Wilson', package: 'Elite Unlimited', amount: 2000000, date: '2024-01-18' },
-              { member: 'David Kim', package: 'Trial Package', amount: 150000, date: '2024-01-17' }
-            ].map((transaction, index) => (
-              <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-900">{transaction.member}</p>
-                  <p className="text-sm text-gray-600">{transaction.package}</p>
+            {/* Revenue Table */}
+            {revenueData?.payments && (
+              <div className="bg-white rounded-lg w-full">
+                <Table
+                  columns={[
+                    
+                    {
+                      key: 'payment_date',
+                      header: 'Payment Date',
+                      span: 2,
+                      render: (v, r) => (
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{v}</div>
+                          <div className="text-xs text-gray-500">{r.payment_time}</div>
+                        </div>
+                      )
+                    },
+                    {
+                      key: 'package_name',
+                      header: 'Package Name',
+                      span: 3,
+                      render: (v) => <span className="font-medium text-gray-900">{v}</span>
+                    },
+                    {
+                      key: 'member_name',
+                      header: 'Member Name',
+                      span: 3,
+                      render: (v) => <span className="text-sm text-gray-900">{v}</span>
+                    },
+                    {
+                      key: 'payment_method',
+                      header: 'Payment Method',
+                      span: 2,
+                      render: (v) => (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {v.replace('_', ' ')}
+                        </span>
+                      ),
+                      className: 'text-center'
+                    },
+                    {
+                      key: 'price',
+                      header: 'Price',
+                      span: 2,
+                      render: (v) => (
+                        <span className="font-semibold text-green-600">
+                          {formatCurrency(v)}
+                        </span>
+                      )
+                    }
+                  ]}
+                  data={revenueData.payments}
+                  loading={loading}
+                  emptyMessage="Tidak ada data payment."
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'payroll' && (
+          <div>
+            {/* Payroll Metrics */}
+            {payrollData?.metrics && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="bg-secondary rounded-2xl p-10 text-white">
+          <h3 className="text-lg font-semibold mb-2">Instructor</h3>
+                  <p className="text-3xl font-bold">{payrollData.metrics.total_instructors}</p>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium text-gray-900">Rp {transaction.amount.toLocaleString()}</p>
-                  <p className="text-sm text-gray-600">{new Date(transaction.date).toLocaleDateString()}</p>
+                <div className="bg-secondary rounded-2xl p-10 text-white">
+                <h3 className="text-lg font-semibold mb-2">Classes</h3>
+                  <p className="text-3xl font-bold">{payrollData.metrics.total_classes}</p>
+                </div>
+                <div className="bg-secondary rounded-2xl p-10 text-white">
+                <h3 className="text-lg font-semibold mb-2">Total Pay</h3>
+                  <p className="text-3xl font-bold">{formatCurrency(payrollData.metrics.total_pay)}</p>
                 </div>
               </div>
-            ))}
+            )}
+
+            {/* Payroll Table */}
+            {payrollData?.payroll && (
+              <div className="bg-white rounded-lg w-full">
+                <Table
+                  columns={[
+                    {
+                      key: 'instructor_name',
+                      header: 'Instructor Name',
+                      span: 3,
+                      render: (v) => <span className="font-medium text-gray-900">{v}</span>
+                    },
+                    {
+                      key: 'total_class',
+                      header: 'Total Class',
+                      span: 2,
+                      render: (v) => <span className="text-sm text-gray-900">{v}</span>,
+                      className: 'text-center'
+                    },
+                    {
+                      key: 'total_member',
+                      header: 'Total Member',
+                      span: 2,
+                      render: (v) => <span className="text-sm text-gray-900">{v}</span>,
+                      className: 'text-center'
+                    },
+                    {
+                      key: 'payroll_date',
+                      header: 'Payroll Date',
+                      span: 2,
+                      render: (v) => <span className="text-sm text-gray-900">{v}</span>
+                    },
+                    {
+                      key: 'total_salary',
+                      header: 'Total Salary',
+                      span: 2,
+                      render: (v) => (
+                        <span className="font-semibold text-green-600">
+                          {formatCurrency(v)}
+                        </span>
+                      )
+                    },
+                    {
+                      key: 'actions',
+                      header: '',
+                      span: 1,
+                      render: (v, r) => (
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            variant="primary"
+                            size="small"
+                            onClick={() => handleViewPayrollDetail(r.instructor_id)}
+                            disabled={loading}
+                          >
+                            View Details
+                          </Button>
+                        </div>
+                      )
+                    }
+                  ]}
+                  data={payrollData.payroll.map((item, index) => ({
+                    ...item,
+                    no: index + 1,
+                    actions: ''
+                  }))}
+                  loading={loading}
+                  emptyMessage="Tidak ada data payroll."
+                />
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </div>
+
+      {/* Payroll Detail Modal */}
+      <PayrollDetailModal
+        isOpen={showPayrollDetail}
+        onClose={() => setShowPayrollDetail(false)}
+        payrollDetail={payrollDetailData}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Report 
+export default Report; 

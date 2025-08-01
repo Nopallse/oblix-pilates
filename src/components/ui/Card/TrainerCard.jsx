@@ -56,9 +56,7 @@ const TrainerCard = ({ image, name, description, bio, instagram, tiktok }) => {
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
       <div className="absolute bottom-6 left-0 right-0 px-6 md:px-4 text-white text-center z-10 transition-opacity duration-300 group-hover:opacity-0 pointer-events-auto">
         <h3 className="text-3xl md:text-xl font-semibold font-['Raleway']">{name}</h3>
-        <p className="text-lg md:text-sm font-normal font-['Raleway'] mt-2 text-white/50">
-          {description}
-        </p>
+   
       </div>
       
       {/* Hover overlay */}

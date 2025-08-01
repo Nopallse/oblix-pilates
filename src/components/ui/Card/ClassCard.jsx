@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 const ClassCard = ({ image, title, className = "" }) => {
   // Convert title to URL-friendly format
   const getClassType = (title) => {
-    const typeMap = {
-      "Private": "private",
-      "Semi Private": "semi-private",
-      "Group": "group"
+    const typeMapping = {
+      "Group": "group",
+      "Semi Private": "semi_private",
+      "Private": "private"
     };
-    return typeMap[title] || "private";
+    return typeMapping[title] || "private";
   };
 
   const classType = getClassType(title);

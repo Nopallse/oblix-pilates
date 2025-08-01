@@ -70,7 +70,7 @@ const Member = () => {
 
   // Format status
   const formatStatus = (status) => {
-    return status === 'active' ? (
+    return status === 'Active' ? (
       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
         Aktif
       </span>

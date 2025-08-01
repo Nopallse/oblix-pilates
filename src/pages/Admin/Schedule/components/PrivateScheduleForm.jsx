@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@components/ui';
+import { Button, Input, Dropdown, FileInput, Table } from '@components/ui';
 import { useApiToast } from '@shared/hooks';
 import { apiClient } from '@shared/services';
+import ManageClassModal from './ManageClassModal';
+import { icons } from '@shared/utils/assets';
 
 const PrivateScheduleForm = ({ 
   isOpen, 
@@ -14,15 +16,12 @@ const PrivateScheduleForm = ({
   onClassCreated
 }) => {
   const { showToast } = useApiToast();
-  const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
-  const [newClassData, setNewClassData] = useState({
-    class_name: '',
-    color_sign: '#FF6B6B'
-  });
-  const [isEditingClass, setIsEditingClass] = useState(false);
-  const [editingClassId, setEditingClassId] = useState(null);
+  const [isManageClassOpen, setIsManageClassOpen] = useState(false);
   const [selectedRepeatDays, setSelectedRepeatDays] = useState([]);
-  const [selectedPicture, setSelectedPicture] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [repeatType, setRepeatType] = useState(selectedSchedule?.repeat_type || 'none');
+  const [selectedClassId, setSelectedClassId] = useState(selectedSchedule?.class_id || '');
   
   // Member search state
   const [memberOptions, setMemberOptions] = useState([]);
@@ -30,18 +29,82 @@ const PrivateScheduleForm = ({
   const [memberLoading, setMemberLoading] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState('');
 
-  // Trainer search state
-  const [trainerOptions, setTrainerOptions] = useState([]);
-  const [trainerSearch, setTrainerSearch] = useState('');
-  const [trainerLoading, setTrainerLoading] = useState(false);
   const [selectedTrainerId, setSelectedTrainerId] = useState('');
+  const [dateStart, setDateStart] = useState('');
+  const [timeStart, setTimeStart] = useState('07:30');
+  const [timeEnd, setTimeEnd] = useState('08:30');
+  const [minSignup, setMinSignup] = useState(1);
+  const [bookingDeadlineHour, setBookingDeadlineHour] = useState(24);
+  const [waitlistLockMinutes, setWaitlistLockMinutes] = useState(30);
+  const [cancelBufferMinutes, setCancelBufferMinutes] = useState(60);
+  const [scheduleUntil, setScheduleUntil] = useState('');
 
-  // Initialize selectedRepeatDays from selectedSchedule
+  // Initialize selectedRepeatDays and repeatType from selectedSchedule
   useEffect(() => {
     if (selectedSchedule?.repeat_days) {
       setSelectedRepeatDays(selectedSchedule.repeat_days);
     } else {
       setSelectedRepeatDays([]);
+    }
+    
+    if (selectedSchedule?.repeat_type) {
+      setRepeatType(selectedSchedule.repeat_type);
+    } else {
+      setRepeatType('none');
+    }
+    
+    if (selectedSchedule?.class_id) {
+      setSelectedClassId(selectedSchedule.class_id);
+    } else {
+      setSelectedClassId('');
+    }
+    
+    if (selectedSchedule?.date_start) {
+      setDateStart(selectedSchedule.date_start);
+    } else {
+      setDateStart('');
+    }
+    
+    if (selectedSchedule?.time_start) {
+      setTimeStart(selectedSchedule.time_start.slice(0, 5));
+    } else {
+      setTimeStart('07:30');
+    }
+    
+    if (selectedSchedule?.time_end) {
+      setTimeEnd(selectedSchedule.time_end.slice(0, 5));
+    } else {
+      setTimeEnd('08:30');
+    }
+    
+    if (selectedSchedule?.min_signup) {
+      setMinSignup(selectedSchedule.min_signup);
+    } else {
+      setMinSignup(1);
+    }
+    
+    if (selectedSchedule?.booking_deadline_hour) {
+      setBookingDeadlineHour(selectedSchedule.booking_deadline_hour);
+    } else {
+      setBookingDeadlineHour(24);
+    }
+    
+    if (selectedSchedule?.waitlist_lock_minutes) {
+      setWaitlistLockMinutes(selectedSchedule.waitlist_lock_minutes);
+    } else {
+      setWaitlistLockMinutes(30);
+    }
+    
+    if (selectedSchedule?.cancel_buffer_minutes) {
+      setCancelBufferMinutes(selectedSchedule.cancel_buffer_minutes);
+    } else {
+      setCancelBufferMinutes(60);
+    }
+    
+    if (selectedSchedule?.schedule_until) {
+      setScheduleUntil(selectedSchedule.schedule_until);
+    } else {
+      setScheduleUntil('');
     }
   }, [selectedSchedule]);
 
@@ -61,25 +124,21 @@ const PrivateScheduleForm = ({
 
       if (selectedSchedule?.trainer_id) {
         setSelectedTrainerId(selectedSchedule.trainer_id);
-        // Set trainer search to the trainer's name if available
-        if (selectedSchedule.trainer_name) {
-          setTrainerSearch(selectedSchedule.trainer_name);
-        }
       } else {
         setSelectedTrainerId('');
-        setTrainerSearch('');
+      }
+
+      // Load initial member data when form opens
+      if (!memberSearch) {
+        setMemberSearch('');
       }
     }
   }, [isOpen, selectedSchedule]);
 
-  // Fetch members when user types (similar to PackageForm)
+  // Fetch members when user types or when form opens
   useEffect(() => {
     let ignore = false;
     const fetchMembers = async () => {
-      if (memberSearch.length < 2) {
-        setMemberOptions([]);
-        return;
-      }
       setMemberLoading(true);
       try {
         const res = await apiClient.get('/api/member', { 
@@ -88,11 +147,7 @@ const PrivateScheduleForm = ({
         });
         if (!ignore) {
           const membersData = res.data?.data?.members || res.data?.members || [];
-          // Filter members who have remaining private sessions
-          const availableMembers = membersData.filter(member => 
-            member.sessionStats?.sessionBreakdown?.private?.remaining > 0
-          );
-          setMemberOptions(availableMembers);
+          setMemberOptions(membersData);
         }
       } catch (err) {
         if (!ignore) {
@@ -107,109 +162,28 @@ const PrivateScheduleForm = ({
     return () => { ignore = true; };
   }, [memberSearch]);
 
-  // Fetch trainers when user types
-  useEffect(() => {
-    let ignore = false;
-    const fetchTrainers = async () => {
-      if (trainerSearch.length < 2) {
-        setTrainerOptions([]);
-        return;
-      }
-      setTrainerLoading(true);
-      try {
-        const res = await apiClient.get('/api/trainer', { 
-          params: { search: trainerSearch },
-          silent: true 
-        });
-        if (!ignore) {
-          const trainersData = res.data?.data?.trainers || res.data?.trainers || [];
-          setTrainerOptions(trainersData);
-        }
-      } catch (err) {
-        if (!ignore) {
-          console.error('Failed to load trainers:', err);
-          setTrainerOptions([]);
-        }
-      } finally {
-        if (!ignore) setTrainerLoading(false);
-      }
-    };
-    fetchTrainers();
-    return () => { ignore = true; };
-  }, [trainerSearch]);
+
 
   if (!isOpen) return null;
 
-  const handleCreateClass = async () => {
-    try {
-      let response;
-      
-      if (isEditingClass && editingClassId) {
-        // Update existing class
-        response = await apiClient.put(`/api/class/${editingClassId}`, newClassData);
-      } else {
-        // Create new class
-        response = await apiClient.post('/api/class', newClassData);
-      }
-      
-      if (response.success) {
-        // Don't show toast here as API might already show one
-        setIsCreateClassOpen(false);
-        setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
-        setIsEditingClass(false);
-        setEditingClassId(null);
-        // Refresh classes list
-        if (onClassCreated) {
-          onClassCreated();
-        }
-      } else {
-        showToast(
-          isEditingClass ? 'Gagal mengupdate class' : 'Gagal membuat class', 
-          'error'
-        );
-      }
-    } catch (error) {
-      showToast(
-        isEditingClass ? 'Gagal mengupdate class' : 'Gagal membuat class', 
-        'error'
-      );
-    }
-  };
 
-  const handlePictureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        showToast('Ukuran file terlalu besar. Maksimal 5MB', 'error');
-        return;
-      }
-      
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        showToast('Tipe file tidak didukung. Gunakan JPG, PNG, GIF, atau WebP', 'error');
-        return;
-      }
-      
-      setSelectedPicture(file);
-    }
-  };
 
-  const handleFormSubmit = async () => {
+
+
+  const handleFormSubmit = () => {
     // Get form data
     const form = document.querySelector('#private-schedule-form');
     const formData = new FormData(form);
     
     // Validate required fields
-    const class_id = formData.get('class_id');
-    const date_start = formData.get('date_start');
-    const time_start = formData.get('time_start');
-    const time_end = formData.get('time_end');
-    const min_signup = formData.get('min_signup');
-    const booking_deadline_hour = formData.get('booking_deadline_hour');
-    const waitlist_lock_minutes = formData.get('waitlist_lock_minutes');
-    const cancel_buffer_minutes = formData.get('cancel_buffer_minutes');
+    const class_id = selectedClassId;
+    const date_start = dateStart;
+    const time_start = timeStart;
+    const time_end = timeEnd;
+    const min_signup = minSignup;
+    const booking_deadline_hour = bookingDeadlineHour;
+    const waitlist_lock_minutes = waitlistLockMinutes;
+    const cancel_buffer_minutes = cancelBufferMinutes;
     
     if (!class_id || !selectedTrainerId || !selectedMemberId || !date_start || !time_start || !time_end || 
         !min_signup || !booking_deadline_hour || !waitlist_lock_minutes || !cancel_buffer_minutes) {
@@ -223,314 +197,232 @@ const PrivateScheduleForm = ({
       return;
     }
 
-    // Validate repeat_days for weekly repeat
-    const repeatType = formData.get('repeat_type');
-    if (repeatType === 'weekly' && selectedRepeatDays.length === 0) {
+    // Validate repeat_days for weekly repeat (only for new schedules)
+    if (!selectedSchedule && repeatType === 'weekly' && selectedRepeatDays.length === 0) {
       showToast('Mohon pilih hari untuk repeat weekly', 'error');
       return;
     }
 
-    // Validate schedule_until for weekly repeat
-    if (repeatType === 'weekly' && !formData.get('schedule_until')) {
+    // Validate schedule_until for weekly repeat (only for new schedules)
+    if (!selectedSchedule && repeatType === 'weekly' && !formData.get('schedule_until')) {
       showToast('Schedule until wajib diisi untuk repeat weekly', 'error');
       return;
     }
     
+    // Handle file upload
+    let pictureData = null;
+    
+    if (selectedImage) {
+      // New file is selected
+      pictureData = selectedImage;
+    } else if (selectedSchedule?.picture) {
+      // Keep existing picture if no new file is selected
+      pictureData = selectedSchedule.picture;
+    }
+    
     const data = {
-      class_id: class_id,
+      class_id: selectedClassId,
       trainer_id: selectedTrainerId,
       member_id: selectedMemberId,
       date_start: date_start,
       time_start: time_start,
       time_end: time_end,
-      repeat_type: formData.get('repeat_type'),
-      repeat_days: formData.get('repeat_type') === 'weekly' ? selectedRepeatDays : [],
-      schedule_until: formData.get('schedule_until') || null,
-      booking_deadline_hour: parseInt(booking_deadline_hour),
-      waitlist_lock_minutes: parseInt(waitlist_lock_minutes),
-      min_signup: parseInt(min_signup),
-      cancel_buffer_minutes: parseInt(cancel_buffer_minutes)
+      ...(selectedSchedule ? {} : {
+      repeat_type: repeatType,
+      repeat_days: repeatType === 'weekly' ? selectedRepeatDays : [],
+      schedule_until: scheduleUntil || null,
+      }),
+      booking_deadline_hour: booking_deadline_hour,
+      waitlist_lock_minutes: waitlist_lock_minutes,
+      min_signup: min_signup,
+      cancel_buffer_minutes: cancel_buffer_minutes,
+      picture: pictureData
     };
-
-    // Add picture if selected
-    if (selectedPicture) {
-      data.picture = selectedPicture;
-    }
     
     onSubmit(data);
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-semibold mb-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="bg-primary bg-opacity-20 -m-6 p-6 rounded mb-4">
+          <h3 className="text-lg text-primary font-semibold">
           {selectedSchedule ? 'Edit Private Schedule' : 'Add Private Schedule'}
+          </h3>
+        </div>
+
+        <h3 className="text-md font-semibold mb-4 mt-4">
+          Class Information
         </h3>
         
         <form id="private-schedule-form">
+          <input type="hidden" name="class_id" value={selectedClassId} />
+          <input type="hidden" name="trainer_id" value={selectedTrainerId} />
+          <input type="hidden" name="member_id" value={selectedMemberId} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Class *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Class Name *
               </label>
-              <div className="flex gap-2">
-                <select
+              <div className="flex gap-2 flex-1">
+                <Dropdown
                   name="class_id"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  defaultValue={selectedSchedule?.class_id || ''}
-                  required
-                  disabled={classes.length === 0}
-                >
-                  <option value="">{classes.length === 0 ? 'Loading classes...' : 'Pilih Class'}</option>
-                  {classes.map((cls) => (
-                    <option key={cls.id} value={cls.id} selected={cls.class_name === selectedSchedule?.class_name}>
-                      {cls.class_name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
-                    setIsEditingClass(false);
-                    setEditingClassId(null);
-                    setIsCreateClassOpen(true);
-                  }}
-                  className="px-3 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-colors text-sm font-medium"
-                  title="Tambah Class Baru"
-                >
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const selectedClassId = document.querySelector('select[name="class_id"]').value;
-                    if (selectedClassId) {
-                      const selectedClass = classes.find(cls => cls.id === selectedClassId);
-                      if (selectedClass) {
-                        setNewClassData({
-                          class_name: selectedClass.class_name,
-                          color_sign: selectedClass.color_sign || '#FF6B6B'
-                        });
-                        setIsEditingClass(true);
-                        setEditingClassId(selectedClassId);
-                        setIsCreateClassOpen(true);
-                      }
-                    } else {
-                      showToast('Pilih class terlebih dahulu untuk edit', 'error');
+                  value={selectedClassId}
+                  onChange={(value) => {
+                    setSelectedClassId(value);
+                    // Update the form field value
+                    const form = document.querySelector('#private-schedule-form');
+                    const classField = form.querySelector('input[name="class_id"]');
+                    if (classField) {
+                      classField.value = value;
                     }
                   }}
-                  className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors text-sm font-medium"
-                  title="Edit Class Terpilih"
+                  options={[
+                    { value: '', label: classes.length === 0 ? 'Loading classes...' : 'Pilih Class' },
+                    ...classes.map((cls) => ({
+                      value: cls.id,
+                      label: cls.class_name
+                    }))
+                  ]}
+                  searchable={true}
+                  variant="soft"
+                  className="flex-1"
+                  required
+                  disabled={classes.length === 0}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsManageClassOpen(true);
+                  }}
+                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl transition-colors text-sm font-medium"
+                  title="Kelola Class"
                 >
-                  Edit
+                  <img src={icons.setting} alt="Setting" className="w-7 h-7" />
                 </button>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
                 Trainer *
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  autoComplete="off"
-                  value={trainerOptions.find(t => t.id === selectedTrainerId)?.title || trainerSearch}
-                  onChange={e => {
-                    setTrainerSearch(e.target.value);
-                    setSelectedTrainerId('');
-                  }}
-                  onFocus={() => setTrainerOptions([])}
-                  placeholder="Cari nama trainer..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
-                />
-                {/* Hidden input for form submission */}
-                <input 
-                  type="hidden" 
+              <Dropdown
                   name="trainer_id" 
                   value={selectedTrainerId} 
-                />
-                
-                {/* Dropdown */}
-                {trainerSearch.length >= 2 && trainerOptions.length > 0 && !selectedTrainerId && (
-                  <ul className="absolute z-10 bg-white border border-gray-200 rounded-lg mt-1 w-full max-h-56 overflow-auto shadow-lg">
-                    {trainerOptions.map(trainer => (
-                      <li
-                        key={trainer.id}
-                        className="px-4 py-2 hover:bg-primary hover:text-white cursor-pointer"
-                        onClick={() => {
-                          setSelectedTrainerId(trainer.id);
-                          setTrainerSearch(trainer.title);
-                          setTrainerOptions([]);
-                        }}
-                      >
-                        <div className="font-medium">{trainer.title}</div>
-                        {trainer.description && (
-                          <div className="text-xs text-gray-500">
-                            {trainer.description}
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {trainerLoading && <div className="absolute right-2 top-2 text-xs text-gray-400">Loading...</div>}
-                {trainerSearch.length >= 2 && trainerOptions.length === 0 && !trainerLoading && (
-                  <div className="absolute right-2 top-2 text-xs text-gray-400">Tidak ada trainer ditemukan</div>
-                )}
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Member (Auto Booking) * <span className="text-xs text-gray-500">(Hanya member dengan sisa sesi private)</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  autoComplete="off"
-                  value={memberOptions.find(m => m.id === selectedMemberId)?.full_name || memberSearch}
-                  onChange={e => {
-                    setMemberSearch(e.target.value);
-                    setSelectedMemberId('');
-                  }}
-                  onFocus={() => setMemberOptions([])}
-                  placeholder="Cari nama member..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                onChange={(value) => {
+                  setSelectedTrainerId(value);
+                  // Update the form field value
+                  const form = document.querySelector('#private-schedule-form');
+                  const trainerField = form.querySelector('input[name="trainer_id"]');
+                  if (trainerField) {
+                    trainerField.value = value;
+                  }
+                }}
+                options={[
+                  { value: '', label: trainers.length === 0 ? 'Loading trainers...' : 'Pilih Trainer' },
+                  ...trainers.map((trainer) => ({
+                    value: trainer.id,
+                    label: trainer.title
+                  }))
+                ]}
+                searchable={true}
+                variant="soft"
+                className="flex-1"
                   required
-                />
-                {/* Hidden input for form submission */}
-                <input 
-                  type="hidden" 
-                  name="member_id" 
-                  value={selectedMemberId} 
-                />
-                
-                {/* Dropdown */}
-                {memberSearch.length >= 2 && memberOptions.length > 0 && !selectedMemberId && (
-                  <ul className="absolute z-10 bg-white border border-gray-200 rounded-lg mt-1 w-full max-h-56 overflow-auto shadow-lg">
-                    {memberOptions.map(member => (
-                      <li
-                        key={member.id}
-                        className="px-4 py-2 hover:bg-primary hover:text-white cursor-pointer"
-                        onClick={() => {
-                          setSelectedMemberId(member.id);
-                          setMemberSearch(member.full_name);
-                          setMemberOptions([]);
-                        }}
-                      >
-                        <div className="font-medium">{member.full_name}</div>
-                        <div className="text-xs text-gray-500">
-                          {member.User?.email} | {member.member_code}
-                        </div>
-                        <div className="text-xs text-green-600 font-medium">
-                          Sisa sesi private: {member.sessionStats?.sessionBreakdown?.private?.remaining || 0}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {memberLoading && <div className="absolute right-2 top-2 text-xs text-gray-400">Loading...</div>}
-                {memberSearch.length >= 2 && memberOptions.length === 0 && !memberLoading && (
-                  <div className="absolute right-2 top-2 text-xs text-gray-400">Tidak ada member dengan sisa sesi private</div>
-                )}
-              </div>
+                disabled={trainers.length === 0}
+              />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date Start *
+
+
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Date *
               </label>
-              <input
+              <Input
                 name="date_start"
                 type="date"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.date_start || ''}
+                variant="soft"
+                value={dateStart}
+                onChange={(e) => setDateStart(e.target.value)}
                 required
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Schedule Until
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Time *
               </label>
-              <input
-                name="schedule_until"
-                type="date"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.schedule_until || ''}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time Start *
-              </label>
-              <input
+              <div className="flex gap-2 flex-1">
+                <Input
                 name="time_start"
                 type="time"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.time_start?.slice(0, 5) || '07:30'}
+                  variant="soft"
+                  value={timeStart}
+                  onChange={(e) => setTimeStart(e.target.value)}
                 required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time End *
-              </label>
-              <input
+                  className="flex-1"
+                />
+                <Input
                 name="time_end"
                 type="time"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.time_end?.slice(0, 5) || '08:30'}
+                  variant="soft"
+                  value={timeEnd}
+                  onChange={(e) => setTimeEnd(e.target.value)}
                 required
+                  className="flex-1"
               />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Min Signup * <span className="text-xs text-gray-500">(Max 2)</span>
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Min Signup (Max 2) *
               </label>
-              <input
+              <Input
                 name="min_signup"
                 type="number"
                 min="1"
                 max="2"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.min_signup || 1}
+                variant="soft"
+                value={minSignup}
+                onChange={(e) => setMinSignup(parseInt(e.target.value) || 1)}
                 required
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Repeat Type
+            {/* Repeat Settings - Only show when creating new schedule */}
+            {!selectedSchedule && (
+              <>
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Does it repeat?
               </label>
-              <select
+              <Dropdown
                 name="repeat_type"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.repeat_type || 'none'}
-                onChange={(e) => {
-                  if (e.target.value !== 'weekly') {
+                value={repeatType}
+                onChange={(value) => {
+                  setRepeatType(value);
+                  if (value !== 'weekly') {
                     setSelectedRepeatDays([]);
                   }
                 }}
-              >
-                <option value="none">No Repeat</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
+                options={[
+                  { value: 'none', label: 'No Repeat' },
+                  { value: 'weekly', label: 'Weekly' },
+                ]}
+                variant="soft"
+                className="flex-1"
+              />
             </div>
 
-            {/* Repeat Days for Weekly */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Repeat Days (Weekly Only)
-              </label>
+            {/* Repeat Days for Weekly - Only show if weekly is selected */}
+            {repeatType === 'weekly' && (
+              <div className="flex items-start gap-3">
+                <div className="flex-1">
               <div className="grid grid-cols-7 gap-1">
                 {[
                   { value: 0, label: 'Sun' },
@@ -561,82 +453,303 @@ const PrivateScheduleForm = ({
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Pilih hari untuk repeat weekly (0=Sunday, 1=Monday, dst)
-              </p>
+                </div>
             </div>
+            )}
 
-            
+            {/* Schedule Until - Only show if weekly is selected */}
+            {repeatType === 'weekly' && (
+              <div className="flex items-center gap-3 md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                  Schedule Until
+                </label>
+                <Input
+                  name="schedule_until"
+                  type="date"
+                  variant="soft"
+                  value={scheduleUntil}
+                  onChange={(e) => setScheduleUntil(e.target.value)}
+                  className="flex-1"
+                />
+                  </div>
+                )}
+              </>
+            )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Booking Deadline (Hours) *
+            {/* Show repeat info when editing */}
+            {selectedSchedule && (
+              <div className="flex items-center gap-3 md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                  Repeat Settings
+                </label>
+                <div className="flex-1 px-3 py-2 bg-gray-50 rounded-lg text-sm text-gray-900">
+                  {selectedSchedule.repeat_type === 'none' ? 'No Repeat' : 
+                   selectedSchedule.repeat_type === 'weekly' ? 
+                   `Weekly on ${selectedSchedule.repeat_days?.map(day => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]).join(', ')}` : 
+                   selectedSchedule.repeat_type}
+                </div>
+              </div>
+            )}
+
+            <h3 className="text-md font-semibold mb-4 mt-4 flex items-center gap-3 md:col-span-2">
+              Other Information
+            </h3>
+
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Booking Deadline (H)*
               </label>
-              <input
+              <Input
                 name="booking_deadline_hour"
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.booking_deadline_hour || 24}
-                required
+                variant="soft"
+                value={bookingDeadlineHour}
+                onChange={(e) => setBookingDeadlineHour(parseInt(e.target.value) || 0)}
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Waitlist Lock (Minutes) *
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Waitlist Lock Period (M)*
               </label>
-              <input
+              <Input
                 name="waitlist_lock_minutes"
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.waitlist_lock_minutes || 30}
-                required
+                variant="soft"
+                value={waitlistLockMinutes}
+                onChange={(e) => setWaitlistLockMinutes(parseInt(e.target.value) || 0)}
+                className="flex-1"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cancel Buffer (Minutes) *
+            <h3 className="text-md font-semibold mb-4 mt-4">
+              Cancel Rule
+            </h3>
+
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Cancel Buffer *
               </label>
-              <input
+              <Input
                 name="cancel_buffer_minutes"
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue={selectedSchedule?.cancel_buffer_minutes || 60}
-                required
+                variant="soft"
+                value={cancelBufferMinutes}
+                onChange={(e) => setCancelBufferMinutes(parseInt(e.target.value) || 0)}
+                className="flex-1"
               />
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Picture (Optional)
+            <div className="flex items-center gap-3 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[120px]">
+                Picture
               </label>
-              <input
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                onChange={handlePictureChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                JPG, PNG, GIF, WebP. Maksimal 5MB
-              </p>
-              {selectedPicture && (
-                <p className="text-xs text-green-600 mt-1">
-                  File dipilih: {selectedPicture.name}
-                </p>
-              )}
+              <div className="flex-1">
+                <FileInput
+                  name="picture"
+                  accept="image/*"
+                  value={selectedImage}
+                  onChange={(file) => {
+                    if (file) {
+                      // Validate file size (max 5MB)
+                      if (file.size > 5 * 1024 * 1024) {
+                        showToast('File terlalu besar. Maksimal 5MB', 'error');
+                        setSelectedImage(null);
+                        setImagePreview(null);
+                        return;
+                      }
+                      // Validate file type
+                      if (!file.type.startsWith('image/')) {
+                        showToast('File harus berupa gambar', 'error');
+                        setSelectedImage(null);
+                        setImagePreview(null);
+                        return;
+                      }
+                      
+                      // Set selected image and create preview
+                      setSelectedImage(file);
+                      const reader = new FileReader();
+                      reader.onload = (e) => {
+                        setImagePreview(e.target.result);
+                      };
+                      reader.readAsDataURL(file);
+                    } else {
+                      setSelectedImage(null);
+                      setImagePreview(null);
+                    }
+                  }}
+                  variant="soft"
+                  placeholder="Choose image file"
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  allowedTypes={['image/']}
+                  showPreview={true}
+                  className="flex-1"
+                />
+                
+                {/* Image Preview for existing image */}
+                {!imagePreview && selectedSchedule?.picture && (
+                  <div className="mt-3">
+                    <div className="relative inline-block">
+                      <img
+                        src={selectedSchedule.picture}
+                        alt="Preview"
+                        className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </form>
+
+        {/* Member List Table */}
+        <div className="mt-6">
+          <h3 className="text-md font-semibold mb-4">
+            Member List
+          </h3>
+          
+          {/* Search Input */}
+          <div className="mb-4">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={selectedMemberId ? memberOptions.find(m => m.id === selectedMemberId)?.full_name || '' : memberSearch}
+                onChange={(e) => {
+                  setMemberSearch(e.target.value);
+                  setSelectedMemberId(''); // Clear selection when user types
+                }}
+                placeholder={selectedMemberId ? "Member selected" : "Search your member username"}
+                className={`block w-full pl-10 pr-10 py-2 border rounded-lg leading-5 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm ${
+                  selectedMemberId 
+                    ? 'border-primary bg-primary/10 text-primary' 
+                    : 'border-gray-300 bg-white'
+                }`}
+                readOnly={selectedMemberId ? true : false}
+              />
+              {selectedMemberId && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedMemberId('');
+                    setMemberSearch('');
+                  }}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <svg className="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
+          
+          <div className="max-h-60 overflow-y-auto">
+            <Table
+              columns={[
+                { 
+                  key: 'member_info', 
+                  header: 'Member Info', 
+                  span: 6,
+                  render: (v, r) => (
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <div className="font-medium text-gray-900">{r.full_name}</div>
+                        <div className="text-xs text-gray-500">
+                          {r.phone_number}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                },
+                { 
+                  key: 'session_left', 
+                  header: 'Session Left', 
+                  span: 4,
+                                      render: (v, r) => (
+                      <div className="text-sm">
+                        {r.session_details?.private_sessions?.remaining ? (
+                          <>
+                            <span className="font-medium text-green-600">
+                              {r.session_details.private_sessions.remaining}
+                            </span>
+                            <span className="text-gray-500 ml-1">sesi</span>
+                          </>
+                        ) : (
+                          <span className="text-red-500 font-medium">Tidak ada sesi</span>
+                        )}
+                      </div>
+                    )
+                },
+                { 
+                  key: 'select', 
+                  span: 2, 
+                  render: (v, r) => (
+                    <div className="flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          // Only allow selection if member has private sessions
+                          if (!r.session_details?.private_sessions?.remaining) {
+                            return;
+                          }
+                          
+                          if (selectedMemberId === r.id) {
+                            // Unselect if already selected
+                            setSelectedMemberId('');
+                            setMemberSearch('');
+                          } else {
+                            // Select new member
+                            setSelectedMemberId(r.id);
+                            setMemberSearch(r.full_name);
+                          }
+                        }}
+                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                          selectedMemberId === r.id
+                            ? 'bg-primary text-white hover:bg-primary/80 border-primary border-2'
+                            : r.session_details?.private_sessions?.remaining
+                              ? 'bg-gray-100 border border-primary border-2 text-primary hover:bg-primary hover:text-white'
+                              : 'bg-gray-300 border border-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                        disabled={!r.session_details?.private_sessions?.remaining}
+                      >
+                        {selectedMemberId === r.id ? 'Selected' : 'Select'}
+                      </button>
+                    </div>
+                  )
+                }
+              ]}
+              data={memberOptions.map((member) => ({
+                ...member,
+                member_info: '',
+                email: '',
+                session_left: '',
+                select: ''
+              }))}
+              loading={memberLoading}
+              emptyMessage="Tidak ada member ditemukan"
+            />
+          </div>
+        </div>
         
         <div className="flex justify-end space-x-3 mt-6">
           <Button
             variant="outline"
             disabled={loading}
-            onClick={onClose}
+            onClick={() => {
+              setSelectedImage(null);
+              setImagePreview(null);
+              onClose();
+            }}
           >
             Cancel
           </Button>
@@ -651,64 +764,14 @@ const PrivateScheduleForm = ({
         </div>
       </div>
 
-      {/* Create/Edit Class Modal */}
-      {isCreateClassOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">
-              {isEditingClass ? 'Edit Class' : 'Create New Class'}
-            </h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Class Name *
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={newClassData.class_name}
-                  onChange={(e) => setNewClassData({...newClassData, class_name: e.target.value})}
-                  placeholder="Pilates Mat"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Color Sign *
-                </label>
-                <input
-                  type="color"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={newClassData.color_sign}
-                  onChange={(e) => setNewClassData({...newClassData, color_sign: e.target.value})}
-                />
-              </div>
-            </div>
-            
-            <div className="flex justify-end space-x-3 mt-6">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsCreateClassOpen(false);
-                  setNewClassData({ class_name: '', color_sign: '#FF6B6B' });
-                  setIsEditingClass(false);
-                  setEditingClassId(null);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleCreateClass}
-                disabled={!newClassData.class_name}
-              >
-                {isEditingClass ? 'Update Class' : 'Create Class'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Manage Class Modal */}
+      <ManageClassModal
+        isOpen={isManageClassOpen}
+        onClose={() => setIsManageClassOpen(false)}
+        classes={classes}
+        onClassCreated={onClassCreated}
+      />
+
     </div>
   );
 };

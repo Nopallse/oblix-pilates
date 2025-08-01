@@ -9,9 +9,9 @@ import { flower2Icon } from "../../../shared/utils/assets.js";
 import ImageSlider from "../../../components/ui/ImageSlider/ImageSlider.jsx";
 import Button from "../../../components/ui/Button/Button.jsx";
 import { scheduleData } from "../../../data/scheduleData";
-import { classes1, classes2, classes3, classesScheduleBanner } from "../../../shared/utils/assets.js";
+import { about1,flowerIcon,classes1, classes2, classes3, classesScheduleBanner } from "../../../shared/utils/assets.js";
 import TestimonialCard from "../../../components/ui/Card/TestimonialCard.jsx";
-import { usePublicTestimonials, usePublicTrainers, usePublicBanners, usePublicGalleries } from "../../Admin/Website/api/useWebsite";
+import { usePublicTestimonials, usePublicTrainers, usePublicBanners, usePublicGalleries, usePublicFaqs } from "../../Admin/Website/api/useWebsite";
 import Loading from "../../../components/ui/Loading";
 
 // Komponen slider gambar dengan auto-scroll dan drag-to-scroll
@@ -280,6 +280,7 @@ const Home = () => {
   const { trainers, loading: trainersLoading, error: trainersError } = usePublicTrainers();
   const { banners, loading: bannersLoading, error: bannersError } = usePublicBanners();
   const { galleries, loading: galleriesLoading, error: galleriesError } = usePublicGalleries();
+  const { faqs, loading: faqsLoading, error: faqsError } = usePublicFaqs();
   
   // Trainer slider state
   const [currentTrainerSlide, setCurrentTrainerSlide] = useState(0)
@@ -287,6 +288,16 @@ const Home = () => {
   
   // Class slider state
   const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // FAQ accordion state
+  const [openFaqItems, setOpenFaqItems] = useState({});
+
+  const toggleFaqItem = (id) => {
+    setOpenFaqItems((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
   
   // Helper function to construct image URL
   const getImageUrl = (imagePath) => {
@@ -392,7 +403,80 @@ const Home = () => {
   return (
     <PublicLayout>
       {/* Hero Section */}
-      <section className="py-6 sm:py-8 md:py-12 bg-white">
+      <section className="bg-white">
+        {/* Mobile Version - Full Screen Image with Text Overlay */}
+        <div className="block md:hidden relative h-screen w-full overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+          {bannersLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <Loading />
+            </div>
+          ) : bannersError ? (
+            <div className="flex flex-col justify-center items-center h-full text-center px-6">
+              <p className="text-red-500 text-lg mb-4">Error loading banners: {bannersError}</p>
+              <p className="text-gray-500">Please try refreshing the page.</p>
+            </div>
+          ) : banners.length === 0 ? (
+            <div className="flex flex-col justify-center items-center h-full text-center px-6">
+              <p className="text-gray-500 text-lg mb-4">No banners available at the moment.</p>
+              <p className="text-gray-400">Please check back later.</p>
+            </div>
+          ) : (
+            <>
+              {/* Background Image Slider - Full Screen */}
+              <div className="absolute inset-0 w-full h-full">
+                <ImageSlider
+                  images={banners.map(banner => ({
+                    src: getBannerImageUrl(banner.picture),
+                    alt: banner.title || "Oblix Pilates",
+                  }))}
+                  autoSlideInterval={5000}
+                  className="w-full h-full"
+                  showDots={true}
+                  showArrows={true}
+                  fullScreen={true}
+                />
+              </div>
+              
+              {/* Overlay untuk memastikan text readable */}
+              <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+              
+              {/* Content Overlay */}
+              <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
+                <div data-aos="fade-up" data-aos-delay="200">
+                  <h2 className="text-3xl sm:text-4xl font-medium font-raleway text-white mb-2">
+                    Wake Up, Work Out,
+                  </h2>
+                  <p className="text-2xl sm:text-3xl italic font-medium font-fraunces text-white mb-8">
+                    Look Hot!
+                  </p>
+
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl text-white font-raleway">
+                    Oblix for Better You
+                  </h2>
+                  <div className="mt-4">
+                    <a
+                      href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                        "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button as="span" variant="primary" size="large">
+                        Join Now!
+                      </Button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+            </>
+          )}
+          
+          
+        </div>
+
+        {/* Desktop Version Container */}
+        <div className="py-6 sm:py-8 md:py-12 hidden md:block">
         <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
           <div className="mx-auto max-w-7xl w-full flex flex-col md:flex-row items-center justify-between gap-8 px-4">
             {/* Kiri */}
@@ -405,8 +489,6 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Divider Mobile */}
-            <div className="block md:hidden w-32 h-[2px] bg-gray-600 my-6" data-aos="fade-in" data-aos-delay="200"></div>
             {/* Divider Desktop */}
             <div className="hidden md:block w-32 h-[2px] bg-gray-600" data-aos="fade-in" data-aos-delay="200"></div>
 
@@ -426,12 +508,13 @@ const Home = () => {
                       Join Now!
                       </Button>
                     </a>
+                </div>
                     </div>
                   </div>
                   </div>
                 </div>
 
-                <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6" data-aos="fade-up" data-aos-delay="400">
+        <div className="hidden md:block container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6" data-aos="fade-up" data-aos-delay="400">
                   {bannersLoading ? (
                     <div className="flex justify-center items-center py-12">
                       <Loading />
@@ -489,12 +572,15 @@ const Home = () => {
         <section className="py-6 sm:py-8 bg-white w-full" data-aos="fade-up">
           <div className="mx-auto py-4 md:py-6 flex justify-between items-center w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
             <div className="relative overflow-hidden rounded-lg w-full">
-              {/* Gradient overlay (samping) */}
+              {/* Gradient overlay (samping) - responsive untuk mobile */}
               <div
                 className="absolute inset-0 z-10 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 12.5%, rgba(255,255,255,0) 87.5%, rgba(255,255,255,1) 100%)",
+                    // Gradient lebih tebal di sisi kiri-kanan untuk mobile, lebih smooth untuk desktop
+                    window.innerWidth < 340
+                      ? "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 10%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.85) 90%, rgba(255,255,255,1) 100%)"
+                      : "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 12.5%, rgba(255,255,255,0) 87.5%, rgba(255,255,255,1) 100%)",
                 }}
               ></div>
               {/* Image slider - draggable and auto-scroll */}
@@ -536,9 +622,9 @@ const Home = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            height: "120px",
-            zIndex: 20,
-            background: "linear-gradient(180deg, rgba(123, 143, 203, 0) 25.16%, rgba(123, 143, 203, 0.4) 115.33%)"
+            height: "300px",
+            zIndex: 50,
+            background: "linear-gradient(180deg, rgba(123, 143, 203, 0) 10%, rgba(123, 143, 203, 0.4) 100%)"
           }}
         />
       </div>
@@ -851,6 +937,250 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <Divider />
+
+      {/* FAQ Section */}
+      <section className="py-8 sm:py-12 bg-white">
+        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-4 md:py-6">
+          <div className="relative mx-auto mb-8 w-fit text-center" data-aos="fade-up">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-primary text-2xl sm:text-3xl md:text-4xl font-medium leading-none">
+              <span className="font-raleway">Frequently Asked</span>
+              <span className="font-fraunces italic">Questions</span>
+            </div>
+          </div>
+          <div className="mx-auto space-y-4 mb-12" data-aos="fade-up" data-aos-delay="200">
+            {faqsLoading ? (
+              <Loading />
+            ) : faqsError ? (
+              <p className="text-center text-red-500">Error loading FAQs: {faqsError}</p>
+            ) : faqs.length === 0 ? (
+              <p className="text-center text-gray-500">No FAQs available.</p>
+            ) : (
+              faqs.map((item) => (
+                <div
+                  key={item.id}
+                  className={`rounded-lg overflow-hidden transition-all duration-300 relative ${openFaqItems[item.id]
+                      ? "bg-gray-200"
+                      : "bg-primary"
+                    } ${!openFaqItems[item.id] ? "min-h-[80px]" : ""}`}
+                >
+                  {/* Border kiri lurus */}
+                  <div className={`absolute left-0 top-0 bottom-0 w-2 ${openFaqItems[item.id] ? "bg-primary" : "bg-gray-200"
+                    }`}></div>
+
+                  <button
+                    onClick={() => toggleFaqItem(item.id)}
+                    className={`w-full px-6 py-8 text-left flex items-center gap-4 transition-colors ${openFaqItems[item.id]
+                        ? "text-secondary"
+                        : "text-white hover:bg-primary/90"
+                      }`}
+                  >
+                    {/* Icon panah di kiri */}
+                    <svg
+                      className={`w-5 h-5 transform transition-transform flex-shrink-0 ${openFaqItems[item.id] ? "rotate-90" : ""
+                        }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+
+                    {/* Pertanyaan */}
+                    <span className="text-lg font-raleway font-bold flex-1">{item.title}</span>
+                  </button>
+                  {openFaqItems[item.id] && (
+                    <div className="px-6 pb-4 ml-9">
+                      <p className="text-primary font-montserrat">{item.content}</p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-8 sm:py-12 bg-white">
+        <div className="container w-full max-w-none sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+            {/* Card Image */}
+            <div className="w-full lg:w-1/2 h-64 sm:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-md" data-aos="fade-right">
+              <img
+                src={about1}
+                alt="Oblix Pilates studio"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Text Content */}
+            <div className="w-full lg:w-1/2" data-aos="fade-left" data-aos-delay="200">
+              <h2 className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-raleway font-medium mb-2">
+                Why Choose Oblix Pilates
+              </h2>
+              <p className="text-tertiary text-2xl sm:text-3xl md:text-4xl font-fraunces italic mb-8">
+                For Better You?
+              </p>
+
+              <div className="space-y-6">
+                {/* Personal Growth Space */}
+                <div className="flex gap-4 items-center" data-aos="fade-up" data-aos-delay="300">
+                  <div className="flex-shrink-0 w-12 h-12 mt-1">
+                    <img
+                      src={flowerIcon}
+                      alt="Flower icon"
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-tertiary text-lg font-raleway font-semibold">
+                      Personal Growth Space
+                    </h3>
+                    <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
+                      Whether you're here to improve posture, build strength, or
+                      simply find a mindful escape—Oblix is your space to grow.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Better Movement, Better You */}
+                <div className="flex gap-4 items-center" data-aos="fade-up" data-aos-delay="400">
+                  <div className="flex-shrink-0 w-12 h-12 mt-1">
+                    <img
+                      src={flowerIcon}
+                      alt="Flower icon"
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-tertiary text-lg font-raleway font-semibold">
+                      Better Movement, Better You
+                    </h3>
+                    <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
+                      We believe that intentional movement leads to a stronger,
+                      healthier, and more balanced version of you.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mindful Every Step */}
+                <div className="flex gap-4 items-center" data-aos="fade-up" data-aos-delay="500">
+                  <div className="flex-shrink-0 w-12 h-12 mt-1">
+                    <img
+                      src={flowerIcon}
+                      alt="Flower icon"
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-tertiary text-lg font-raleway font-semibold">
+                      Mindful Every Step
+                    </h3>
+                    <p className="text-tertiary text-sm sm:text-base font-raleway leading-relaxed">
+                      Every stretch, every breath, and every rep is designed to
+                      bring you closer to the best version of yourself.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full relative py-8 sm:py-12"></div>
+
+
+
+
+
+
+
+
+
+
+
+          <div className="w-full h-40 sm:h-48 md:h-64 lg:h-72 relative rounded-3xl sm:rounded-3xl overflow-hidden" data-aos="fade-up" data-aos-delay="600">
+            <img
+              src={classesScheduleBanner}
+              alt="Schedule Banner"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute left-6 sm:left-20 md:left-28 top-1/2 transform -translate-y-1/2 z-10">
+              <svg
+                className="w-16 h-16 sm:w-48 sm:h-48 md:w-56 md:h-56 opacity-80"
+                viewBox="0 0 366 372"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M95.7547 243.971C88.7643 243.63 82.4858 243.188 76.2194 242.464C61.5078 240.676 47.4398 237.084 34.1496 230.21C13.8675 219.736 3.56131 202.699 1.18805 180.535C0.13992 170.347 0.435835 160.167 3.26653 150.278C9.52821 128.057 24.3126 114.978 46.6376 110.843C68.1771 106.873 88.9532 110.79 108.866 119.967C110.254 120.616 111.715 121.198 113.102 121.846C113.58 120.599 112.978 119.785 112.591 118.912C105.942 100.745 102.644 81.9969 103.255 62.8418C103.708 48.9887 106.967 35.7259 116.211 24.7991C122.915 16.9801 131.357 11.5297 140.733 7.40896C152.563 2.15841 165.136 -0.640521 178.184 0.341769C191.374 1.33239 202.81 6.89341 212.388 16.1689C230.808 33.7558 237.698 56.186 239.907 80.5354C240.431 86.444 240.317 92.3858 240.062 98.3193C240.026 99.167 239.48 100.339 240.665 100.763C241.5 101.095 242.107 100.14 242.696 99.6078C253.72 90.0607 266.261 83.0817 280.313 78.812C301.962 72.2996 322.185 75.9006 339.892 90.3295C361.902 108.341 369.173 131.785 363.54 159.141C361.832 167.609 356.796 174.465 351.429 180.805C338.315 196.177 322.204 207.194 302.568 212.976C301.206 213.391 299.782 213.59 298.42 214.006C297.199 214.429 295.726 214.13 294.536 215.476C297.213 217.404 299.748 219.324 302.351 221.319C316.392 232.133 327.574 245.256 335.449 261.229C343.589 277.643 342.535 293.939 335.337 309.944C329.164 323.53 319.638 334.441 307.312 342.99C291.263 354.224 274.238 353.573 256.719 346.308C241.011 339.716 228.161 329.185 217.409 315.945C214.185 311.931 211.47 307.593 208.608 303.387C208.074 302.648 207.987 301.368 206.846 301.584C205.919 301.742 206.012 302.880 205.767 303.645C202.213 315.544 197.069 326.572 190.464 337.017C183.865 347.321 175.904 356.411 165.762 363.531C156.713 369.938 146.373 371.806 135.43 371.231C119.97 370.39 105.583 366 92.4328 357.505C79.0068 348.853 72.0535 336.12 70.0947 320.78C66.5898 293.663 75.5882 270.329 91.4243 249.239C92.6264 247.611 93.9636 246.132 95.7547 243.971Z"
+                  fill="url(#paint0_linear_74_419)"
+                />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear_74_419"
+                    x1="71.6121"
+                    y1="64.4558"
+                    x2="316.523"
+                    y2="335.68"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#7B8FCB" />
+                    <stop offset="1" stopColor="#ADBFF6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <div className="absolute left-1/2 md:left-96 transform -translate-x-1/2 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="text-white flex flex-col items-center gap-4 sm:gap-6">
+                <div className="text-center md:text-start">
+                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium font-raleway leading-tight block">
+                    Book your
+                  </span>
+                  <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal font-fraunces leading-tight">
+                    Session Now
+                  </span>
+                </div>
+                <div className="sm:hidden">
+                  <a
+                    href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                      "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button as="span" variant="primary" size="medium">
+                      WhatsApp
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute right-6 sm:right-20 md:right-28 top-1/2 transform -translate-y-1/2 z-10">
+              <a
+                href={`https://wa.me/6285883335533?text=${encodeURIComponent(
+                  "Halo Oblix Pilates! Saya ingin booking Class/Session (paket Private/Semi Priavate/Group). Boleh minta harga dan slot tersedia? Terima kasih!"
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex"
+              >
+                <Button as="span" variant="primary" size="large">
+                  Click Here
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
 
     </PublicLayout>
   );

@@ -162,7 +162,7 @@ export const useSchedule = () => {
         case 'group':
           response = await scheduleAPI.updateGroupSchedule(id, data);
           break;
-        case 'semi-private':
+        case 'semi_private':
           response = await scheduleAPI.updateSemiPrivateSchedule(id, data);
           break;
         case 'private':
@@ -191,7 +191,7 @@ export const useSchedule = () => {
         case 'group':
           response = await scheduleAPI.deleteGroupSchedule(id);
           break;
-        case 'semi-private':
+        case 'semi_private':
           response = await scheduleAPI.deleteSemiPrivateSchedule(id);
           break;
         case 'private':

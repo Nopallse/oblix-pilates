@@ -105,18 +105,20 @@ const BlogDetail = () => {
                 Published on {new Date(blogDetail.createdAt).toLocaleDateString()}
               </div>
               <div className="mb-8">
+                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
                 <img
                   src={getImageUrl(blogDetail.picture)}
                   alt={blogDetail.title}
-                  className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-3xl shadow-md"
+                    className="w-full h-full object-cover rounded-3xl shadow-md"
                   style={{ objectPosition: "center" }}
                   onError={(e) => {
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'block';
                   }}
                 />
-                <div className="hidden w-full h-64 sm:h-80 md:h-96 bg-gray-200 rounded-3xl shadow-md flex items-center justify-center text-gray-500">
+                  <div className="hidden absolute inset-0 bg-gray-200 rounded-3xl shadow-md flex items-center justify-center text-gray-500">
                   [Blog Image]
+                  </div>
                 </div>
               </div>
               <div className="text-tertiary text-base font-raleway leading-relaxed whitespace-pre-line">
@@ -134,17 +136,19 @@ const BlogDetail = () => {
                     key={blog.id}
                     className="flex items-center gap-4 bg-transparent"
                   >
+                    <div className="relative w-32 sm:w-36 flex-shrink-0" style={{ aspectRatio: '4/3' }}>
                     <img
                       src={getImageUrl(blog.picture)}
                       alt={blog.title}
-                      className="w-32 h-32 sm:w-36 sm:h-36 object-cover rounded-2xl flex-shrink-0"
+                        className="w-full h-full object-cover rounded-2xl"
                       onError={(e) => {
                         e.target.style.display = 'none';
                         e.target.nextSibling.style.display = 'block';
                       }}
                     />
-                    <div className="hidden w-32 h-32 sm:w-36 sm:h-36 bg-gray-200 rounded-2xl flex-shrink-0 flex items-center justify-center text-gray-500 text-xs">
+                      <div className="hidden absolute inset-0 bg-gray-200 rounded-2xl flex items-center justify-center text-gray-500 text-xs">
                       [Image]
+                      </div>
                     </div>
                     <div className="flex flex-col flex-1 justify-between h-full">
                       <div className="text-tertiary text-base font-raleway font-semibold mb-2 text-left">

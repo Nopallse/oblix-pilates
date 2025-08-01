@@ -89,7 +89,7 @@ const FlexibleLayout = ({ children }) => {
       '/profile', 
       '/my-classes',
       '/my-package',
-      
+      '/my-orders',
       '/user',
       '/members'
     ];
@@ -97,6 +97,11 @@ const FlexibleLayout = ({ children }) => {
     // For buy-package routes, check if user has purchased package
     if (location.pathname === '/buy-package' || location.pathname.startsWith('/buy-package/')) {
       return hasPurchasedPackage();
+    }
+    
+    // For my-orders routes, always use UserLayout
+    if (location.pathname.startsWith('/my-orders/')) {
+      return true;
     }
     
     return userLayoutRoutes.includes(location.pathname);

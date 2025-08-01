@@ -511,6 +511,9 @@ export const useTrainerForm = (initialValues = {}, isEdit = false) => {
       description: '',
       instagram: '',
       tiktok: '',
+      rate_group_class: '',
+      rate_semi_private_class: '',
+      rate_private_class: '',
       picture: null,
       ...initialValues
     },
@@ -529,6 +532,9 @@ export const useTrainerForm = (initialValues = {}, isEdit = false) => {
         if (values.tiktok) {
           formData.append('tiktok', values.tiktok)
         }
+        formData.append('rate_group_class', values.rate_group_class)
+        formData.append('rate_semi_private_class', values.rate_semi_private_class)
+        formData.append('rate_private_class', values.rate_private_class)
         if (values.picture) {
           formData.append('picture', values.picture)
         }

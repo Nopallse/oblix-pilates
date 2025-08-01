@@ -1,0 +1,1 @@
+export { default as PayrollDetailModal } from './PayrollDetailModal'; 
